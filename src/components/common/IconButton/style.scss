@@ -1,0 +1,29 @@
+@import "../../../scss/DAOVariable.scss";
+@mixin icon-button($bg-color) {
+  width: 42px;
+  height: 42px;
+  display:grid;
+  justify-items: center;
+  align-items: center;
+  img {
+    width: 25px;
+    height: 25px;
+  }
+  background-color: $bg-color;
+
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+}
+.btn-fill {
+  @include icon-button($iconbtn-bgcolor-fill);
+  &:hover {
+    background-color: $iconbtn-bgcolor-fill-hover;
+  }
+}
+.btn-unfill {
+  @include icon-button($iconbtn-bgcolor-unfill);
+  &:hover {
+    background-color: $iconbtn-bgcolor-unfill-hover;
+  }
+}

@@ -1,0 +1,97 @@
+@import "../../scss/DAOVariable.scss";
+.new-stream {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  .content-title {
+    // padding: 20px;
+    padding-left: 30px;
+    font-size: 20px;
+  }
+  & > .pool-stream-table {
+    background-color: $bg-color-layer2;
+    display: grid;
+    grid-template-rows: 1fr;
+    gap: 10px;
+    padding-top: 50px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+    & > .table-container {
+      display: grid;
+      padding-left: 30px;
+      padding-right: 30px;
+      grid-template-rows: min-content 1fr;
+      & > .table-title {
+        font-size: 20px;
+        padding: 5px;
+        padding-bottom:20px;
+      }
+      & > .table-content {
+        padding: 5px;
+        // display: block;
+        max-height: 500px; //need to be modified
+        overflow: auto;
+
+        table {
+          width: 100%;
+          font-weight: 100;
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        table,
+        th,
+        td {
+          border: 1px solid rgb(35, 39, 34);
+          border-collapse: collapse;
+          // height: 1.8rem;
+          height: 2.4rem;
+        }
+        td {
+          width: 20%;
+        }
+        th,
+        td {
+          padding-left: 5px;
+          padding-right: 5px;
+          // padding: 10px;
+          text-align: center;
+          white-space: nowrap;
+          
+          background-color: $bg-color-layer1;
+        }
+      }
+    }
+  }
+
+}
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: $bg-color-layer1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+@media (max-width: 768px) {
+  .new-stream {
+    & > .stream-pool-content {
+      grid-template-columns: unset;
+      & > .stream-initial-btn {
+        padding-top: 10px;
+      }
+    }
+    .content-title {
+      padding: 5px;
+      padding-left: 30px;
+      font-size: 18px;
+    }
+    .table-container {
+      font-size: 14px;
+    }
+  }
+}

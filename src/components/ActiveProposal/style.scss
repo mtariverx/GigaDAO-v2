@@ -1,0 +1,191 @@
+@import "../../scss/DAOVariable.scss";
+.active-proposal-container {
+  display: grid;
+  background-color: $bg-color-layer2;
+  border-radius: 5px;
+  // padding: 1rem;
+  height: 100%;
+  grid-template-rows: min-content 1fr;
+  & > .content-title {
+    padding-top: 20px;
+    padding-left: 30px;
+    font-size: 20px;
+    
+  }
+  & > .proposal-body {
+    // background-color: rgb(35, 39, 34);
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    padding-bottom: 10px;
+    min-height: 28rem;
+    gap: 10px;
+    & > .proposal-content {
+      display: grid;
+      // grid-template-rows: 1fr 0.1fr;
+      & > .content-upper {
+        padding-top: 30px;
+        .item-group-hidden {
+          visibility: hidden;
+        }
+      }
+    }
+
+    & > .proposal-councillor {
+      display: grid;
+      // grid-template-rows: 3fr 1fr;
+      grid-template-rows: max-content max-content;
+      padding: 10px;
+      box-sizing: border-box;
+      gap: 10px;
+      & > .proposal-propose {
+        display: grid;
+        background-color: $bg-color-layer1;
+        border-radius: 10px;
+        display: grid;
+        // grid-template-rows: 1fr 1fr 150px min-content;
+        grid-template-rows: max-content max-content 150px max-content;
+        & > .proposal-title {
+          padding-top: 10px;
+          padding-left: 10px;
+          font-size: 24px;
+          text-align: left;
+        }
+        & > .proposal-description {
+          display: grid;
+          text-align: left;
+          padding-left: 5px;
+          padding-right: 5px;
+          padding-bottom: 5px;
+        }
+        & > .councillor-pubkeys {
+          padding-left: 15px;
+          padding-right: 15px;
+          font-size: 15px;
+          color: $text-color-common;
+          overflow: auto;
+          & > .councillor-pubkey-pair {
+            display: grid;
+            grid-template-columns: 1fr min-content;
+            & > .text-pubkey {
+              text-align: left;
+            }
+            & > .vote-state {
+              padding-left: 5px;
+              text-align: right;
+            }
+          }
+        }
+        & > .proposal-approve-decline {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          padding: 20px;
+          align-items: center;
+          justify-items: center;
+          justify-content: space-around;
+          height: max-content;
+        }
+      }
+      & > .proposal-execute {
+        // display: grid;
+        // grid-template-rows: min-content, min-content;
+        // grid-template-rows: 1fr, 2fr;
+        background-color: $bg-color-layer1;
+        border-radius: 10px;
+        & > .execute-description {
+          padding-top: 20px;
+          padding-left: 10px;
+          padding-right: 10px;
+          padding-bottom: 10px;
+        }
+        & > .execute-btn {
+          display: grid;
+          padding: 10px;
+          padding-top: 0px;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: $bg-color-layer1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+@media (max-width: 1270px) {
+  .active-proposal-container {
+    & > .proposal-body {
+      & > .proposal-councillor {
+        & > .proposal-propose {
+          grid-template-rows: unset;
+          grid-template-rows: max-content max-content 120px max-content;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .active-proposal-container {
+    & > .proposal-body {
+      grid-template-columns: unset;
+      & > .proposal-councillor {
+        grid-template-rows: unset;
+        grid-template-rows: max-content, max-content;
+        & > .proposal-propose {
+          grid-template-rows: unset;
+          grid-template-rows: max-content, max-content, 150px max-content;
+          & > .proposal-title {
+            padding-top: 10px;
+            padding-left: 10px;
+            font-size: 24px;
+          }
+          & > .proposal-description {
+          }
+          & > .councillor-pubkeys {
+            padding-left: 15px;
+            padding-right: 15px;
+            font-size: 15px;
+            color: $text-color-common;
+            overflow: auto;
+            & > .councillor-pubkey-pair {
+              display: grid;
+              grid-template-columns: 1fr min-content;
+              & > .text-pubkey {
+                text-align: left;
+              }
+              & > .vote-state {
+                padding-left: 5px;
+                text-align: right;
+              }
+            }
+          }
+          & > .proposal-approve-decline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 5px;
+            align-items: center;
+            justify-items: center;
+            justify-content: space-around;
+          }
+        }
+        
+      }
+    }
+  }
+}

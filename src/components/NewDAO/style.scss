@@ -1,0 +1,52 @@
+@import "../../scss/DAOVariable.scss";
+.NewDAO-container {
+  background-color: $bg-color-layer2;
+  padding: 20px;
+  padding-bottom: 10px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  & > .container-title {
+    padding: 20px;
+    padding-left: 30px;
+    font-size: 20px;
+  }
+  & > .container-body {
+    display: grid;
+    grid-template-columns: 1fr 20%;
+    & > .DAO-content {
+      // display: grid;
+    }
+    & > .DAO-initialize {
+      display: flex;
+      padding-bottom: 30px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .NewDAO-container {
+    padding-bottom: 0px;
+    &.plus-button {
+      display: grid;
+      // grid-template-columns: 0px 1fr min-content;
+    }
+    &> .container-title{
+      font-size:16px;
+      padding-top:0px;
+      padding-bottom:0px;
+    }
+    & > .container-body {
+      display: grid;
+      grid-template-columns: unset;
+      // grid-template-rows: 1fr;
+      & > .DAO-initialize {
+        display: flex;
+        padding-top: 10px;
+        padding-bottom: 0px;
+        
+      }
+    }
+  }
+}

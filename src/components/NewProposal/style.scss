@@ -1,0 +1,147 @@
+@import "../../scss/DAOVariable.scss";
+.new-proposal-container {
+  display: grid;
+  background-color: $bg-color-layer2;
+  border-radius: 5px;
+  // padding: 1rem;
+  height: 100%;
+  grid-template-rows: min-content 1fr;
+  & > .content-title {
+    padding-top: 20px;
+    padding-left: 30px;
+    font-size: 20px;
+  }
+  & > .new-proposal-content {
+    // background-color: rgb(35, 39, 34);
+    display: grid;
+    grid-template-columns: 1fr 20%;
+    padding-bottom: 30px;
+    min-height: 28rem;
+    & > .proposal-content {
+      display: grid;
+      // grid-template-rows: 1fr 0.1fr;
+      & > .content-upper {
+        .item-group-hidden {
+          visibility: hidden;
+        }
+
+        & > .label-select-group {
+          display: grid;
+          grid-template-columns: 200px 1fr;
+          padding-top: 30px;
+          margin: 5px;
+          & > .proposal_notation {
+            display: grid;
+            align-items: center;
+            justify-content: right;
+            font-size: 16px;
+            color: $text-color-common;
+          }
+          & > .select-proposal-type {
+            margin-left: 15px;
+            position: relative;
+            display: flex;
+            height: 42px;
+            border-radius: 0.25em;
+            overflow: hidden;
+            font-family: "Cerebri Sans";
+            border-radius: 8px;
+            select {
+              /* Reset Select */
+              appearance: none;
+              outline: 0;
+              border: 0;
+              box-shadow: none;
+              /* Personalize */
+              flex: 1;
+              padding: 0 0.8em;
+              color: #fff;
+              background-color: $bg-color-layer1;
+              background-image: none;
+              cursor: pointer;
+              border: none;
+            }
+            /* Remove IE arrow */
+            select::-ms-expand {
+              display: none;
+            }
+
+            /* Arrow */
+            &::after {
+              content: "\25BC";
+              position: absolute;
+              top: 0;
+              right: 0;
+              padding: 0.8em;
+              color: $bg-color-layer2;
+              background-color: $bg-color-layer1;
+              transition: 0.25s all ease;
+              pointer-events: none;
+              // border-radius: 10px;
+            }
+            /* Transition */
+            &:hover::after {
+              color: rgb(21, 241, 149, 0.5);
+            }
+          }
+        }
+        & > .proposal-item-group {
+          display: grid;
+          // padding: 5px;
+          // gap: 5px;
+        }
+      }
+    }
+
+    & > .proposal-content-save {
+      display: flex;
+      padding-bottom: 30px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .new-proposal-container {
+    & > .new-proposal-content {
+      grid-template-columns: unset;
+      & > .proposal-content {
+        & > .content-upper {
+          & > .label-select-group {
+            text-align: left;
+            justify-items: left;
+            grid-template-columns: unset;
+            & > .proposal_notation {
+              display: flex;
+              padding-left: 0px;
+              align-items: center;
+              justify-content: right;
+              font-size: 16px;
+              color: $text-color-common;
+            }
+            & > .select-proposal-type {
+              margin-left: 0px;
+              width: 100%;
+              position: relative;
+              display: flex;
+              height: 42px;
+              border-radius: 0.25em;
+              overflow: hidden;
+              font-family: "Cerebri Sans";
+              border-radius: 8px;
+              select {
+                width:100%;
+              }
+            }
+          }
+        }
+      }
+      & > .proposal-content-save {
+        padding-top: 10px;
+        padding-bottom: 0px;
+       
+      }
+    }
+    
+  }
+}

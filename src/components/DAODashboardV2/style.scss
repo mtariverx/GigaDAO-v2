@@ -1,0 +1,437 @@
+@import "../../scss/DAOVariable.scss";
+.dashboard-main {
+  background-color: $bg-color-layer1;
+  display: grid;
+  min-height: 100vh;
+  grid-template-rows: min-content 1fr min-content;
+  & > .top-nav-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    & > .top-log {
+      padding-left: 100px;
+      padding-top: 20px;
+      text-align: left;
+      & > img {
+        width: 240px;
+      }
+    }
+    & > .top-nav-right {
+      display: grid;
+      grid-auto-flow: column;
+      padding-right: 100px;
+      gap: 10px;
+      align-items: center;
+      // justify-items: right;
+      justify-content: right;
+    }
+  }
+  & > .dashboard-body {
+    display: grid;
+    grid-template-rows: min-content, min-content;
+    & > .dashboard-dao-group {
+      display: grid;
+      width: 50vw;
+      padding-left: 200px;
+      gap: 5px;
+      grid-template-columns: 50px 1fr 50px;
+      align-items: center;
+      font-size: 18px;
+      & > .select-memeberDAO {
+        position: relative;
+        display: flex;
+        height: 42px;
+        border-radius: 0.25em;
+        overflow: hidden;
+        font-family: "Cerebri Sans";
+        border-radius: 8px;
+        select {
+          font-size: 20px;
+          /* Reset Select */
+          appearance: none;
+          outline: 0;
+          border: 0;
+          box-shadow: none;
+          /* Personalize */
+          flex: 1;
+          padding: 0 1em;
+          color: #fff;
+          background-color: $bg-color-layer2; //var(--darkgray);
+          background-image: none;
+          cursor: pointer;
+        }
+        /* Remove IE arrow */
+        select::-ms-expand {
+          display: none;
+        }
+
+        /* Arrow */
+        &::after {
+          display: flex;
+          align-items: center;
+          justify-items: center;
+          content: "\25BC";
+          position: absolute;
+          top: 0;
+          right: 0;
+          padding: 0.7em;
+          color: $bg-color-layer1;
+          background-color: $bg-color-layer2; //rgb(45, 39, 34);
+          transition: 0.25s all ease;
+          pointer-events: none;
+        }
+        /* Transition */
+        &:hover::after {
+          color: rgb(21, 241, 149, 0.5);
+        }
+      }
+    }
+    & > .dashboard-content {
+      display: grid;
+      align-items: center;
+      justify-items: center;
+      text-align: center;
+      height: max-content;
+      & > .dashboard-content-center {
+        display: grid;
+        grid-template-rows: 1fr 3fr;
+        width: 50vw;
+        height: 70vh;
+        gap: 20px;
+        & > .dao-info-summary {
+          display: grid;
+          grid-template-rows: 1fr 2fr;
+          border-radius: 10px;
+          background-image: linear-gradient(
+              rgba(30, 36, 35, 0.6),
+              rgba(30, 36, 35, 0.6)
+            ),
+            url("../../img/background-images/Platinum_Loot_box_small.jpg");
+          background-size: cover;
+          background-position: center;
+          & > .dao-summary-title {
+            display: grid;
+            width: max-content;
+            align-items: center;
+            justify-items: left;
+            font-size: 22px;
+            padding-left: 20px;
+            padding-top: 10px;
+          }
+          & > .dao-summary-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            & > .each-dao-info {
+              display: grid;
+              grid-template-rows: repeat (2, 1fr);
+              justify-content: center;
+              align-items: center;
+              padding: 10px;
+              padding-top: 0px;
+              & > .dao-summary-value {
+                display: inline-block;
+                justify-content: left;
+                align-items: center;
+                font-size: 20px;
+              }
+              & > .dao-summary-percent {
+                display: grid;
+                justify-items: left;
+                align-items: center;
+                color: $btn-bgcolor-common;
+                font-size: 18px;
+              }
+            }
+          }
+        }
+        & > .dao-staking-councillor {
+          display: grid;
+          grid-template-columns: 1fr 2fr;
+          gap: 20px;
+          height: max-content;
+          // height:500px;
+          & > .dao-staking {
+            display: grid;
+            font-size: 40px;
+            font-weight: bold;
+            justify-items: center;
+            cursor: pointer;
+            // text-align: center;
+            align-items: center;
+            &:hover {
+              background-image: linear-gradient(
+                  rgba(30, 36, 35, 0.2),
+                  rgba(30, 36, 35, 0.2)
+                ),
+                url("../../img/background-images/gigaDAO_bg.png");
+              color: $text-color-common;
+            }
+            border-radius: 10px;
+            background-image: linear-gradient(
+                rgba(30, 36, 35, 0.5),
+                rgba(30, 36, 35, 0.5)
+              ),
+              url("../../img/background-images/gigaDAO_bg.png");
+            background-size: cover;
+            background-position: center;
+          }
+          & > .dao-councillor {
+            display: grid;
+            box-sizing: border-box;
+            border: 1px solid $btn-bgcolor-common;
+            border-radius: 10px;
+            height: max-content;
+            & > .councillor-title {
+              padding: 10px;
+              background-color: $btn-bgcolor-common;
+              height: min-content;
+              color: black;
+              border-top-left-radius: 10px;
+              border-top-right-radius: 10px;
+              font-size: map-get($map: $font-sizes, $key: "large");
+              font-weight: bold;
+            }
+            & > .councillor-action-group {
+              display: grid;
+              grid-template-rows: repeat(6, 1fr);
+              gap: 10px;
+              padding: 10px;
+              font-size: map-get($map: $font-sizes, $key: "large");
+              & > .councillor-action-proposal {
+                display: inline-block;
+                cursor: pointer;
+                &:hover {
+                  background-image: linear-gradient(
+                      rgba(0, 0, 0, 0.1),
+                      rgba(0, 0, 0, 0.1)
+                    ),
+                    url("../../img/background-images/smart-device1.jpg");
+                  color: $text-color-common;
+                }
+                background-image: linear-gradient(
+                    rgba(0, 0, 0, 0.7),
+                    rgba(0, 0, 0, 0.7)
+                  ),
+                  url("../../img/background-images/smart-device1.jpg");
+                background-size: cover;
+                background-position: center;
+                justify-content: center;
+                align-items: center;
+                padding: 5px;
+                height: min-content;
+                border-radius: 10px;
+                // width:max-content;
+              }
+              & > .councillor-action-others {
+                display: inline-block;
+                cursor: pointer;
+                &:hover {
+                  background-image: linear-gradient(
+                      rgba(0, 0, 0, 0.1),
+                      rgba(0, 0, 0, 0.1)
+                    ),
+                    url("../../img/background-images/cyber2.jpg");
+                  color: $text-color-common;
+                }
+                background-image: linear-gradient(
+                    rgba(0, 0, 0, 0.7),
+                    rgba(0, 0, 0, 0.7)
+                  ),
+                  url("../../img/background-images/cyber2.jpg");
+                background-size: cover;
+                background-position: center;
+                justify-content: center;
+                align-items: center;
+                padding: 5px;
+                height: min-content;
+                border-radius: 10px;
+                // width:max-content;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  & > .dashboard-bottom {
+    display: grid;
+    padding: 10px;
+    // height: min-content;
+    background-color: $bg-color-layer2;
+    justify-items: center;
+    align-items: center;
+    & > .bottom-social-group {
+      display: grid;
+      width: 20vw;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-flow: column;
+      justify-content: space-around;
+      gap: 10px;
+      & > .social-icon {
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        width: 40px;
+        height: 40px;
+        background-color: rgb(28, 77, 58);
+        border-radius: 0.5rem;
+        img {
+          width: 25px;
+          height: 25px;
+        }
+      }
+    }
+  }
+  .unit-color {
+    display: inline;
+    color: $unit-color;
+  }
+}
+span.unit-color {
+  color: $unit-color;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-main {
+    grid-template-rows: min-content 1fr min-content;
+    & > .top-nav-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      & > .top-log {
+        padding-left: 20px;
+        padding-top: 20px;
+        text-align: left;
+        & > img {
+          width: 180px;
+        }
+      }
+      & > .top-nav-right {
+        padding-right: 20px;
+        gap: 10px;
+      }
+    }
+    & > .dashboard-body {
+      display: grid;
+      grid-template-rows: min-content, min-content;
+      & > .dashboard-dao-group {
+        // display: grid;
+        width: 60vw;
+        padding-left: 50px;
+        gap: 5px;
+      }
+      & > .dashboard-content {
+        & > .dashboard-content-center {
+          display: grid;
+          grid-template-columns: unset;
+          grid-template-rows: 1fr 4fr;
+          width: 60vw;
+          height: 70vh;
+          gap: 20px;
+          & > .dao-info-summary {
+            & > .dao-summary-title {
+              font-size: 20px;
+            }
+            & > .dao-summary-content {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              & > .each-dao-info {
+                & > .dao-summary-value {
+                  font-size: 18px;
+                }
+                & > .dao-summary-percent {
+                  font-size: 16px;
+                }
+              }
+            }
+          }
+          & > .dao-staking-councillor {
+            & > .dao-staking {
+              font-size: 30px;
+            }
+            & > .dao-councillor {
+              & > .councillor-title {
+                font-size: 20px;
+              }
+              & > .councillor-action-group {
+                font-size: 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .dashboard-main {
+    grid-template-rows: min-content 1fr min-content;
+    & > .top-nav-bar {
+      grid-template-columns: unset;
+      grid-template-rows: max-content, max-content;
+      & > .top-log {
+        padding-left: 20px;
+        padding-top: 20px;
+        text-align: left;
+        & > img {
+          width: 180px;
+        }
+      }
+      & > .top-nav-right {
+        padding-right: 20px;
+        gap: 10px;
+      }
+    }
+    & > .dashboard-body {
+      display: grid;
+      grid-template-rows: min-content, min-content;
+      & > .dashboard-dao-group {
+        // display: grid;
+        width: 90vw;
+        padding-left: 50px;
+        gap: 5px;
+      }
+      & > .dashboard-content {
+        & > .dashboard-content-center {
+          display: grid;
+          grid-template-columns: unset;
+          grid-template-rows: 1fr 4fr;
+          width: 60vw;
+          height: 70vh;
+          gap: 20px;
+          & > .dao-info-summary {
+            & > .dao-summary-title {
+              font-size: 20px;
+            }
+            & > .dao-summary-content {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              & > .each-dao-info {
+                & > .dao-summary-value {
+                  font-size: 18px;
+                }
+                & > .dao-summary-percent {
+                  font-size: 16px;
+                }
+              }
+            }
+          }
+          & > .dao-staking-councillor {
+            grid-template-columns: unset;
+            grid-template-rows: max-content, max-content;
+            & > .dao-staking {
+              font-size: 24px;
+              padding: 20px;
+            }
+            & > .dao-councillor {
+              & > .councillor-title {
+                font-size: 20px;
+              }
+              & > .councillor-action-group {
+                font-size: 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
