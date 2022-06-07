@@ -181,7 +181,6 @@ export async function refreshStake(wallet, network, stake: pic.Stake) {
 export async function checkIfDaoOnChain(wallet, network, dao: pic.Dao) {
   let program = await initProgram(wallet, network);
   const daoAccount = await program.account.dao.fetch(dao.address); //wallet address, that is, the owner's address
-  console.log("checkIfDaoOnChain");
 }
 
 //this function get dao from chain, that is, governance in UI.

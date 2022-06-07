@@ -117,8 +117,6 @@ const ActiveProposal = (props) => {
         setProposalType(1);
         tmp = dao.governance.proposed_councillors
           .map((councillor) => councillor.toString())
-          
-          console.log("tmp=",tmp);
           setProposedCouncillors(tmp);
           setProposedApprovalThresold(Number(dao.governance.proposed_approval_threshold));
         

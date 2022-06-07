@@ -115,9 +115,6 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
           alert(
             "Multiple matches found in DAO array, this should not happen, support has been automatically notified."
           );
-          matches.map((item) =>
-            console.log("matches=", item.address.toString())
-          );
         } else {
           let dao = matches[0];
           dao.streams = [];
@@ -131,9 +128,9 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
                 }
               }
 
-              console.log(
-                `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
-              );
+              // console.log(
+              //   `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
+              // );
 
               let totalStreamed;
               if (stream.is_active) {
@@ -848,9 +845,7 @@ export async function getConfirmedStream(daos) {
           alert(
             "Multiple matches found in DAO array, this should not happen, support has been automatically notified."
           );
-          matches.map((item) =>
-            console.log("matches=", item.address.toString())
-          );
+         
         } else {
           let dao = matches[0];
           dao.streams = [];
@@ -865,9 +860,9 @@ export async function getConfirmedStream(daos) {
                 }
               }
 
-              console.log(
-                `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
-              );
+              // console.log(
+              //   `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
+              // );
 
               let totalStreamed;
               if (stream.is_active) {
@@ -911,7 +906,6 @@ export async function getConfirmedStream(daos) {
   } catch (e) {
     console.log(e);
   }
-  console.log("confirmed dao=",daos);
   return daos;
 }
 export function displayError(err) {

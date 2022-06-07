@@ -80,7 +80,7 @@ const DAODashboard: React.FC = (props) => {
             {...daos_with_stream},
           ]);
           setSelectedMemberDAO({ ...confirmedDaos }); //only first
-          getActiveProposalInfo({ ...confirmedDaos });
+          // getActiveProposalInfo({ ...confirmedDaos });
  
       } else {
         callDisconnectOwner(dispatch);
@@ -116,7 +116,7 @@ const DAODashboard: React.FC = (props) => {
             {...daos_with_stream},
           ]);
           setSelectedMemberDAO({ ...confirmedDaos }); //only first
-          getActiveProposalInfo({ ...confirmedDaos });
+          // getActiveProposalInfo({ ...confirmedDaos });
       
       } else {
         callDisconnectOwner(dispatch);
@@ -124,11 +124,11 @@ const DAODashboard: React.FC = (props) => {
     })();
   }, [refresh]);
 
-  useEffect(() => {
-    if (selected_member_dao != undefined) {
-      getActiveProposalInfo({...selected_member_dao});
-    }
-  }, [selected_member_dao]);
+  // useEffect(() => {
+  //   if (selected_member_dao != undefined) {
+  //     getActiveProposalInfo({...selected_member_dao});
+  //   }
+  // }, [selected_member_dao]);
   const onCloseModeal = () => {
     setShowModal(-1);
     setRefresh(!refresh);
@@ -159,77 +159,74 @@ const DAODashboard: React.FC = (props) => {
   };
 
   //get governance info to show them in Active Proposal Section
-  const getActiveProposalInfo = async (dao: pic.Dao) => {
-    let tmp: any = [];
-    let tmp_counc_sign_arr: Array<counc_sign_pair> = [];
-    try {
-      const _dao = await livePic.getDaoGovernanceFromChain(wallet, dao);
-      dao.governance = _dao.governance;
+  // const getActiveProposalInfo = async (dao: pic.Dao) => {
+  //   let tmp: any = [];
+  //   let tmp_counc_sign_arr: Array<counc_sign_pair> = [];
+  //   try {
+  //     const _dao = await livePic.getDaoGovernanceFromChain(wallet, dao);
+  //     dao.governance = _dao.governance;
 
-      if (dao.governance && dao.governance.councillors != undefined) {
-        dao.governance.councillors.forEach(function (councillor, index) {
-          let tmp_c: counc_sign_pair = {
-            councillor: councillor,
-            signer: dao.governance.proposed_signers[index],
-          };
-          tmp_counc_sign_arr.push(tmp_c);
-        });
-      }
+  //     if (dao.governance && dao.governance.councillors != undefined) {
+  //       dao.governance.councillors.forEach(function (councillor, index) {
+  //         let tmp_c: counc_sign_pair = {
+  //           councillor: councillor,
+  //           signer: dao.governance.proposed_signers[index],
+  //         };
+  //         tmp_counc_sign_arr.push(tmp_c);
+  //       });
+  //     }
+  //     if (dao.governance == undefined) {
+  //       return dao;
+  //     }
 
-      console.log("===============getActiveProposalInfo======2=======", dao);
-      
-      if (dao.governance == undefined) {
-        return dao;
-      }
-
-      if (
-        dao.governance &&
-        Object.keys(dao.governance.proposal_type)[0] == "deactivateStream"
-      ) {
-        tmp = [
-          ["Proposal Type:", "Deactivate Stream"],
-          [
-            "Stream Public Key:",
-            getShortKey(dao.governance.proposed_deactivation_stream.toString()),
-          ],
-        ];
-      } else if (
-        dao.governance &&
-        Object.keys(dao.governance.proposal_type)[0] == "withdrawFromStream"
-      ) {
-        tmp = [
-          ["Proposal Type: ", "Withdraw from Stream"],
-          ["Amount:", `${dao.governance.proposed_withdrawal_amount}`],
-          [
-            "Withdraw Receiver: ",
-            getShortKey(dao.governance.proposed_withdrawal_receiver.toString()),
-          ],
-          [
-            "Withdraw Stream: ",
-            getShortKey(dao.governance.proposed_withdrawal_stream.toString()),
-          ],
-        ];
-      } else if (
-        dao.governance &&
-        Object.keys(dao.governance.proposal_type)[0] == "updateMultisig"
-      ) {
-        tmp = [
-          ["Proposal Type: ", "Update Multi-sig"],
-          [
-            "councillors: ",
-            dao.governance.proposed_councillors
-              .map((councillor) => getShortKey(councillor.toString()))
-              .join("\n"),
-          ],
-        ];
-      }
-      setActiveProposalInfo(tmp);
-    } catch (e) {
-      console.log(e);
-    }
-    setCounc_Sign(tmp_counc_sign_arr);
-    setActiveProposalInfo(tmp);
-  };
+  //     if (
+  //       dao.governance &&
+  //       Object.keys(dao.governance.proposal_type)[0] == "deactivateStream"
+  //     ) {
+  //       tmp = [
+  //         ["Proposal Type:", "Deactivate Stream"],
+  //         [
+  //           "Stream Public Key:",
+  //           getShortKey(dao.governance.proposed_deactivation_stream.toString()),
+  //         ],
+  //       ];
+  //     } else if (
+  //       dao.governance &&
+  //       Object.keys(dao.governance.proposal_type)[0] == "withdrawFromStream"
+  //     ) {
+  //       tmp = [
+  //         ["Proposal Type: ", "Withdraw from Stream"],
+  //         ["Amount:", `${dao.governance.proposed_withdrawal_amount}`],
+  //         [
+  //           "Withdraw Receiver: ",
+  //           getShortKey(dao.governance.proposed_withdrawal_receiver.toString()),
+  //         ],
+  //         [
+  //           "Withdraw Stream: ",
+  //           getShortKey(dao.governance.proposed_withdrawal_stream.toString()),
+  //         ],
+  //       ];
+  //     } else if (
+  //       dao.governance &&
+  //       Object.keys(dao.governance.proposal_type)[0] == "updateMultisig"
+  //     ) {
+  //       tmp = [
+  //         ["Proposal Type: ", "Update Multi-sig"],
+  //         [
+  //           "councillors: ",
+  //           dao.governance.proposed_councillors
+  //             .map((councillor) => getShortKey(councillor.toString()))
+  //             .join("\n"),
+  //         ],
+  //       ];
+  //     }
+  //     setActiveProposalInfo(tmp);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  //   setCounc_Sign(tmp_counc_sign_arr);
+  //   setActiveProposalInfo(tmp);
+  // };
 
   //call for clicking Approve button on Active Proposal
   const onClickApproveProposeBtn = async () => {

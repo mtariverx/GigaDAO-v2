@@ -134,7 +134,6 @@ const NewProposal = (props) => {
         dao.governance.proposed_withdrawal_stream = new PublicKey(
           proposed_withdrawal_stream
         );
-      console.log("new proposal=", dao);
       await livePic.proposeDaoCommand(wallet, dao);
       props.onClose(); //close btn
     }
