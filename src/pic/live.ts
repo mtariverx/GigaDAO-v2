@@ -9,14 +9,6 @@ import { StakeAccountStatus } from "./live_utils/onchain-data-helpers";
 import * as rpc from "./live_utils/rpc_helpers";
 import { NETWORK } from "./connect";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
-//kaiming testing
-// export async function showAllCallsInProgram(wallet) {
-//   try {
-//     let program = await rpc.initProgram(wallet, NETWORK);
-//   } catch (e) {
-//     console.log(e);
-//   }
-// }
 
 export async function getDaoGovernanceFromChain(wallet, dao) {
   try {
@@ -33,7 +25,6 @@ let connectOwner: pic.ConnectOwner = async (owner: pic.Owner) => {
     let result = await mirror.getOwner(owner.address.toString());
     if (result.success) {
       const data = result.data;
-      console.log("---live-connectOwner----", data);
       // make collections
       if (data.collections?.length > 0) {
         let collections: Array<pic.Collection> = [];
@@ -69,8 +60,6 @@ let connectOwner: pic.ConnectOwner = async (owner: pic.Owner) => {
             newNft.token_account = new PublicKey(nft.token_account);
           }
           if (nft.stake) {
-            // console.log("got stake from mirror acconut: ", nft.stake)
-
             let newStake: pic.Stake = {
               address: new PublicKey(nft.stake.address),
               is_active: nft.stake.is_active,
@@ -102,103 +91,7 @@ let connectOwner: pic.ConnectOwner = async (owner: pic.Owner) => {
 };
 // return dao with streams
 let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
-  // let dao_verified = [];
-  // try {
-  //   let initializedDaos = [];
-  //   for (const dao of daos) {
-  //     if (dao.address) {
-  //       initializedDaos.push(dao);
-  //     } else {
-  //       dao.streams = [];
-  //     }
-  //   }
-  //   if (initializedDaos.length === 0) {
-  //     return daos;
-  //   }
-
-  //   let result = await mirror.getDaoStreams(initializedDaos);
-
-  //   if (result.success && Object.keys(result.data).length > 0) {
-  //     const streamMap: { string: Array<any> } = result.data; //{"ab":["c","d"]}
-  //     for (const [daoAddress, streams] of Object.entries(streamMap)) {
-  //       let matches = daos.filter(
-  //         (dao, _) => dao.address?.toString() === daoAddress
-  //       );
-
-  //       let dao: pic.Dao = matches[0];
-  //       if (matches.length !== 1) {
-  //         alert(
-  //           "Multiple matches found in DAO array, this should not happen, support has been automatically notified."
-  //         );
-  //         matches.map((item) =>
-  //           console.log("matches=", item.address.toString())
-  //         );
-  //       } else {
-  //         console.log("daos=",daos);
-  //         dao = matches[0];
-  //         console.log("matches[0]=", dao);
-  //         dao = { ...dao, streams: [] };
-  //         console.log("matches[1]=", dao);
-  //         for (const stream of streams) {
-  //           let collections: Array<pic.Collection> = [];
-  //           if (stream.collections?.length > 0) {
-  //             for (const collection_address of stream.collections) {
-  //               collections.push({
-  //                 address: new PublicKey(collection_address),
-  //               });
-  //             }
-  //           }
-
-  //           // console.log(
-  //           //   `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
-  //           // );
-
-  //           let totalStreamed;
-  //           if (stream.is_active) {
-  //             const lastUpdateTimestamp = stream.last_update_timestamp;
-  //             const elapsedSeconds = Date.now() / 1000 - lastUpdateTimestamp;
-  //             const ratePerConnPerSec = stream.daily_stream_rate / 24 / 60 / 60;
-  //             const recentlyEarned =
-  //               elapsedSeconds * ratePerConnPerSec * stream.num_connections;
-  //             totalStreamed = stream.total_earned + recentlyEarned; //NOTE: might want to add in check here for would-be-inactive stream...
-  //           } else {
-  //             totalStreamed = stream.total_earned;
-  //           }
-
-  //           let newStream: pic.Stream = {
-  //             confirmed: stream.confirmed,
-  //             address: new PublicKey(stream.address),
-  //             dao_address: dao.address,
-  //             collections: collections,
-  //             num_connections: stream.num_connections,
-  //             is_active: stream.is_active,
-  //             name: stream.name,
-  //             token_image_url: stream.token_image_url,
-  //             daily_stream_rate: stream.daily_stream_rate,
-  //             total_earned: totalStreamed,
-  //             total_claimed: 0,
-  //             current_pool_amount: 0,
-  //             token_ticker: stream.token_ticker,
-  //             last_update_timestamp: stream.last_update_timestamp,
-  //           };
-  //           dao.streams.push(newStream);
-  //         }
-  //       }
-  //       dao_verified.push(dao);
-  //     }
-  //     console.log("--------==", dao_verified);
-  //     return dao_verified;
-  //   } else {
-  //     // alert(
-  //     //   "Failed to retrieve latest stream data for daos, support has been automatically notified."
-  //     // );
-  //   }
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // console.log("return daos=",daos);
-  // return daos;
-  try {
+    try {
     let initializedDaos = [];
     for (const dao of daos) {
       if (dao.address) {
@@ -238,9 +131,9 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
                 }
               }
 
-              // console.log(
-              //   `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
-              // );
+              console.log(
+                `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
+              );
 
               let totalStreamed;
               if (stream.is_active) {
@@ -283,7 +176,6 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
   } catch (e) {
     displayError(e);
   }
-  console.log("all daos=",daos);
   return daos;
 };
 
@@ -973,9 +865,9 @@ export async function getConfirmedStream(daos) {
                 }
               }
 
-              // console.log(
-              //   `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
-              // );
+              console.log(
+                `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
+              );
 
               let totalStreamed;
               if (stream.is_active) {

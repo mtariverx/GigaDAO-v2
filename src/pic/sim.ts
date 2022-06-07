@@ -201,7 +201,6 @@ let updateStreamAndConnection: pic.UpdateStreamAndConnection = async (nft: pic.N
 // retrieves list of daos that owner is a councillor of, but does not lookup Governance data
 let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner) => {
   // let newOwner: pic.Owner = {address: publicKey};
-  console.log("sim getMemberDaos");
   const newOwner: pic.Owner = await connectOwner(owner);
   let daos: Array<pic.Dao> = newOwner.daos;
   for (let dao of daos) {
@@ -229,8 +228,6 @@ let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner) => {
     dao.governance = governance;
   }
   daos = await getDaos(daos);
-
-  console.log("getMemberDaos=", daos);
   return daos;
 };
 

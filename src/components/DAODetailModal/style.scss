@@ -40,6 +40,15 @@
     }
   }
 }
+@media (max-width: 1280px) {
+  .modal-window {
+    & > .modal-main {
+      width: 70%;
+      height: max-content;
+    }
+  }
+
+}
 @media (max-width: 768px) {
   .modal-window {
     & > .modal-main {

@@ -11,7 +11,11 @@ import { validateSolanaAddress } from "../CommonCalls";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
 import { useOwnerData } from "providers/owner";
 import { plugins } from "chart.js";
-
+import { useDispatch } from "react-redux";
+import * as React from "react"
+import { useSelector } from "react-redux";
+import { DaoState } from "store/DaoReducer";
+import { shallowEqual } from "react-redux";
 const NewDAO = (props) => {
   const [dao_id, setDaoId] = useState<string>();
   const [dao_disp_name, setDaoDispName] = useState<string>();
@@ -29,6 +33,13 @@ const NewDAO = (props) => {
   useEffect(() => {
     setCouncillors([wallet.publicKey.toString()]);
   },[])
+
+  const dispatch_state = useDispatch();
+  const onSetDao = React.useCallback(
+    (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
+    [dispatch_state]
+  );
+  const dao: pic.Dao = useSelector((state:DaoState) => state.dao, shallowEqual);
 
   const onClickCreateNewDAOBtn = async () => {
 
@@ -71,20 +82,12 @@ const NewDAO = (props) => {
         );
         governance.councillors = councillors_pubkey;
         for (let i = 0; i < councillors_pubkey.length; i++) {
-          // governance.proposed_signers.push(true);
           governance.proposed_signers.push(false);
         } //no need here, in approve dao 
       }
-
-      // governance.councillors.push(publicKey); //add owner as a councillor
-      
       governance.approval_threshold = approval_threshold;
-
       new_dao.governance = governance;
-      
-      // new_dao = await simPic.initializeDao(new_dao); //initializeDao
       new_dao=await livePic.initializeDao(wallet, new_dao);
-      console.log("new create dao close");
       props.onClose(); //close btn
     }
   };

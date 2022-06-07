@@ -51,18 +51,6 @@ const MainLayout = (props) => {
           </ul>
         </div>
         <div className="menu-info">
-          {/* <div className="menu-info-item">
-            <div>
-              <img src={AboutUs} />
-            </div>
-            <div>About us</div>
-          </div>
-          <div className="menu-info-item">
-            <div>
-              <img src={Whitepaper} />
-            </div>
-            <div>Whitepaper</div>
-          </div> */}
           <div className="menu-info-social">
             <div className="social-icon">
               <img src={Discord} />

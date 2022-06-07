@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./style.scss";
-
+import * as React from "react"
 import Profile from "img/icons/profile.png";
 import Discord from "img/icons/discord_logo_icon_1.png";
 import Twitter from "img/icons/twitter.png";
@@ -26,6 +26,10 @@ import * as pic from "../../pic/pic";
 import * as simPic from "../../pic/sim";
 import * as livePic from "../../pic/live";
 
+import { useSelector, useDispatch } from "react-redux";
+import { DaoState } from "store/DaoReducer";
+import { shallowEqual } from "react-redux";
+
 const DAODashboardV2: React.FC = (props) => {
   const { publicKey, connected } = useWallet();
   const { dispatch, callConnectOwner, callDisconnectOwner } = useOwnerData();
@@ -41,6 +45,15 @@ const DAODashboardV2: React.FC = (props) => {
 
   const wallet = useAnchorWallet();
 
+  const dispatch_state = useDispatch();
+
+ 
+  const onSetDao = React.useCallback(
+    (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
+    [dispatch_state]
+  );
+  // const dao_ = useSelector<DaoState, DaoState["dao"]>((state) => state.dao);
+  const dao_: pic.Dao = useSelector((state:DaoState) => state.dao, shallowEqual);
   useEffect(() => {
     (async () => {
       if (connected) {
@@ -66,6 +79,7 @@ const DAODashboardV2: React.FC = (props) => {
           { ...daos_with_stream },
         ]);
         setSelectedMemberDAO({ ...confirmedDaos }); //only first
+        onSetDao({ ...confirmedDaos });
       } else {
         callDisconnectOwner(dispatch);
       }
@@ -74,7 +88,6 @@ const DAODashboardV2: React.FC = (props) => {
   useEffect(() => {
     (async () => {
       if (connected) {
-        console.log("reset");
         setIsConnectingToOwner(true);
         const newOwner: pic.Owner = { address: publicKey };
         callConnectOwner(dispatch, newOwner).then(() => {
@@ -99,6 +112,7 @@ const DAODashboardV2: React.FC = (props) => {
           { ...daos_with_stream },
         ]);
         setSelectedMemberDAO({ ...confirmedDaos }); //only first
+        onSetDao({ ...confirmedDaos });
       } else {
         callDisconnectOwner(dispatch);
       }
@@ -121,7 +135,6 @@ const DAODashboardV2: React.FC = (props) => {
   };
   const getActiveProposalInfo = async (dao: pic.Dao) => {
     try {
-      console.log("dashv2-getActive");
       const _dao = await livePic.getDaoGovernanceFromChain(wallet, dao);
       dao.governance = _dao.governance;
     } catch (e) {
@@ -138,14 +151,15 @@ const DAODashboardV2: React.FC = (props) => {
         ]);
         setSelectedMemberDAO({ ...confirmedDaos });
         setSelectDaoId(dao_id);
+        onSetDao({ ...confirmedDaos });
       }
     }
   };
 
-  const onLaunchStaking=()=>{
+  const onLaunchStaking = () => {
     window.open("https://staking.gigadao.io/");
-    return 
-  }
+    return;
+  };
 
   return (
     <div className="dashboard-main">
@@ -212,7 +226,7 @@ const DAODashboardV2: React.FC = (props) => {
             </div>
             <div className="dao-staking-councillor">
               <div className="dao-staking" onClick={onLaunchStaking}>
-                  Staking
+                Staking
               </div>
               <div className="dao-councillor">
                 <div className="councillor-title">Councillor</div>
@@ -241,7 +255,9 @@ const DAODashboardV2: React.FC = (props) => {
                   >
                     Token Stream{" "}
                   </div>
-                  <div className="councillor-action-others">New Multisig Treasury</div>
+                  <div className="councillor-action-others">
+                    New Multisig Treasury
+                  </div>
                   <div className="councillor-action-others">Treasury</div>
                 </div>
               </div>

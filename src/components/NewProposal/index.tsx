@@ -9,7 +9,11 @@ import * as simPic from "../../pic/sim";
 import * as livePic from "../../pic/live";
 import { validateSolanaAddress } from "components/CommonCalls";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
-
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { DaoState } from "store/DaoReducer";
+import { shallowEqual } from "react-redux";
+import * as React from "react";
 const NewProposal = (props) => {
   const wallet = useAnchorWallet();
 
@@ -35,7 +39,12 @@ const NewProposal = (props) => {
 
   const [proposal_type, setProposalType] = useState(-1);
   const [show_addresses, setShowAddresses] = useState<boolean>(false);
-
+  const dispatch_state = useDispatch();
+  const onSetDao = React.useCallback(
+    (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
+    [dispatch_state]
+  );
+  const dao: pic.Dao = useSelector((state:DaoState) => state.dao, shallowEqual);
   useEffect(() => {
     if (proposal_type == -1) {
       setShowAddresses(false);
@@ -69,9 +78,6 @@ const NewProposal = (props) => {
   };
 
   const onClickSavePorposeBtn = async () => {
-    // if(props.dao.governance==undefined){
-    //   props.onClose(); //close btn
-    // }
     let governance: pic.Governance = {
       councillors: [Keypair.generate().publicKey],
       approval_threshold: 0,
@@ -86,13 +92,10 @@ const NewProposal = (props) => {
       proposed_withdrawal_stream: Keypair.generate().publicKey,
       num_streams: 0,
     };
-    props.dao.governance = governance;
+    dao.governance = governance;
     if ((await validateSolanaAddress(stream_pubkey)) == false) {
       setStreamPubkey("");
     }
-    // if ((await validateSolanaAddress(proposed_withdrawal_receiver)) == false) {
-    //   setProposedWithdrawalReceiver("");
-    // }
     if ((await validateSolanaAddress(proposed_withdrawal_stream)) == false) {
       setProposedWithdrawalStream("");
     }
@@ -109,33 +112,30 @@ const NewProposal = (props) => {
             new PublicKey(proposed_councillors[i])
           );
         }
-        // proposed_councillors.map(
-        //   (councillor) => new PublicKey(councillor)
-        // );
-        props.dao.governance.proposed_councillors = proposed_councillors_pubkey;
-        props.dao.governance.proposed_councillors.push(wallet.publicKey); //add owner
+  
+        dao.governance.proposed_councillors = proposed_councillors_pubkey;
+        dao.governance.proposed_councillors.push(wallet.publicKey); //add owner
       }
-      props.dao.governance.proposal_type = proposal_type;
+      dao.governance.proposal_type = proposal_type;
 
-      props.dao.governance.proposal_is_active = true;
-      props.dao.governance.proposed_approval_threshold =
+      dao.governance.proposal_is_active = true;
+      dao.governance.proposed_approval_threshold =
         proposed_approval_threshold;
       if (stream_pubkey)
-        props.dao.governance.proposed_deactivation_stream = new PublicKey(
+        dao.governance.proposed_deactivation_stream = new PublicKey(
           stream_pubkey
         );
-      props.dao.governance.proposed_withdrawal_amount = amount;
+      dao.governance.proposed_withdrawal_amount = amount;
       if (proposed_withdrawal_receiver)
-        props.dao.governance.proposed_withdrawal_receiver = new PublicKey(
+        dao.governance.proposed_withdrawal_receiver = new PublicKey(
           proposed_withdrawal_receiver
         );
       if (proposed_withdrawal_stream)
-        props.dao.governance.proposed_withdrawal_stream = new PublicKey(
+        dao.governance.proposed_withdrawal_stream = new PublicKey(
           proposed_withdrawal_stream
         );
-      console.log("new proposal=", props.dao);
-      // const dao = await simPic.proposeDaoCommand(props.dao); //proposeDaoCommand
-      await livePic.proposeDaoCommand(wallet, props.dao);
+      console.log("new proposal=", dao);
+      await livePic.proposeDaoCommand(wallet, dao);
       props.onClose(); //close btn
     }
   };
@@ -150,7 +150,6 @@ const NewProposal = (props) => {
                 <div className="proposal_notation">Proposal Type</div>
                 <div className="select-proposal-type">
                   <select value={proposal_type} onChange={onSelectProposalType}>
-                    {console.log("proposal_type=", proposal_type)}
                     {proposal_options.map(({ value, label }) => (
                       <option key={value} value={value}>
                         {label}

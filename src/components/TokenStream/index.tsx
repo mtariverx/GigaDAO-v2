@@ -15,9 +15,14 @@ import {
   sampleTokenStream2,
 } from "pic/sim_data/sample-streams";
 import { useAnchorWallet } from "providers/adapters/core/react";
+import * as React from "react";
+import { useSelector } from "react-redux";
+import { DaoState } from "store/DaoReducer";
+import { useDispatch, shallowEqual } from "react-redux";
+
 const TokenStream = (props) => {
 
-  const { dao } = props;
+  // const { dao } = props;
   const [is_stream, setStream] = useState(1);
   const [pool_name, setPoolName] = useState<string>();
   const [token_mint_address, setTokenMintAddress] = useState<string>();
@@ -31,6 +36,15 @@ const TokenStream = (props) => {
   const [selected_dao, setSelectedDao] = useState<pic.Dao>();
   const [stream_compensate_arr, setStreamCompensateArr] = useState<string[]>(
     []
+  );
+  const dispatch_state = useDispatch();
+  const onSetDao = React.useCallback(
+    (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
+    [dispatch_state]
+  );
+  const dao: pic.Dao = useSelector(
+    (state: DaoState) => state.dao,
+    shallowEqual
   );
  const wallet = useAnchorWallet();
   useEffect(() => {
@@ -47,7 +61,6 @@ const TokenStream = (props) => {
   const onAddCollections = async () => {
     const temp = [...collections];
     let flag=true;
-    //  let flag = await validateSolanaAddress(collect);
     if (flag) {
       if(!temp.includes(collect)){
         temp.push(collect);

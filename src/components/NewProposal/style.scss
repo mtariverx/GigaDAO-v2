@@ -3,7 +3,6 @@
   display: grid;
   background-color: $bg-color-layer2;
   border-radius: 5px;
-  // padding: 1rem;
   height: 100%;
   grid-template-rows: min-content 1fr;
   & > .content-title {
@@ -12,19 +11,16 @@
     font-size: 20px;
   }
   & > .new-proposal-content {
-    // background-color: rgb(35, 39, 34);
     display: grid;
     grid-template-columns: 1fr 20%;
     padding-bottom: 30px;
     min-height: 28rem;
     & > .proposal-content {
       display: grid;
-      // grid-template-rows: 1fr 0.1fr;
       & > .content-upper {
         .item-group-hidden {
           visibility: hidden;
         }
-
         & > .label-select-group {
           display: grid;
           grid-template-columns: 200px 1fr;
@@ -77,7 +73,6 @@
               background-color: $bg-color-layer1;
               transition: 0.25s all ease;
               pointer-events: none;
-              // border-radius: 10px;
             }
             /* Transition */
             &:hover::after {
@@ -87,8 +82,6 @@
         }
         & > .proposal-item-group {
           display: grid;
-          // padding: 5px;
-          // gap: 5px;
         }
       }
     }

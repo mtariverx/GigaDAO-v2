@@ -157,7 +157,8 @@ const StreamSectionComponent: React.FC<{data: Dao}> = (props) => {
             )
             break;
         }
-        case StreamState.TWO || StreamState.MULTIPLE: {
+
+        case StreamState.TWO : {
             content = (
                 <div className="multiple-row">
                     <MultiStreamRowComponent stream={props.data.streams[0]}/>
@@ -166,6 +167,17 @@ const StreamSectionComponent: React.FC<{data: Dao}> = (props) => {
             )
             break;
         }
+
+        case StreamState.MULTIPLE: {
+            content = (
+                <div className="multiple-row">
+                    <MultiStreamRowComponent stream={props.data.streams[0]}/>
+                    <MultiStreamRowComponent stream={props.data.streams[1]}/>
+                </div>
+            )
+            break;
+        }
+
         default: {
             content = (
                 <div className="loading-row">
@@ -207,6 +219,9 @@ enum StreamState {
 };
 
 function getStreamState(streams){
+
+    console.log("called getStreamState");
+
     let streamState;
     if (streams === undefined){
         streamState = StreamState.LOADING;
@@ -221,6 +236,7 @@ function getStreamState(streams){
         streamState = StreamState.TWO;
     }
     else {
+        console.log("got multiple streams");
         streamState = StreamState.MULTIPLE;
     }
     return streamState;

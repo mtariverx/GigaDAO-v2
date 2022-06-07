@@ -15,6 +15,7 @@
     color: $text-color-common; // #1dd79b;
     font-size: 18px;
     align-items: center;
+
   }
   & > .input-side-btn {
     display: grid;
@@ -109,6 +110,7 @@
   & > .title-top {
     display: grid;
     justify-content: right;
+    font-size: 18px;
   }
   & > .show-item {
     display:grid;
@@ -146,9 +148,10 @@
 }
 @media (max-width: 1270px) {
   .item-wrapper {
-    grid-template-columns: unset;
-    grid-template-columns: 150px 1fr;
     & > .title {
+      font-size: 16px;
+    }
+    &> .title-top {
       font-size: 16px;
     }
     & > .show-item {

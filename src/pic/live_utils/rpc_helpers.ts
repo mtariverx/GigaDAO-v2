@@ -47,7 +47,6 @@ export async function approveDaoCommand(
   network: string,
   dao: pic.Dao
 ) {
-  console.log("approve dao=",dao);
   let program = await initProgram(wallet, network);
   [fee_controller] = await PublicKey.findProgramAddress(
     [Buffer.from(FEE_CONTROLLER_PDA_SEED)],
@@ -72,9 +71,7 @@ export async function initializeDAO(
   network: string,
   dao: pic.Dao
 ) {
-  console.log("I am initializeDAO in rpc_helper");
   let program = await initProgram(wallet, network);
-
   let [daoAuthPda] = await PublicKey.findProgramAddress(
     [
       dao.dao_keypair.publicKey.toBuffer(),
@@ -141,7 +138,6 @@ export async function proposeDaoCommand(
     tokenMintAddress
   );
   const decimals = tokenMint.decimals;
-  console.log("propose decimal=", decimals);
   const withdraw_amount =
     dao.governance.proposed_withdrawal_amount * Math.pow(10, decimals);
   let proposed_withdraw_amount = new anchor.BN(withdraw_amount);
@@ -242,8 +238,6 @@ export async function executeWithdrawFromStream(
   [tokenPool] = await PublicKey.findProgramAddress(
     [
       dao.governance.proposed_withdrawal_stream.toBuffer(), //kaiming not sure
-      //   dao.governance.proposed_deactivation_stream.toBuffer(), //kaiming not sure
-
       Buffer.from(anchor.utils.bytes.utf8.encode(TOKEN_POOL_PDA_SEED)),
     ],
     program.programId
@@ -255,23 +249,6 @@ export async function executeWithdrawFromStream(
     ],
     program.programId
   );
-
-  console.log("I'm executeWithdrawFromStream");
-  console.log("signer=", wallet.publicKey.toString());
-  console.log("dao=", dao.address.toString());
-  console.log("stream=", dao.governance.proposed_withdrawal_stream.toString());
-  console.log("token pool=", tokenPool.toString());
-  console.log(
-    "receiverTokenAccount=",
-    dao.governance.proposed_withdrawal_receiver.toString()
-  );
-  console.log("daoAuthPda=", daoAuthPda.toString());
-
-  // dao.governance.proposed_withdrawal_receiver=new PublicKey("HLS5Y68QSQgJP7wUbbbbCjEnMknVZrHXYDwwVaDcsdK7");
-  // dao.governance.proposed_withdrawal_receiver=new PublicKey("5F1xSVrk8JuZj2qCqYupKjwzUFhYDJZoVZoJWR9JpxPB");
-  // // AFbX8oGjGpmVFywbVouvhQSRmiW2aR1mohfahi4Y2AdB
-  // dao.governance.proposed_withdrawal_stream=new PublicKey("69Uw1pMckp6PLoQf32Kp8RjQ3QxayzsBseUuGxyC4dsK");
-  // tokenPool=new PublicKey("HLS5Y68QSQgJP7wUbbbbCjEnMknVZrHXYDwwVaDcsdK7");
   await program.rpc.executeWithdrawFromStream({
     accounts: {
       signer: wallet.publicKey,

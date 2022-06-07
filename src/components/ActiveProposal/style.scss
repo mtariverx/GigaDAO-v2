@@ -3,7 +3,6 @@
   display: grid;
   background-color: $bg-color-layer2;
   border-radius: 5px;
-  // padding: 1rem;
   height: 100%;
   grid-template-rows: min-content 1fr;
   & > .content-title {
@@ -13,7 +12,6 @@
     
   }
   & > .proposal-body {
-    // background-color: rgb(35, 39, 34);
     display: grid;
     grid-template-columns: 2fr 1.2fr;
     padding-bottom: 10px;
@@ -21,7 +19,6 @@
     gap: 10px;
     & > .proposal-content {
       display: grid;
-      // grid-template-rows: 1fr 0.1fr;
       & > .content-upper {
         padding-top: 30px;
         .item-group-hidden {
@@ -32,7 +29,6 @@
 
     & > .proposal-councillor {
       display: grid;
-      // grid-template-rows: 3fr 1fr;
       grid-template-rows: max-content max-content;
       padding: 10px;
       box-sizing: border-box;
@@ -42,7 +38,6 @@
         background-color: $bg-color-layer1;
         border-radius: 10px;
         display: grid;
-        // grid-template-rows: 1fr 1fr 150px min-content;
         grid-template-rows: max-content max-content 150px max-content;
         & > .proposal-title {
           padding-top: 10px;
@@ -86,9 +81,6 @@
         }
       }
       & > .proposal-execute {
-        // display: grid;
-        // grid-template-rows: min-content, min-content;
-        // grid-template-rows: 1fr, 2fr;
         background-color: $bg-color-layer1;
         border-radius: 10px;
         & > .execute-description {
@@ -128,18 +120,18 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-@media (max-width: 1270px) {
-  .active-proposal-container {
-    & > .proposal-body {
-      & > .proposal-councillor {
-        & > .proposal-propose {
-          grid-template-rows: unset;
-          grid-template-rows: max-content max-content 120px max-content;
-        }
-      }
-    }
-  }
-}
+// @media (max-width: 1270px) {
+//   .active-proposal-container {
+//     & > .proposal-body {
+//       & > .proposal-councillor {
+//         & > .proposal-propose {
+//           grid-template-rows: unset;
+//           grid-template-rows: max-content max-content 120px max-content;
+//         }
+//       }
+//     }
+//   }
+// }
 @media (max-width: 768px) {
   .active-proposal-container {
     & > .proposal-body {

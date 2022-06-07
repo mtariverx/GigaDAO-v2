@@ -30,7 +30,6 @@
     padding-bottom: 0px;
     &.plus-button {
       display: grid;
-      // grid-template-columns: 0px 1fr min-content;
     }
     &> .container-title{
       font-size:16px;
@@ -40,7 +39,6 @@
     & > .container-body {
       display: grid;
       grid-template-columns: unset;
-      // grid-template-rows: 1fr;
       & > .DAO-initialize {
         display: flex;
         padding-top: 10px;

@@ -9,14 +9,17 @@ import * as simPic from "../../pic/sim";
 import * as livePic from "../../pic/live";
 import { getShortKey, validateSolanaAddress } from "components/CommonCalls";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
-
+import { useSelector } from "react-redux";
+import { DaoState } from "store/DaoReducer";
+import { shallowEqual } from "react-redux";
+import * as React from "react";
+import { useDispatch } from "react-redux";
 const ActiveProposal = (props) => {
-  const { dao } = props;
+  
   type counc_sign_pair = {
     councillor: PublicKey;
     signer: boolean;
   };
-
   const wallet = useAnchorWallet();
   const proposal_options = [
     { value: pic.ProposalType.UPDATE_MULTISIG, label: "Update Multi-sig" },
@@ -40,20 +43,23 @@ const ActiveProposal = (props) => {
   const [proposed_withdrawal_stream, setProposedWithdrawalStream] =
     useState<string>();
   const [reset, setReset] = useState(true);
-  const onSelectProposalType = (event) => {
-    setProposalType(event.target.value);
-  };
-
+  // const onSelectProposalType = (event) => {
+  //   setProposalType(event.target.value);
+  // };
+  const dispatch_state = useDispatch();
+  const onSetDao = React.useCallback(
+    (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
+    [dispatch_state]
+  );
+  const dao: pic.Dao = useSelector((state:DaoState) => state.dao, shallowEqual);
   useEffect(() => {
     (async () => {
-      console.log("useEffect=", dao);
-      getActiveProposalInfo(props.dao);
+      getActiveProposalInfo(dao);
     })();
   }, []);
   useEffect(() => {
     (async () => {
-      console.log("useEffect=", dao);
-      getActiveProposalInfo(props.dao);
+      getActiveProposalInfo(dao);
     })();
   }, [reset]);
 
@@ -77,7 +83,6 @@ const ActiveProposal = (props) => {
       console.log("===============getActiveProposalInfo======2=======", dao);
 
       if (dao.governance == undefined) {
-        console.log(" return dao");
         return dao;
       }
 
@@ -85,8 +90,7 @@ const ActiveProposal = (props) => {
         dao.governance &&
         Object.keys(dao.governance.proposal_type)[0] == "deactivateStream"
       ) {
-        console.log("deactivate stream");
-        setProposalType(3);
+        setProposalType(2);
         setDeactivateStreamPubkey(
           dao.governance.proposed_deactivation_stream.toString()
         );
@@ -99,9 +103,12 @@ const ActiveProposal = (props) => {
         setProposedWithdrawalReceiver(
           dao.governance.proposed_withdrawal_receiver.toString()
         );
+
         setProposedWithdrawalStream(
           dao.governance.proposed_withdrawal_stream.toString()
         );
+        
+        
       } else if (
         dao.governance &&
         dao.governance.proposed_councillors.length > 0 &&
@@ -109,43 +116,41 @@ const ActiveProposal = (props) => {
       ) {
         setProposalType(1);
         tmp = dao.governance.proposed_councillors
-          .map((councillor) => getShortKey(councillor.toString()))
-          .join("\n");
-        setProposedCouncillors(tmp);
+          .map((councillor) => councillor.toString())
+          
+          console.log("tmp=",tmp);
+          setProposedCouncillors(tmp);
+          setProposedApprovalThresold(Number(dao.governance.proposed_approval_threshold));
+        
       }
     } catch (e) {
       console.log(e);
     }
     setCounc_Sign(tmp_counc_sign_arr);
   };
+  
   //call for clicking Approve button on Active Proposal
   const onClickApproveProposeBtn = async () => {
-    // const wallet_address = publicKey.toString();
-
-    const dao: pic.Dao = props.dao;
+    // const dao: pic.Dao = props.dao;
     if (dao.governance) {
       const councillors = dao.governance.councillors.map((item) =>
         item.toString()
       );
       let index = councillors.indexOf(wallet.publicKey.toString());
-      console.log("---clickapprove---", index);
-
       let proposed_signers = dao.governance.proposed_signers;
       if (index != -1 && proposed_signers[index] === false) {
         proposed_signers.splice(index, 1, true);
         dao.governance.proposed_signers = [];
         dao.governance.proposed_signers = proposed_signers;
-        // setSelectedMemberDAO({ ...dao });
         livePic.approveDaoCommand(wallet, dao);
-         // getActiveProposalInfo(dao);
+        getActiveProposalInfo(dao);
       } else {
         alert("Proposal has already approved");
       }
     }
-    // livePic.approveDaoCommand(wallet, dao);
   };
   const onClickDeclineProposeBtn = async () => {
-    const dao: pic.Dao = props.dao;
+    // const dao: pic.Dao = props.dao;
     if (dao.governance) {
       const councillors = dao.governance.councillors.map((item) =>
         item.toString()
@@ -157,23 +162,17 @@ const ActiveProposal = (props) => {
         proposed_signers.splice(index, 1, false);
         dao.governance.proposed_signers = [];
         dao.governance.proposed_signers = proposed_signers;
-        console.log("---click decline---", dao.governance.proposed_signers);
-        console.log("--", {...dao});
         livePic.approveDaoCommand(wallet, {...dao});
         getActiveProposalInfo(dao);
       } else {
         alert("Proposal has already declined");
       }
     }
-    // livePic.approveDaoCommand(wallet, dao);
     setReset(!reset);
   };
 
   const onClickExecuteProposeBtn = () => {
     
-    // const dao: pic.Dao = selected_member_dao;
-    const dao: pic.Dao = props.dao;
-    console.log("onclick Execute Propose Btn", dao.governance);
     if (dao.governance != undefined) {
       if (
         dao.governance &&
@@ -192,7 +191,7 @@ const ActiveProposal = (props) => {
         livePic.executeUpdateDaoMultisig(wallet, dao);
       }
     }
-     // getActiveProposalInfo(dao);
+     getActiveProposalInfo(dao);
   };
   return (
     // <div>

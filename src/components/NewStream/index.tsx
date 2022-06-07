@@ -15,8 +15,12 @@ import {
   sampleTokenStream2,
 } from "pic/sim_data/sample-streams";
 import { useAnchorWallet } from "providers/adapters/core/react";
+import * as React from "react";
+import { useSelector } from "react-redux";
+import { DaoState } from "store/DaoReducer";
+import { useDispatch, shallowEqual } from "react-redux";
+
 const NewStream = (props) => {
-  const { dao } = props;
   const [is_stream, setStream] = useState(1);
   const [pool_name, setPoolName] = useState<string>();
   const [token_mint_address, setTokenMintAddress] = useState<string>();
@@ -32,6 +36,17 @@ const NewStream = (props) => {
     []
   );
   const wallet = useAnchorWallet();
+
+  const dispatch_state = useDispatch();
+  const onSetDao = React.useCallback(
+    (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
+    [dispatch_state]
+  );
+  const dao: pic.Dao = useSelector(
+    (state: DaoState) => state.dao,
+    shallowEqual
+  );
+
   useEffect(() => {
     setSelectedDao({ ...dao });
     setStreamCompArr();
@@ -46,7 +61,6 @@ const NewStream = (props) => {
   const onAddCollections = async () => {
     const temp = [...collections];
     let flag = true;
-    //  let flag = await validateSolanaAddress(collect);
     if (flag) {
       if (!temp.includes(collect)) {
         temp.push(collect);
@@ -75,10 +89,6 @@ const NewStream = (props) => {
     if ((await validateSolanaAddress(token_mint_address)) == false) {
       setTokenMintAddress("");
     }
-    // if ((await validateSolanaAddress(dao_address)) == false) {
-    //   setDaoAddress("");
-    // }
-
     if (
       pool_name &&
       token_ticker &&
@@ -86,18 +96,15 @@ const NewStream = (props) => {
       token_mint_address &&
       collections.length > 0
     ) {
-      console.log("createNewStreamBtn is clicked");
-      console.log("props.dao.dao_address=", props.dao);
       const key = Keypair.generate();
       let new_stream: pic.Stream = {
         name: pool_name,
         address: key.publicKey,
-        dao_address: new PublicKey(props.dao.address),
+        dao_address: new PublicKey(dao.address),
         collections: collections.map((collect) => {
           let collection = {
             address: new PublicKey(collect),
           };
-
           return collection;
         }),
         num_connections: num_connections,
@@ -113,9 +120,9 @@ const NewStream = (props) => {
         stream_keypair: key,
       };
 
-      const { dao, stream } = await livePic.initializeStream(
+      await livePic.initializeStream(
         wallet,
-        props.dao,
+        dao,
         new_stream
       ); //initializeStream
       setSelectedDao({ ...dao }); //setting dao with streams

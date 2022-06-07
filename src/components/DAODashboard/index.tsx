@@ -35,7 +35,6 @@ const DAODashboard: React.FC = (props) => {
   const [show_modal, setShowModal] = useState(-1);
   const [refresh, setRefresh] = useState(false);
   const [select_dao_id, setSelectDaoId] = useState<string>();
-  // const [reset, setReset] = useState<boolean>(true);
   const wallet = useAnchorWallet();
 
   type counc_sign_pair = {
@@ -58,7 +57,6 @@ const DAODashboard: React.FC = (props) => {
      
           setIsConnectingToOwner(true);
           const newOwner: pic.Owner = { address: publicKey };
-          // const newOwner: pic.Owner = { address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi") };
           callConnectOwner(dispatch, newOwner).then(() => {
             setIsConnectingToOwner(false);
           });
@@ -67,7 +65,6 @@ const DAODashboard: React.FC = (props) => {
             newOwner,
             wallet
           );
-          console.log("Version 2");
           console.log("member_daos_promise=", member_daos_promise);
 
           let mdis: Array<string> = [];
@@ -94,10 +91,8 @@ const DAODashboard: React.FC = (props) => {
     (async () => {
       if (connected) {
       
-          console.log("reset");
           setIsConnectingToOwner(true);
           const newOwner: pic.Owner = { address: publicKey };
-          // const newOwner: pic.Owner = { address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi") };
           callConnectOwner(dispatch, newOwner).then(() => {
             setIsConnectingToOwner(false);
           });
@@ -245,7 +240,6 @@ const DAODashboard: React.FC = (props) => {
         item.toString()
       );
       let index = councillors.indexOf(wallet_address);
-      console.log("---clickapprove---", index);
       if (index != -1) {
         let proposed_signers = dao.governance.proposed_signers;
         proposed_signers.splice(index, 1, true);
@@ -259,7 +253,6 @@ const DAODashboard: React.FC = (props) => {
 
   const onClickExecuteProposeBtn = () => {
     const dao: pic.Dao = selected_member_dao;
-    console.log("onclick Execute Propose Btn", dao.governance);
     if (dao.governance != undefined) {
       if (
         dao.governance &&
@@ -297,7 +290,6 @@ const DAODashboard: React.FC = (props) => {
             <ConnectWalletNavButton />
             <IconButton icon_img={Profile} is_background={false} />
           </div>
-          {/* <Button btn_type="connection" btn_title="Connection" /> */}
         </div>
       </div>
       <div className="dashboard-main-content ">
@@ -354,22 +346,7 @@ const DAODashboard: React.FC = (props) => {
             </div>
             <div className="dash-details">
               Tracking Data Coming Soon!
-              {/* <div className="dash-details-items">
-                <div className="item-pair">
-                  <div>Unique Wallets</div>
-                  <div>4,302</div>
-                  Tracking Data coming soon!
-                </div>
-                <div className="item-pair">
-                  <div>Total Staked</div>
-                  <div>5,999</div>
-                </div>
-                <div className="item-pair">
-                  <div>Total Connected</div>
-                  <div>5,999</div>
-                </div>
-              </div>
-              <div className="dash-details-graph"><MemberGraph /></div> */}
+              {/* <div className="dash-details-graph"><MemberGraph /></div>  */}
             </div>
           </div>
           <div className="tokenpool-proposal">
@@ -414,11 +391,7 @@ const DAODashboard: React.FC = (props) => {
                     </div>
                   );
                 })}
-                {/* <div>Description</div>
-                <div>
-                  Moving GIGS to a new token pool for a new stream for our
-                  platinum holders
-                </div> */}
+              
               </div>
               <div className="proposal-councillors">Councillors</div>
               <div className="proposal-councillor-pubkeys">

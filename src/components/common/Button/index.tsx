@@ -9,7 +9,6 @@ const Button = (props) => {
   const onClick=(props.onClick);
   return (
     <div className= {`btn-${btn_type}`} onClick={onClick}>
-    {/* <div className={is_btn_common ? "btn-common" : "btn-connection"}`} onClick={onClick}> */}
       {btn_title}
     </div>
   );

@@ -21,7 +21,6 @@
       padding-right: 100px;
       gap: 10px;
       align-items: center;
-      // justify-items: right;
       justify-content: right;
     }
   }
@@ -108,6 +107,7 @@
             url("../../img/background-images/Platinum_Loot_box_small.jpg");
           background-size: cover;
           background-position: center;
+
           & > .dao-summary-title {
             display: grid;
             width: max-content;
@@ -148,14 +148,12 @@
           grid-template-columns: 1fr 2fr;
           gap: 20px;
           height: max-content;
-          // height:500px;
           & > .dao-staking {
             display: grid;
             font-size: 40px;
             font-weight: bold;
             justify-items: center;
             cursor: pointer;
-            // text-align: center;
             align-items: center;
             &:hover {
               background-image: linear-gradient(
@@ -185,8 +183,8 @@
               background-color: $btn-bgcolor-common;
               height: min-content;
               color: black;
-              border-top-left-radius: 10px;
-              border-top-right-radius: 10px;
+              border-top-left-radius: 7px;
+              border-top-right-radius: 7px;
               font-size: map-get($map: $font-sizes, $key: "large");
               font-weight: bold;
             }
@@ -219,7 +217,6 @@
                 padding: 5px;
                 height: min-content;
                 border-radius: 10px;
-                // width:max-content;
               }
               & > .councillor-action-others {
                 display: inline-block;
@@ -244,7 +241,6 @@
                 padding: 5px;
                 height: min-content;
                 border-radius: 10px;
-                // width:max-content;
               }
             }
           }
@@ -384,7 +380,6 @@ span.unit-color {
       display: grid;
       grid-template-rows: min-content, min-content;
       & > .dashboard-dao-group {
-        // display: grid;
         width: 90vw;
         padding-left: 50px;
         gap: 5px;
