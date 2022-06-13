@@ -188,34 +188,33 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
           if (
             collection.address.toString() ===
               nft.collection.address.toString() &&
-            !streams_addresses.includes(stream.address.toString()) &&
-            stream.is_active
+            !streams_addresses.includes(stream.address.toString()) 
           ) {
             streams.push(stream);
             streams_addresses.push(stream.address.toString());
           }
         });
 
-        nft.stake?.connections?.map((connection) => {
-          console.log(
-            "connection.stream_address.toString() = ",
-            connection.stream_address.toString()
-          );
-          console.log(
-            " stream.address.toString() = ",
-            stream.address.toString()
-          );
-          console.log(" connection.is_active=", connection.is_active);
-          if (
-            connection.stream_address.toString() ===
-              stream.address.toString() &&
-            connection.is_active &&
-            !streams_addresses.includes(stream.address.toString())
-          ) {
-            streams.push(stream);
-            streams_addresses.push(stream.address.toString());
-          }
-        });
+        // nft.stake?.connections?.map((connection) => {
+        //   console.log(
+        //     "connection.stream_address.toString() = ",
+        //     connection.stream_address.toString()
+        //   );
+        //   console.log(
+        //     " stream.address.toString() = ",
+        //     stream.address.toString()
+        //   );
+        //   console.log(" connection.is_active=", connection.is_active);
+        //   if (
+        //     connection.stream_address.toString() ===
+        //       stream.address.toString() &&
+        //     connection.is_active &&
+        //     !streams_addresses.includes(stream.address.toString())
+        //   ) {
+        //     streams.push(stream);
+        //     streams_addresses.push(stream.address.toString());
+        //   }
+        // });
       }
     }
   }
@@ -800,6 +799,12 @@ const NftCardComponent: React.FC<{
     ReactGA.event({ category: "click", action: "select_nft" });
      //kaiming
      console.log("current NFT=", currentNft);
+     if(currentNft.stake){
+         console.log("current NFT.stake=", currentNft.stake);
+
+     }
+
+
      currentNft.stake?.connections?.map((connection) => {
        console.log(
          "connection stream_address=",
