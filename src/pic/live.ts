@@ -91,7 +91,7 @@ let connectOwner: pic.ConnectOwner = async (owner: pic.Owner) => {
 };
 // return dao with streams
 let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
-    try {
+  try {
     let initializedDaos = [];
     for (const dao of daos) {
       if (dao.address) {
@@ -119,49 +119,52 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
           let dao = matches[0];
           dao.streams = [];
           for (const stream of streams) {
-              let collections: Array<pic.Collection> = [];
-              if (stream.collections?.length > 0) {
-                for (const collection_address of stream.collections) {
-                  collections.push({
-                    address: new PublicKey(collection_address),
-                  });
-                }
+            let collections: Array<pic.Collection> = [];
+            if (stream.collections?.length > 0) {
+              for (const collection_address of stream.collections) {
+                collections.push({
+                  address: new PublicKey(collection_address),
+                });
               }
+            }
 
-              // console.log(
-              //   `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
-              // );
+            // console.log(
+            //   `got stream ${stream.name} with total_earned: ${stream.total_earned}, is_active: ${stream.is_active}`
+            // );
 
-              let totalStreamed;
-              if (stream.is_active) {
-                const lastUpdateTimestamp = stream.last_update_timestamp;
-                const elapsedSeconds = Date.now() / 1000 - lastUpdateTimestamp;
-                const ratePerConnPerSec =
-                  stream.daily_stream_rate / 24 / 60 / 60;
-                const recentlyEarned =
-                  elapsedSeconds * ratePerConnPerSec * stream.num_connections;
-                totalStreamed = stream.total_earned + recentlyEarned; //NOTE: might want to add in check here for would-be-inactive stream...
-              } else {
-                totalStreamed = stream.total_earned;
-              }
+            let totalStreamed;
+            if (stream.is_active) {
+              const lastUpdateTimestamp = stream.last_update_timestamp;
+              const elapsedSeconds = Date.now() / 1000 - lastUpdateTimestamp;
+              const ratePerConnPerSec = stream.daily_stream_rate / 24 / 60 / 60;
+              const recentlyEarned =
+                elapsedSeconds * ratePerConnPerSec * stream.num_connections;
+              totalStreamed = stream.total_earned + recentlyEarned; //NOTE: might want to add in check here for would-be-inactive stream...
+            } else {
+              totalStreamed = stream.total_earned;
+            }
 
-              let newStream: pic.Stream = {
-                confirmed:stream.confirmed,
-                address: new PublicKey(stream.address),
-                dao_address: dao.address,
-                collections: collections,
-                num_connections: stream.num_connections,
-                is_active: stream.is_active,
-                name: stream.name,
-                token_image_url: stream.token_image_url,
-                daily_stream_rate: stream.daily_stream_rate,
-                total_earned: totalStreamed,
-                total_claimed: 0,
-                current_pool_amount: 0,
-                token_ticker: stream.token_ticker,
-                last_update_timestamp: stream.last_update_timestamp,
-              };
-              dao.streams.push(newStream);
+            let newStream: pic.Stream = {
+              confirmed: stream.confirmed,
+              address: new PublicKey(stream.address),
+              dao_address: dao.address,
+              collections: collections,
+              num_connections: stream.num_connections,
+              is_active: stream.is_active,
+              name: stream.name,
+              token_image_url: stream.token_image_url,
+              daily_stream_rate: stream.daily_stream_rate,
+              total_earned: totalStreamed,
+              total_claimed:
+                stream.total_claimed != undefined ? stream.total_claimed : 0, //0, //kaiming
+              current_pool_amount:
+                stream.current_pool_amount != undefined
+                  ? stream.current_pool_amount
+                  : 0, //0, //kaiming
+              token_ticker: stream.token_ticker,
+              last_update_timestamp: stream.last_update_timestamp,
+            };
+            dao.streams.push(newStream);
           }
         }
       }
@@ -654,6 +657,7 @@ let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
         "Error in fetching daos from getMemberDaos from councillor table"
       );
     }
+
     if (new_owner.daos) {
       for (const dao of new_owner.daos) {
         if (!dao_addresses.includes(dao.address.toString())) {
@@ -777,9 +781,9 @@ let initializeStream: pic.InitializeStream = async (
 export async function checkIfStreamOnChain(wallet, dao) {
   try {
     let promises = [];
-    let new_dao={...dao, streams:[]};
+    let new_dao = { ...dao, streams: [] };
     for (const stream of dao.streams) {
-      if(stream.confirmed){
+      if (stream.confirmed) {
         new_dao.streams.push(stream);
       } else {
         promises.push(chain.getStream(wallet, NETWORK, stream));
@@ -791,7 +795,7 @@ export async function checkIfStreamOnChain(wallet, dao) {
     const confirmed = true;
     for (const result of results) {
       if (result.status === "fulfilled") {
-        let stream=result.value;
+        let stream = result.value;
         stream_unconfirmed.push(
           mirror.updateStream(
             stream.address,
@@ -799,7 +803,7 @@ export async function checkIfStreamOnChain(wallet, dao) {
             stream.num_connections,
             stream.total_earned,
             stream.last_update_timestamp,
-            confirmed,
+            confirmed
           )
         );
       }
@@ -845,7 +849,6 @@ export async function getConfirmedStream(daos) {
           alert(
             "Multiple matches found in DAO array, this should not happen, support has been automatically notified."
           );
-         
         } else {
           let dao = matches[0];
           dao.streams = [];
@@ -878,7 +881,7 @@ export async function getConfirmedStream(daos) {
               }
 
               let newStream: pic.Stream = {
-                confirmed:stream.confirmed,
+                confirmed: stream.confirmed,
                 address: new PublicKey(stream.address),
                 dao_address: dao.address,
                 collections: collections,
@@ -888,8 +891,10 @@ export async function getConfirmedStream(daos) {
                 token_image_url: stream.token_image_url,
                 daily_stream_rate: stream.daily_stream_rate,
                 total_earned: totalStreamed,
-                total_claimed: 0,
-                current_pool_amount: 0,
+                total_claimed:stream.total_claimed != undefined ? stream.total_claimed : 0, //0, //kaiming
+                current_pool_amount:stream.current_pool_amount != undefined
+                ? stream.current_pool_amount
+                : 0, //0, //kaiming
                 token_ticker: stream.token_ticker,
                 last_update_timestamp: stream.last_update_timestamp,
               };
@@ -936,9 +941,7 @@ export function displayError(err) {
   ) {
     alert("Max supported stream rate exceeded");
   } else if (
-    err.message
-      .toLowerCase()
-      .includes(" Proposal is not active".toLowerCase())
+    err.message.toLowerCase().includes(" Proposal is not active".toLowerCase())
   ) {
     alert("Proposal is not active");
   } else {
@@ -947,7 +950,6 @@ export function displayError(err) {
     console.log("err.message=", err.message);
     // alert(err.message);
   }
- 
 }
 //writing calls
 export async function proposeDaoCommand(wallet, dao) {

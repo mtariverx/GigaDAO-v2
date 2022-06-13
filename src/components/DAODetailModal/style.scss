@@ -10,11 +10,11 @@
   visibility: visible;
   opacity: 1;
   transition: all 0.3s;
-  
+  font-family: "Roboto";
   & > .modal-main {
     border-radius: 1rem;
     width: 60%;
-    height: 75%;
+    // height: 75%;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -44,7 +44,7 @@
   .modal-window {
     & > .modal-main {
       width: 70%;
-      height: max-content;
+      // height: max-content;
     }
   }
 
@@ -53,7 +53,7 @@
   .modal-window {
     & > .modal-main {
       width: 100%;
-      height: max-content;
+      // height: max-content;
     }
   }
 

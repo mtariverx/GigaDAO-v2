@@ -4,6 +4,7 @@
   display: grid;
   min-height: 100vh;
   grid-template-rows: min-content 1fr min-content;
+  font-family: "Roboto";
   & > .top-nav-bar {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -26,11 +27,14 @@
   }
   & > .dashboard-body {
     display: grid;
-    grid-template-rows: min-content, min-content;
+    grid-template-rows: max-content 1fr;
+    gap: 20px;
     & > .dashboard-dao-group {
       display: grid;
       width: 50vw;
       padding-left: 200px;
+      padding-top: 10px;
+      padding-bottom: 10px;
       gap: 5px;
       grid-template-columns: 50px 1fr 50px;
       align-items: center;
@@ -41,7 +45,7 @@
         height: 42px;
         border-radius: 0.25em;
         overflow: hidden;
-        font-family: "Cerebri Sans";
+        font-family: "Roboto";
         border-radius: 8px;
         select {
           font-size: 20px;
@@ -89,14 +93,15 @@
       align-items: center;
       justify-items: center;
       text-align: center;
-      height: max-content;
+      height: 100%;
       & > .dashboard-content-center {
         display: grid;
-        grid-template-rows: 1fr 3fr;
+        grid-template-rows: max-content 1fr;
         width: 50vw;
-        height: 70vh;
+        height: 100%;
         gap: 20px;
         & > .dao-info-summary {
+          font-family: "Roboto";
           display: grid;
           grid-template-rows: 1fr 2fr;
           border-radius: 10px;
@@ -119,7 +124,8 @@
           }
           & > .dao-summary-content {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            justify-content: center;
+            grid-auto-flow: column;
             & > .each-dao-info {
               display: grid;
               grid-template-rows: repeat (2, 1fr);
@@ -147,7 +153,9 @@
           display: grid;
           grid-template-columns: 1fr 2fr;
           gap: 20px;
-          height: max-content;
+          height: 100%;
+          padding-bottom: 30px;
+          // height: max-content;
           & > .dao-staking {
             display: grid;
             font-size: 40px;
@@ -177,7 +185,9 @@
             box-sizing: border-box;
             border: 1px solid $btn-bgcolor-common;
             border-radius: 10px;
-            height: max-content;
+            height: 100%;
+            grid-template-rows: max-content 1fr;
+            font-family: "Roboto";
             & > .councillor-title {
               padding: 10px;
               background-color: $btn-bgcolor-common;
@@ -187,15 +197,16 @@
               border-top-right-radius: 7px;
               font-size: map-get($map: $font-sizes, $key: "large");
               font-weight: bold;
+              
             }
             & > .councillor-action-group {
               display: grid;
               grid-template-rows: repeat(6, 1fr);
               gap: 10px;
               padding: 10px;
-              font-size: map-get($map: $font-sizes, $key: "large");
+              font-size: 20px;
               & > .councillor-action-proposal {
-                display: inline-block;
+                display: grid;
                 cursor: pointer;
                 &:hover {
                   background-image: linear-gradient(
@@ -214,12 +225,10 @@
                 background-position: center;
                 justify-content: center;
                 align-items: center;
-                padding: 5px;
-                height: min-content;
                 border-radius: 10px;
               }
               & > .councillor-action-others {
-                display: inline-block;
+                display: grid;
                 cursor: pointer;
                 &:hover {
                   background-image: linear-gradient(
@@ -238,8 +247,6 @@
                 background-position: center;
                 justify-content: center;
                 align-items: center;
-                padding: 5px;
-                height: min-content;
                 border-radius: 10px;
               }
             }
@@ -266,8 +273,8 @@
         display: grid;
         align-items: center;
         justify-items: center;
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         background-color: rgb(28, 77, 58);
         border-radius: 0.5rem;
         img {
@@ -286,7 +293,7 @@ span.unit-color {
   color: $unit-color;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1204px) {
   .dashboard-main {
     grid-template-rows: min-content 1fr min-content;
     & > .top-nav-bar {
@@ -309,7 +316,7 @@ span.unit-color {
       display: grid;
       grid-template-rows: min-content, min-content;
       & > .dashboard-dao-group {
-        // display: grid;
+        display: grid;
         width: 60vw;
         padding-left: 50px;
         gap: 5px;
@@ -317,18 +324,15 @@ span.unit-color {
       & > .dashboard-content {
         & > .dashboard-content-center {
           display: grid;
-          grid-template-columns: unset;
-          grid-template-rows: 1fr 4fr;
           width: 60vw;
-          height: 70vh;
+          height: 100%;
           gap: 20px;
           & > .dao-info-summary {
             & > .dao-summary-title {
               font-size: 20px;
             }
             & > .dao-summary-content {
-              display: grid;
-              grid-template-columns: repeat(4, 1fr);
+              
               & > .each-dao-info {
                 & > .dao-summary-value {
                   font-size: 18px;
@@ -348,7 +352,13 @@ span.unit-color {
                 font-size: 20px;
               }
               & > .councillor-action-group {
-                font-size: 20px;
+                font-size: 18px;
+                & > .councillor-action-proposal {
+
+                }
+                & > .councillor-action-others {
+
+                }
               }
             }
           }
@@ -379,26 +389,29 @@ span.unit-color {
     & > .dashboard-body {
       display: grid;
       grid-template-rows: min-content, min-content;
+      gap: 0px;
       & > .dashboard-dao-group {
         width: 90vw;
         padding-left: 50px;
         gap: 5px;
       }
       & > .dashboard-content {
+
         & > .dashboard-content-center {
           display: grid;
           grid-template-columns: unset;
-          grid-template-rows: 1fr 4fr;
-          width: 60vw;
-          height: 70vh;
-          gap: 20px;
+          // grid-template-rows: 1fr 4fr;
+          width: 80%;
+          gap: 10px;
           & > .dao-info-summary {
             & > .dao-summary-title {
               font-size: 20px;
             }
             & > .dao-summary-content {
               display: grid;
-              grid-template-columns: repeat(4, 1fr);
+              // grid-template-columns: repeat(4, 1fr);
+              // grid-template-columns: repeat(auto-fill, minmax(min-content max-content));
+              grid-auto-flow: column;
               & > .each-dao-info {
                 & > .dao-summary-value {
                   font-size: 18px;
@@ -410,8 +423,11 @@ span.unit-color {
             }
           }
           & > .dao-staking-councillor {
+            display: grid;
             grid-template-columns: unset;
-            grid-template-rows: max-content, max-content;
+            // grid-template-rows: max-content max-content;
+            gap: 10px;
+            height: 100%;
             & > .dao-staking {
               font-size: 24px;
               padding: 20px;
@@ -421,7 +437,7 @@ span.unit-color {
                 font-size: 20px;
               }
               & > .councillor-action-group {
-                font-size: 20px;
+                font-size: 18px;
               }
             }
           }

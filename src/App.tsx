@@ -8,7 +8,6 @@ import { SearchBar } from "components/SearchBar";
 import { VerifiedDAOs } from "./pages/VerifiedDAOs";
 import { ConnectWalletBannerButton } from "./components/ConnectWalletNavButton";
 import { DaoPage } from "./pages/DaoPage";
-import MainDashBoard from "./pages/MainDashBoard";
 import DAODashboardV2 from "components/DAODashboardV2";
 import ReactGA from "react-ga4";
 

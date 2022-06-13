@@ -27,3 +27,9 @@
     background-color: $iconbtn-bgcolor-unfill-hover;
   }
 }
+.btn-social_unfill {
+  @include icon-button($iconbtn-bgcolor-unfill-social);
+  &:hover {
+    background-color: $iconbtn-bgcolor-unfill-hover;
+  }
+}

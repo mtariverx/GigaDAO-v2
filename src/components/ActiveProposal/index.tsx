@@ -267,7 +267,7 @@ const ActiveProposal = (props) => {
           <div className="proposal-propose">
             <div className="proposal-title">Councillors</div>
             <div className="proposal-description">
-              Approval Threshould be be met before proposal can be executed
+              Approval Threshold should be met before proposal can be executed
             </div>
             <div className="councillor-pubkeys">
               {counc_sign.map((item) => (
@@ -296,7 +296,7 @@ const ActiveProposal = (props) => {
           </div>
           <div className="proposal-execute">
             <div className="execute-description">
-              Once the threshould have been met any Councillor can execute
+              Once the threshold have been met any Councillor can execute
             </div>
             <div className="execute-btn">
               <Button

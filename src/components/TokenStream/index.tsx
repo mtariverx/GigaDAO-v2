@@ -21,7 +21,6 @@ import { DaoState } from "store/DaoReducer";
 import { useDispatch, shallowEqual } from "react-redux";
 
 const TokenStream = (props) => {
-
   // const { dao } = props;
   const [is_stream, setStream] = useState(1);
   const [pool_name, setPoolName] = useState<string>();
@@ -46,7 +45,7 @@ const TokenStream = (props) => {
     (state: DaoState) => state.dao,
     shallowEqual
   );
- const wallet = useAnchorWallet();
+  const wallet = useAnchorWallet();
   useEffect(() => {
     setSelectedDao({ ...dao });
     setStreamCompArr();
@@ -60,9 +59,9 @@ const TokenStream = (props) => {
   };
   const onAddCollections = async () => {
     const temp = [...collections];
-    let flag=true;
+    let flag = true;
     if (flag) {
-      if(!temp.includes(collect)){
+      if (!temp.includes(collect)) {
         temp.push(collect);
         setCollections(temp);
       } else {
@@ -88,62 +87,60 @@ const TokenStream = (props) => {
   const streams = dao.streams;
   return (
     <div className="new-stream">
-      
-        <div className="pool-stream-table">
-          <div className="table-container">
-            <div className="table-title">Token Streams</div>
-            <div className="table-content">
-              <table>
-                <tr>
-                  <th>Pool Name</th>
-                  <th>Pool Address</th>
-                  <th>Active</th>
-                  <th>Token Image Url</th>
-                  <th>Stream Rate</th>
-                  <th>Total Earned</th>
-                  <th>Total Claimed</th>
-                  <th>Current Pool Amount</th>
-                  <th>Token Tickers</th>
-                </tr>
-                {selected_dao && selected_dao.streams
-                  ? selected_dao.streams.map((stream) => {
-                      return (
-                        <tr>
-                          <td>{stream.name}</td>
-                          <td>{stream.address.toString()}</td>
-                          <td>{stream.is_active.toString()}</td>
-                          <td>{stream.token_image_url}</td>
-                          <td>{stream.daily_stream_rate}</td>
-                          <td>{stream.total_earned}</td>
-                          <td>{stream.total_claimed}</td>
-                          <td>{stream.current_pool_amount}</td>
-                          <td>{stream.token_ticker}</td>
-                        </tr>
-                      );
-                    })
-                  : ""}
-                {}
-                {stream_compensate_arr.map((item) => {
-                  return (
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  );
-                })}
-              </table>
-            </div>
+      <div className="pool-stream-table">
+        <div className="table-container">
+          <div className="table-title">Token Streams</div>
+          <div className="table-content">
+            <table>
+              <tr>
+                <th>Pool Name</th>
+                <th>Pool Address</th>
+                <th>Active</th>
+                <th>Token Image Url</th>
+                <th>Stream Rate</th>
+                <th>Total Earned</th>
+                <th>Total Claimed</th>
+                <th>Current Pool Amount</th>
+                <th>Token Tickers</th>
+              </tr>
+              {selected_dao && selected_dao.streams
+                ? selected_dao.streams.map((stream) => {
+                    return (
+                      <tr>
+                        <td>{stream.name}</td>
+                        <td>{stream.address.toString()}</td>
+                        <td>{stream.is_active ? "Yes" : "No"}</td>
+                        <td>{stream.token_image_url}</td>
+                        <td>{stream.daily_stream_rate}</td>
+                        <td>{stream.total_earned}</td>
+                        <td>{stream.total_claimed}</td>
+                        <td>{stream.current_pool_amount}</td>
+                        <td>{stream.token_ticker}</td>
+                      </tr>
+                    );
+                  })
+                : ""}
+              {}
+              {stream_compensate_arr.map((item) => {
+                return (
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                );
+              })}
+            </table>
           </div>
-         
         </div>
+      </div>
     </div>
   );
 };

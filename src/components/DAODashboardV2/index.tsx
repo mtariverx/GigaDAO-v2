@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./style.scss";
-import * as React from "react"
+import * as React from "react";
 import Profile from "img/icons/profile.png";
 import Discord from "img/icons/discord_logo_icon_1.png";
 import Twitter from "img/icons/twitter.png";
@@ -19,7 +19,7 @@ import TokenStream from "components/TokenStream";
 import NewProposal from "components/NewProposal";
 import NewDAO from "components/NewDAO";
 
-import ActiveProposal from "components/ActiveProposal";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
 import { useOwnerData } from "providers/owner";
 import * as pic from "../../pic/pic";
@@ -29,6 +29,7 @@ import * as livePic from "../../pic/live";
 import { useSelector, useDispatch } from "react-redux";
 import { DaoState } from "store/DaoReducer";
 import { shallowEqual } from "react-redux";
+import ActiveProposal from "components/ActiveProposal";
 
 const DAODashboardV2: React.FC = (props) => {
   const { publicKey, connected } = useWallet();
@@ -37,7 +38,6 @@ const DAODashboardV2: React.FC = (props) => {
 
   const [member_daos, setMemberDAOs] = useState<Array<pic.Dao>>([]);
   const [member_dao_ids, setMemberDaoIds] = useState<string[]>([]);
-  const [dashitem, setDashItem] = useState(0);
   const [selected_member_dao, setSelectedMemberDAO] = useState<pic.Dao>();
   const [show_modal, setShowModal] = useState(-1);
   const [refresh, setRefresh] = useState(false);
@@ -47,25 +47,27 @@ const DAODashboardV2: React.FC = (props) => {
 
   const dispatch_state = useDispatch();
 
- 
   const onSetDao = React.useCallback(
     (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
     [dispatch_state]
   );
   // const dao_ = useSelector<DaoState, DaoState["dao"]>((state) => state.dao);
-  const dao_: pic.Dao = useSelector((state:DaoState) => state.dao, shallowEqual);
+  const dao_store: pic.Dao = useSelector(
+    (state: DaoState) => state.dao,
+    shallowEqual
+  );
+  // console.log("useSelector=", dao_store);
+
   useEffect(() => {
     (async () => {
       if (connected) {
         setIsConnectingToOwner(true);
         const newOwner: pic.Owner = { address: publicKey };
+        // const newOwner: pic.Owner = { address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi")};;
         callConnectOwner(dispatch, newOwner).then(() => {
           setIsConnectingToOwner(false);
         });
-
         let member_daos_promise = await livePic.getMemberDaos(newOwner, wallet);
-        console.log("member_daos_promise=", member_daos_promise);
-
         let mdis: Array<string> = [];
         let m_daos: Array<pic.Dao> = [];
         m_daos = member_daos_promise;
@@ -157,7 +159,27 @@ const DAODashboardV2: React.FC = (props) => {
   };
 
   const onLaunchStaking = () => {
-    window.open("https://staking.gigadao.io/");
+    window.open("https://staking.gigadao.io");
+    return;
+  };
+  const onLaunchDiscord = () => {
+    window.open("https://discord.gg/p69tx7wMn7");
+    return;
+  };
+  const onLaunchTwitter = () => {
+    window.open("https://twitter.com/GigaDAOio");
+    return;
+  };
+  const onLaunchGithub = () => {
+    alert("Coming soon");
+    return;
+  };
+  const onLaunchME = () => {
+    window.open("https://magiceden.io/marketplace/peachfunlootbox");
+    return;
+  };
+  const onLaunchProfile = () => {
+    alert("Coming soon");
     return;
   };
 
@@ -170,13 +192,15 @@ const DAODashboardV2: React.FC = (props) => {
         <div className="top-nav-right">
           <Button btn_type="common" btn_title="Dashboard" />
           <ConnectWalletNavButton />
-          <IconButton icon_img={Profile} is_background={false} />
+          <div onClick={onLaunchProfile}>
+            <IconButton icon_img={Profile} background="unfill" />
+          </div>
         </div>
       </div>
       <div className="dashboard-body">
         <div className="dashboard-dao-group">
           <div onClick={() => setShowModal(0)}>
-            <IconButton icon_img={Plus_fill} is_background={false} />
+            <IconButton icon_img={Plus_fill} background="unfill" />
           </div>
           <div className="select-memeberDAO">
             <select value={select_dao_id} onChange={onChangeSelectMemberDAO}>
@@ -188,7 +212,7 @@ const DAODashboardV2: React.FC = (props) => {
             </select>
           </div>
           <div onClick={onClickRefresh}>
-            <IconButton icon_img={Refresh} is_background={false} />
+            <IconButton icon_img={Refresh} background="unfill" />
           </div>
         </div>
         <div className="dashboard-content">
@@ -198,30 +222,19 @@ const DAODashboardV2: React.FC = (props) => {
                 <div className="unit-color">Treasury Value</div>
               </div>
               <div className="dao-summary-content">
-                <div className="each-dao-info">
-                  <div className="dao-summary-value">
-                    4,320 <div className="unit-color"> SOL</div>
-                  </div>
-                  <div className="dao-summary-percent">+100.0%</div>
-                </div>
-                <div className="each-dao-info">
-                  <div className="dao-summary-value">
-                    5,999 <div className="unit-color">USD</div>
-                  </div>
-                  <div className="dao-summary-percent">+100.0%</div>
-                </div>
-                <div className="each-dao-info">
-                  <div className="dao-summary-value">
-                    5,999 <div className="unit-color">GIGS</div>
-                  </div>
-                  <div className="dao-summary-percent">+100.0%</div>
-                </div>
-                <div className="each-dao-info">
-                  <div className="dao-summary-value">
-                    5,999 <div className="unit-color">BPTS</div>
-                  </div>
-                  <div className="dao-summary-percent">+100.0%</div>
-                </div>
+                {dao_store.streams?.map((stream, index) =>
+                  index < 4 ? (
+                    <div className="each-dao-info">
+                      <div className="dao-summary-value">
+                        {stream.current_pool_amount}
+                        <div className="unit-color"> GIGS</div>
+                      </div>
+                      <div className="dao-summary-percent">+100.0%</div>
+                    </div>
+                  ) : (
+                    ""
+                  )
+                )}
               </div>
             </div>
             <div className="dao-staking-councillor">
@@ -233,7 +246,7 @@ const DAODashboardV2: React.FC = (props) => {
                 <div className="councillor-action-group">
                   <div
                     className="councillor-action-proposal"
-                    onClick={() => setShowModal(5)}
+                    onClick={() => setShowModal(4)}
                   >
                     Active Proposal
                   </div>
@@ -251,14 +264,24 @@ const DAODashboardV2: React.FC = (props) => {
                   </div>
                   <div
                     className="councillor-action-others"
-                    onClick={() => setShowModal(4)}
+                    onClick={() => setShowModal(3)}
                   >
-                    Token Stream{" "}
+                    Token Stream
                   </div>
-                  <div className="councillor-action-others">
+                  <div
+                    className="councillor-action-others"
+                    // onClick={() => setShowModal(5)}
+                    onClick={()=>alert("Coming soon")}
+                  >
                     New Multisig Treasury
                   </div>
-                  <div className="councillor-action-others">Treasury</div>
+                  <div
+                    className="councillor-action-others"
+                    // onClick={() => setShowModal(6)}
+                    onClick={()=>alert("Coming soon")}
+                  >
+                    Treasury
+                  </div>
                 </div>
               </div>
             </div>
@@ -267,17 +290,21 @@ const DAODashboardV2: React.FC = (props) => {
       </div>
       <div className="dashboard-bottom">
         <div className="bottom-social-group">
-          <div className="social-icon">
-            <img src={Discord} />
+          <div className="social-icon" onClick={onLaunchDiscord}>
+            <IconButton
+              icon_img={Discord}
+              background="social_unfill"
+              onClick={onLaunchDiscord}
+            />
           </div>
-          <div className="social-icon">
-            <img src={Twitter} />
+          <div className="social-icon" onClick={onLaunchTwitter}>
+            <IconButton icon_img={Twitter} background="social_unfill" />
           </div>
-          <div className="social-icon">
-            <img src={Github} />
+          <div className="social-icon" onClick={onLaunchGithub}>
+            <IconButton icon_img={Github} background="social_unfill" />
           </div>
-          <div className="social-icon">
-            <img src={ME_logo} />
+          <div className="social-icon" onClick={onLaunchME}>
+            <IconButton icon_img={ME_logo} background="social_unfill" />
           </div>
         </div>
       </div>
@@ -302,14 +329,14 @@ const DAODashboardV2: React.FC = (props) => {
       ) : (
         ""
       )}
-      {show_modal == 4 && connected ? (
+      {show_modal == 3 && connected ? (
         <DAODetailModal onClick={() => setShowModal(-1)}>
           <TokenStream dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""
       )}
-      {show_modal == 5 && connected ? (
+      {show_modal == 4 && connected ? (
         <DAODetailModal onClick={() => setShowModal(-1)}>
           <ActiveProposal dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
