@@ -195,10 +195,17 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
             streams_addresses.push(stream.address.toString());
           }
         });
+
         nft.stake?.connections?.map((connection) => {
-            console.log("connection.stream_address.toString() = ",connection.stream_address.toString());
-            console.log(" stream.address.toString() = ",stream.address.toString());
-            console.log(" connection.is_active=", connection.is_active);
+          console.log(
+            "connection.stream_address.toString() = ",
+            connection.stream_address.toString()
+          );
+          console.log(
+            " stream.address.toString() = ",
+            stream.address.toString()
+          );
+          console.log(" connection.is_active=", connection.is_active);
           if (
             connection.stream_address.toString() ===
               stream.address.toString() &&
@@ -791,6 +798,19 @@ const NftCardComponent: React.FC<{
 
   function selectNft(e) {
     ReactGA.event({ category: "click", action: "select_nft" });
+     //kaiming
+     console.log("current NFT=", currentNft);
+     currentNft.stake?.connections?.map((connection) => {
+       console.log(
+         "connection stream_address=",
+         connection.stream_address.toString()
+       );
+       console.log(
+         "connection is_active=",
+         connection.is_active
+       );
+     });
+     //end
     if (props.isBusy) {
       alertIsBuys();
       e.stopPropagation();
@@ -820,6 +840,7 @@ const NftCardComponent: React.FC<{
       } else {
         let clonedNft = cloneObject(result.nft);
         setCurrentNft(clonedNft);
+       
         props.setSelectedNft(clonedNft);
       }
       setIsLoading(false);
