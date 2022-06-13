@@ -11,7 +11,6 @@ import _debounce from "lodash/debounce";
 import ReactGA from "react-ga4";
 import * as pic_pic from "../pic/pic";
 import { PublicKey } from "@solana/web3.js";
-import { connect } from "http2";
 export type DaoProps = {
   dao_id: string;
 };
@@ -25,8 +24,8 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const { owner } = useOwnerData();
 
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
-  console.log("owner=", owner);
-  console.log("currentDao=", currentDao);
+  //   console.log("owner=", owner);
+  //   console.log("currentDao=", currentDao);
   let streams: Array<Stream> | undefined = currentDao.streams;
 
   // useEffect(() => {
@@ -184,6 +183,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   streams = [];
   for (const nft of eligibleNfts) {
     for (const stream of currentDao.streams) {
+     
       //active stream
       if (!streams_addresses.includes(stream.address.toString())) {
         stream.collections.map((collection) => {
@@ -199,6 +199,8 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         });
       }
       //inactive stream with connected NFT
+      console.log("streamactive=", stream.is_active);
+      console.log("includes=",streams_addresses.includes(stream.address.toString()));
       if (
         !stream.is_active &&
         !streams_addresses.includes(stream.address.toString())
@@ -206,7 +208,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         console.log("stream is active=", stream.is_active);
         pic.updateStreamAndConnection(nft, stream).then((result) => {
           if (result.nft != undefined && result.conn != undefined) {
-              console.log("result.conn.is_active=",result.conn?.is_active);
+            console.log("result.conn.is_active=", result.conn?.is_active);
             if (result.conn?.is_active) {
               streams.push(stream);
               streams_addresses.push(stream.address.toString());
@@ -217,9 +219,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     }
   }
 
-  if (currentDao.streams) {
-    console.log("streams address=", getStreamsAddresses(currentDao.streams));
-  }
   console.log("final streams=", streams);
 
   return (
