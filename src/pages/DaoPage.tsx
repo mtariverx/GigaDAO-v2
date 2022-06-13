@@ -11,6 +11,7 @@ import _debounce from "lodash/debounce";
 import ReactGA from "react-ga4";
 import * as pic_pic from "../pic/pic";
 import { PublicKey } from "@solana/web3.js";
+import { connect } from "http2";
 export type DaoProps = {
   dao_id: string;
 };
@@ -183,38 +184,35 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   streams = [];
   for (const nft of eligibleNfts) {
     for (const stream of currentDao.streams) {
+      //active stream
       if (!streams_addresses.includes(stream.address.toString())) {
         stream.collections.map((collection) => {
           if (
             collection.address.toString() ===
               nft.collection.address.toString() &&
-            !streams_addresses.includes(stream.address.toString()) 
+            !streams_addresses.includes(stream.address.toString()) &&
+            stream.is_active
           ) {
             streams.push(stream);
             streams_addresses.push(stream.address.toString());
           }
         });
-
-        // nft.stake?.connections?.map((connection) => {
-        //   console.log(
-        //     "connection.stream_address.toString() = ",
-        //     connection.stream_address.toString()
-        //   );
-        //   console.log(
-        //     " stream.address.toString() = ",
-        //     stream.address.toString()
-        //   );
-        //   console.log(" connection.is_active=", connection.is_active);
-        //   if (
-        //     connection.stream_address.toString() ===
-        //       stream.address.toString() &&
-        //     connection.is_active &&
-        //     !streams_addresses.includes(stream.address.toString())
-        //   ) {
-        //     streams.push(stream);
-        //     streams_addresses.push(stream.address.toString());
-        //   }
-        // });
+      }
+      //inactive stream with connected NFT
+      if (
+        !stream.is_active &&
+        !streams_addresses.includes(stream.address.toString())
+      ) {
+        console.log("stream is active=", stream.is_active);
+        pic.updateStreamAndConnection(nft, stream).then((result) => {
+          if (result.nft != undefined && result.conn != undefined) {
+              console.log("result.conn.is_active=",result.conn?.is_active);
+            if (result.conn?.is_active) {
+              streams.push(stream);
+              streams_addresses.push(stream.address.toString());
+            }
+          }
+        });
       }
     }
   }
@@ -797,25 +795,20 @@ const NftCardComponent: React.FC<{
 
   function selectNft(e) {
     ReactGA.event({ category: "click", action: "select_nft" });
-     //kaiming
-     console.log("current NFT=", currentNft);
-     if(currentNft.stake){
-         console.log("current NFT.stake=", currentNft.stake);
+    //kaiming
+    console.log("current NFT=", currentNft);
+    if (currentNft.stake) {
+      console.log("current NFT.stake=", currentNft.stake);
+    }
 
-     }
-
-
-     currentNft.stake?.connections?.map((connection) => {
-       console.log(
-         "connection stream_address=",
-         connection.stream_address.toString()
-       );
-       console.log(
-         "connection is_active=",
-         connection.is_active
-       );
-     });
-     //end
+    currentNft.stake?.connections?.map((connection) => {
+      console.log(
+        "connection stream_address=",
+        connection.stream_address.toString()
+      );
+      console.log("connection is_active=", connection.is_active);
+    });
+    //end
     if (props.isBusy) {
       alertIsBuys();
       e.stopPropagation();
@@ -845,7 +838,7 @@ const NftCardComponent: React.FC<{
       } else {
         let clonedNft = cloneObject(result.nft);
         setCurrentNft(clonedNft);
-       
+
         props.setSelectedNft(clonedNft);
       }
       setIsLoading(false);
