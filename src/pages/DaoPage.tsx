@@ -11,6 +11,7 @@ import _debounce from "lodash/debounce";
 import ReactGA from "react-ga4";
 import * as pic_pic from "../pic/pic";
 import { PublicKey } from "@solana/web3.js";
+import * as chain from "../pic/live_utils/onchain-data-helpers";
 export type DaoProps = {
   dao_id: string;
 };
@@ -25,25 +26,29 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
 
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
   //   console.log("owner=", owner);
-  //   console.log("currentDao=", currentDao);
+    console.log("currentDao=", currentDao);
   let streams: Array<Stream> | undefined = currentDao.streams;
 
-  // useEffect(() => {
-  //     (async () => {
-  //       if (connected) {
-  //         const newOwner: pic_pic.Owner = { address: publicKey };
-  //         console.log("newOwner=",newOwner.address?.toString());
-  //         console.log("connected");
-  //         let member_daos = await pic.getMemberDaos(newOwner, wallet);
-  //         console.log("member_daos=",member_daos);
-  //         for(const dao of member_daos){
-  //             if(dao.dao_id===currentDao.dao_id){
-  //                 streams=currentDao.streams;
-  //             }
-  //         }
-  //       }
-  //     })();
-  //   }, [connected]);
+  useEffect(() => {
+    (async () => {
+        console.log("dao==",currentDao);
+      let result_connections = await Promise.allSettled(promises);
+      console.log("result_connections=", result_connections[0]);
+      for (const connection of result_connections) {
+        if (connection.status === "fulfilled" && connection.value?.is_active) {
+          for (const stream of currentDao.streams) {
+            if (!streams_addresses.includes(stream.address.toString())) {
+              streams.push(stream);
+              streams_addresses.push(stream.address.toString());
+            }
+          }
+        }
+        if (connection.status === "fulfilled") {
+          console.log("value=", connection.value);
+        }
+      }
+    })();
+  }, []);
 
   // request a refresh
   useEffect(() => {
@@ -181,9 +186,9 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   let streams_addresses = [];
   console.log("streams=", streams);
   streams = [];
+  let promises = [];
   for (const nft of eligibleNfts) {
     for (const stream of currentDao.streams) {
-     
       //active stream
       if (!streams_addresses.includes(stream.address.toString())) {
         stream.collections.map((collection) => {
@@ -197,27 +202,22 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
             streams_addresses.push(stream.address.toString());
           }
         });
-      }
-      //inactive stream with connected NFT
-      console.log("streamactive=", stream.is_active);
-      console.log("includes=",streams_addresses.includes(stream.address.toString()));
-      if (
-        !stream.is_active &&
-        !streams_addresses.includes(stream.address.toString())
-      ) {
-        console.log("stream is active=", stream.is_active);
-        pic.updateStreamAndConnection(nft, stream).then((result) => {
-          if (result.nft != undefined && result.conn != undefined) {
-            console.log("result.conn.is_active=", result.conn?.is_active);
-            if (result.conn?.is_active) {
-              streams.push(stream);
-              streams_addresses.push(stream.address.toString());
-            }
-          }
-        });
+        if (!stream.is_active) {
+          promises.push(
+            chain.checkIfConnectionExists(
+              nft.wallet,
+              nft.network,
+              nft.stake.address,
+              stream.address,
+              stream.decimals,
+              stream.daily_stream_rate
+            )
+          );
+        }
       }
     }
   }
+  console.log("promise=",promises);
 
   console.log("final streams=", streams);
 
