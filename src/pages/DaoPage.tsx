@@ -197,14 +197,20 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         });
       }
       try {
-        if (!stream.is_active && !streams_addresses.includes(stream.address.toString())) {
-          chain.checkIfConnectionExists(
-            wallet,
-            NETWORK,
-            nft.stake.address,
-            stream.address,
-            stream.decimals,
-            stream.daily_stream_rate
+        if (
+          !stream.is_active &&
+          !streams_addresses.includes(stream.address.toString()) &&
+          nft.stake.address != undefined
+        ) {
+          promises.push(
+            chain.checkIfConnectionExists(
+              wallet,
+              NETWORK,
+              nft.stake.address,
+              stream.address,
+              stream.decimals,
+              stream.daily_stream_rate
+            )
           );
         }
       } catch (e) {
@@ -212,7 +218,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       }
     }
   }
-  console.log("proimses=", promises);
+  console.log("promises=", promises);
   console.log("final streams=", streams);
 
   return (

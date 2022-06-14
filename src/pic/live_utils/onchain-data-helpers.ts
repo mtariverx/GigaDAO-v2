@@ -75,7 +75,6 @@ export async function checkIfConnectionExists(
   dailyStreamRateRelative
 ): Promise<pic.Connection | undefined> {
   let program = await initProgram(wallet, network);
-  console.log("program=",program);
   const [connection_pda] = await PublicKey.findProgramAddress(
     [
       stake_pda.toBuffer(),
@@ -207,7 +206,6 @@ export async function getDaoFromChain(wallet, network, dao: pic.Dao) {
   const proposedWithdrawalStream = daoAccount.proposedWithdrawalStream;
   const numStreams = daoAccount.numStreams.toNumber();
 
-  
   let proposedWithdrawalAmount;
   try {
     const streamAccount = await program.account.stream.fetch(
