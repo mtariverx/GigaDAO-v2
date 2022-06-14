@@ -28,8 +28,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const { owner } = useOwnerData();
   const wallet = useAnchorWallet();
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
-  console.log("owner=", owner);
-  console.log("currentDao=", currentDao);
   //   let streams: Array<Stream> | undefined = currentDao.streams;
  
   useEffect(() => {
@@ -189,6 +187,9 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     let promises_array = [];
     let streams_addresses = [];
     let tmp_streams = [];
+    console.log("nft length=",eligibleNfts.length);
+    console.log("stream length=",currentDao.streams?.length);
+
     for (const nft of eligibleNfts) {
       for (const stream of currentDao.streams) {
         if (!streams_addresses.includes(stream.address.toString())) {
@@ -199,6 +200,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
               !streams_addresses.includes(stream.address.toString()) &&
               stream.is_active
             ) {
+                console.log("push=",stream);
               tmp_streams.push(stream);
               streams_addresses.push(stream.address.toString());
             }
@@ -226,7 +228,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         }
       }
     }
-    console.log("promises_array=", promises_array);
+    console.log("conn promises_array=", promises_array);
     // setStreams(tmp_streams);
     return { tmp_streams, promises_array };
   };
