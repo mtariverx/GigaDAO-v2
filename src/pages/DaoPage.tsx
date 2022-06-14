@@ -133,32 +133,39 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
 
   useEffect(() => {
     (async () => {
-      const { streams_addresses, tmp_streams, promises_array } = await getPromiseOfCheckingConn();
-      console.log("tmp_streams 1=",tmp_streams);
+      const { streams_addresses, tmp_streams, promises_array } =
+        await getPromiseOfCheckingConn();
+      console.log("tmp_streams 1=", tmp_streams);
       let result_connections = await Promise.allSettled(promises_array);
       if (result_connections.length > 0) {
         for (const conn_result of result_connections) {
           if (conn_result.status === "fulfilled") {
             let connection: pic_pic.Connection = conn_result.value;
-            if (
-              !streams_addresses.includes(connection.stream_address.toString()) &&
-              connection.is_active
-            ) {
-                console.log("connection is active=",connection.is_active);
-              for (const stream of currentDao.streams) {
-                if (
-                  stream.address.toString() ===
-                  connection.stream_address.toString()
-                ) {
+            try {
+              if (
+                !streams_addresses.includes(
+                  connection.stream_address?.toString()
+                ) &&
+                connection.is_active
+              ) {
+                console.log("connection is active=", connection.is_active);
+                for (const stream of currentDao.streams) {
+                  if (
+                    stream.address.toString() ===
+                    connection.stream_address?.toString()
+                  ) {
                     console.log("stream address=connection stream address");
-                  tmp_streams.push(stream);
+                    tmp_streams.push(stream);
+                  }
                 }
               }
+            } catch (e) {
+              console.log(e);
             }
           }
         }
       }
-      console.log("tmp_streams 2=",tmp_streams);
+      console.log("tmp_streams 2=", tmp_streams);
       setStreams(tmp_streams);
     })();
   }, [flag === true]);
