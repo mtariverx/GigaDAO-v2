@@ -35,9 +35,9 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   useEffect(() => {
     (async () => {
       console.log("dao==", currentDao);
-      console.log("use effect promise=",promises_array);
+      console.log("use effect promise array=",promises_array);
 
-      console.log("promise state=",promises);
+    //   console.log("promise state=",promises);
       let result_connections = await Promise.allSettled(promises);
       console.log("result connections=", result_connections);
       if (result_connections.length > 0) {
@@ -222,8 +222,8 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       }
     }
   }
-  setPromises(promises_array);
-  console.log("promises=", promises_array);
+  
+  console.log("promises_array=", promises_array);
   console.log("final streams=", streams);
 
   return (
