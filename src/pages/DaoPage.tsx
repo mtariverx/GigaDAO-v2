@@ -33,12 +33,12 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   useEffect(() => {
     (async () => {
       console.log("dao==", currentDao);
-    //   let result_connections = await Promise.allSettled(promises);
-    //   console.log("result connections=", result_connections);
-    //   if (result_connections.length > 0) {
-    //     console.log("result_connections[0]=", result_connections[0]);
-    //     console.log("connection status=", result_connections[0].status);
-    //   }
+      //   let result_connections = await Promise.allSettled(promises);
+      //   console.log("result connections=", result_connections);
+      //   if (result_connections.length > 0) {
+      //     console.log("result_connections[0]=", result_connections[0]);
+      //     console.log("connection status=", result_connections[0].status);
+      //   }
     })();
   }, []);
 
@@ -192,17 +192,22 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
             streams_addresses.push(stream.address.toString());
           }
         });
-        if (!stream.is_active) {
-          promises.push(
-            chain.checkIfConnectionExists(
-              nft.wallet,
-              nft.network,
-              nft.stake.address,
-              stream.address,
-              stream.decimals,
-              stream.daily_stream_rate
-            )
-          );
+
+        if (!stream.is_active && nft.stake.address) {
+          try {
+            promises.push(
+              chain.checkIfConnectionExists(
+                nft.wallet,
+                nft.network,
+                nft.stake.address,
+                stream.address,
+                stream.decimals,
+                stream.daily_stream_rate
+              )
+            );
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     }
