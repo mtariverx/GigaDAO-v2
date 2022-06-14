@@ -30,22 +30,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
   //   let streams: Array<Stream> | undefined = currentDao.streams;
  
-  useEffect(() => {
-    (async () => {
-      console.log("dao==", currentDao);
-      const { tmp_streams, promises_array } = getPromiseOfCheckingConn();
-      console.log("tmp_streams=",tmp_streams);
-      console.log("use effect promise array=", promises_array);
-      setStreams(tmp_streams);
-      //   console.log("promise state=",promises);
-      let result_connections = await Promise.allSettled(promises_array);
-      console.log("result connections=", result_connections);
-      if (result_connections.length > 0) {
-        console.log("result_connections[0]=", result_connections[0]);
-        console.log("connection status=", result_connections[0].status);
-      }
-    })();
-  }, []);
+ 
 
   // request a refresh
   useEffect(() => {
@@ -94,7 +79,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   // refresh initial indexes
   let idxs = [...Array(reducedNumCards).keys()];
   let nftsArray: Array<Nft> = idxs.map((idx, _) => eligibleNfts[idx]);
-
+  
   /*these are for testing*/
   // for(const nft of nftsArray){
 
@@ -232,6 +217,23 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     // setStreams(tmp_streams);
     return { tmp_streams, promises_array };
   };
+
+  useEffect(() => {
+    (async () => {
+      console.log("dao==", currentDao);
+      const { tmp_streams, promises_array } = await getPromiseOfCheckingConn();
+      console.log("tmp_streams=",tmp_streams);
+      console.log("use effect promise array=", promises_array);
+      setStreams(tmp_streams);
+      //   console.log("promise state=",promises);
+      let result_connections = await Promise.allSettled(promises_array);
+      console.log("result connections=", result_connections);
+      if (result_connections.length > 0) {
+        console.log("result_connections[0]=", result_connections[0]);
+        console.log("connection status=", result_connections[0].status);
+      }
+    })();
+  }, []);
 
   return (
     <div className="container mt-4">
