@@ -11,7 +11,6 @@ import _debounce from "lodash/debounce";
 import ReactGA from "react-ga4";
 import * as pic_pic from "../pic/pic";
 import { PublicKey } from "@solana/web3.js";
-import * as chain from "../pic/live_utils/onchain-data-helpers";
 export type DaoProps = {
   dao_id: string;
 };
@@ -25,30 +24,26 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const { owner } = useOwnerData();
 
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
-  //   console.log("owner=", owner);
-    console.log("currentDao=", currentDao);
+  console.log("owner=", owner);
+  console.log("currentDao=", currentDao);
   let streams: Array<Stream> | undefined = currentDao.streams;
-
-  useEffect(() => {
-    (async () => {
-        console.log("dao==",currentDao);
-      let result_connections = await Promise.allSettled(promises);
-      console.log("result_connections=", result_connections[0]);
-      for (const connection of result_connections) {
-        if (connection.status === "fulfilled" && connection.value?.is_active) {
-          for (const stream of currentDao.streams) {
-            if (!streams_addresses.includes(stream.address.toString())) {
-              streams.push(stream);
-              streams_addresses.push(stream.address.toString());
-            }
-          }
-        }
-        if (connection.status === "fulfilled") {
-          console.log("value=", connection.value);
-        }
-      }
-    })();
-  }, []);
+  
+  // useEffect(() => {
+  //     (async () => {
+  //       if (connected) {
+  //         const newOwner: pic_pic.Owner = { address: publicKey };
+  //         console.log("newOwner=",newOwner.address?.toString());
+  //         console.log("connected");
+  //         let member_daos = await pic.getMemberDaos(newOwner, wallet);
+  //         console.log("member_daos=",member_daos);
+  //         for(const dao of member_daos){
+  //             if(dao.dao_id===currentDao.dao_id){
+  //                 streams=currentDao.streams;
+  //             }
+  //         }
+  //       }
+  //     })();
+  //   }, [connected]);
 
   // request a refresh
   useEffect(() => {
@@ -94,7 +89,10 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   // refresh initial indexes
   let idxs = [...Array(reducedNumCards).keys()];
   let nftsArray: Array<Nft> = idxs.map((idx, _) => eligibleNfts[idx]);
+  let streams_addresses = [];
 
+  console.log("streams=", streams);
+  streams = [];
   /*these are for testing*/
   // for(const nft of nftsArray){
 
@@ -102,124 +100,108 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   // if(MAX_CARDS>0){
   //     streams=currentDao.streams;
   // }
-  //   if (currentDao.streams) {
-  //     for (const stream of currentDao.streams) {
-  //       console.log("--------------------");
-  //       console.log("stream address=", stream.address.toString());
-  //       stream.collections.map((item) =>
-  //         console.log("collection address=", item.address.toString())
-  //       );
-  //     }
-  //   }
-  //   const const_eligibleNfts = [
-  //     {
-  //       id: "nft1",
-  //       collection: {address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-  //     },
-  //     {
-  //       id: "nft2",
-  //       collection: {address: new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-  //     },
-  //     {
-  //       id: "nft3",
-  //       collection: {address: new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
-  //     },
-  //   ];
+//   if (currentDao.streams) {
+//     for (const stream of currentDao.streams) {
+//       console.log("--------------------");
+//       console.log("stream address=", stream.address.toString());
+//       stream.collections.map((item) =>
+//         console.log("collection address=", item.address.toString())
+//       );
+//     }
+//   }
+//   const const_eligibleNfts = [
+//     {
+//       id: "nft1",
+//       collection: {address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
+//     },
+//     {
+//       id: "nft2",
+//       collection: {address: new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
+//     },
+//     {
+//       id: "nft3",
+//       collection: {address: new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
+//     },
+//   ];
 
-  //   const const_streams = [
-  //     {
-  //       id: "stream1",
-  //       address: new PublicKey("A63sDLc5uRJrMhC43MRLN3DXXw5xTDQc6qnnZW43HmNV"),
-  //       collections: [
-  //         {
-  //             address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-  //       ],
-  //     },
-  //     {
-  //       id: "stream2",
-  //       address: new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
-  //       collections: [
-  //         {
-  //           address: new PublicKey(
-  //             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
-  //           ),
-  //         },
+//   const const_streams = [
+//     {
+//       id: "stream1",
+//       address: new PublicKey("A63sDLc5uRJrMhC43MRLN3DXXw5xTDQc6qnnZW43HmNV"),
+//       collections: [
+//         {
+//             address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
+//       ],
+//     },
+//     {
+//       id: "stream2",
+//       address: new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
+//       collections: [
+//         {
+//           address: new PublicKey(
+//             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
+//           ),
+//         },
+//         {
+//           address: new PublicKey(
+//             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
+//           ),
+//         },
+//         {
+//           address: new PublicKey(
+//             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
+//           ),
+//         },
+//         {
+//           address: new PublicKey(
+//             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
+//           ),
+//         },
+//         {
+//           address: new PublicKey(
+//             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
+//           ),
+//         },
+//         {
+//           address: new PublicKey(
+//             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
+//           ),
+//         },
+        
+//       ],
+//     },
+//     {
+//       id: "stream3",
+//       address: new PublicKey("FMF6FFMRZ6djUokcaD6DujcPT4vmCxk7VVqFmxoSgHGT"),
+//       collections: [
+//         {
+//             address:new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
+//       ],
+//     },
+//   ];
+//   let streams_const=[];
 
-  //       ],
-  //     },
-  //     {
-  //       id: "stream3",
-  //       address: new PublicKey("FMF6FFMRZ6djUokcaD6DujcPT4vmCxk7VVqFmxoSgHGT"),
-  //       collections: [
-  //         {
-  //             address:new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
-  //       ],
-  //     },
-  //   ];
-
-  //streams which are only active or connected with NFTs
-  let streams_addresses = [];
-  console.log("streams=", streams);
-  streams = [];
-  let promises = [];
   for (const nft of eligibleNfts) {
-    for (const stream of currentDao.streams) {
-      //active stream
+      for (const stream of currentDao.streams) {
       if (!streams_addresses.includes(stream.address.toString())) {
         stream.collections.map((collection) => {
           if (
-            collection.address.toString() ===
-              nft.collection.address.toString() &&
-            !streams_addresses.includes(stream.address.toString()) &&
-            stream.is_active
+            collection.address.toString() === nft.collection.address.toString() &&
+            !streams_addresses.includes(stream.address.toString())  && stream.is_active
           ) {
             streams.push(stream);
             streams_addresses.push(stream.address.toString());
           }
         });
-        if (!stream.is_active) {
-          promises.push(
-            chain.checkIfConnectionExists(
-              nft.wallet,
-              nft.network,
-              nft.stake.address,
-              stream.address,
-              stream.decimals,
-              stream.daily_stream_rate
-            )
-          );
-        }
       }
     }
   }
-  console.log("promise=",promises);
 
-  console.log("final streams=", streams);
+  console.log("final streams=",streams);
+  
+
+  
+  
 
   return (
     <div className="container mt-4">
@@ -794,20 +776,6 @@ const NftCardComponent: React.FC<{
 
   function selectNft(e) {
     ReactGA.event({ category: "click", action: "select_nft" });
-    //kaiming
-    console.log("current NFT=", currentNft);
-    if (currentNft.stake) {
-      console.log("current NFT.stake=", currentNft.stake);
-    }
-
-    currentNft.stake?.connections?.map((connection) => {
-      console.log(
-        "connection stream_address=",
-        connection.stream_address.toString()
-      );
-      console.log("connection is_active=", connection.is_active);
-    });
-    //end
     if (props.isBusy) {
       alertIsBuys();
       e.stopPropagation();
@@ -837,7 +805,6 @@ const NftCardComponent: React.FC<{
       } else {
         let clonedNft = cloneObject(result.nft);
         setCurrentNft(clonedNft);
-
         props.setSelectedNft(clonedNft);
       }
       setIsLoading(false);
@@ -1075,10 +1042,6 @@ function getEligibleNfts(owner, currentCollectionsAddresses) {
   return sortedEligibleNfts;
 }
 
-function getStreamsAddresses(streams) {
-  let streams_addresses = streams.map((stream) => stream.address.toString());
-  return streams_addresses;
-}
 function alertIsBuys() {
   alert(
     "Please wait until previous action completes.\nBulk action support is coming soon."
