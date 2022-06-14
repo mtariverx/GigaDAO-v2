@@ -167,7 +167,10 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   //     },
   //   ];
   //   let streams_const=[];
-
+  let flag=false;
+  if(currentDao.streams!=undefined){
+      flag=true;
+  }
   const getPromiseOfCheckingConn = () => {
     let promises_array = [];
     let streams_addresses = [];
@@ -233,7 +236,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         console.log("connection status=", result_connections[0].status);
       }
     })();
-  }, []);
+  }, [flag===true]);
 
   return (
     <div className="container mt-4">
