@@ -29,8 +29,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const wallet = useAnchorWallet();
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
   //   let streams: Array<Stream> | undefined = currentDao.streams;
- 
- 
 
   // request a refresh
   useEffect(() => {
@@ -43,7 +41,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   if (currentDao.streams != undefined) {
     currentCollectionsAddresses = getCurrentCollections(currentDao.streams);
   }
-//   console.log("currentCollections=",currentCollectionsAddresses);
+  //   console.log("currentCollections=",currentCollectionsAddresses);
   const eligibleNfts: Array<Nft> = getEligibleNfts(
     owner,
     currentCollectionsAddresses
@@ -79,104 +77,18 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   // refresh initial indexes
   let idxs = [...Array(reducedNumCards).keys()];
   let nftsArray: Array<Nft> = idxs.map((idx, _) => eligibleNfts[idx]);
+
   
-  /*these are for testing*/
-  // for(const nft of nftsArray){
-
-  // }
-  // if(MAX_CARDS>0){
-  //     streams=currentDao.streams;
-  // }
-  //   if (currentDao.streams) {
-  //     for (const stream of currentDao.streams) {
-  //       console.log("--------------------");
-  //       console.log("stream address=", stream.address.toString());
-  //       stream.collections.map((item) =>
-  //         console.log("collection address=", item.address.toString())
-  //       );
-  //     }
-  //   }
-  //   const const_eligibleNfts = [
-  //     {
-  //       id: "nft1",
-  //       collection: {address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-  //     },
-  //     {
-  //       id: "nft2",
-  //       collection: {address: new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-  //     },
-  //     {
-  //       id: "nft3",
-  //       collection: {address: new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
-  //     },
-  //   ];
-
-  //   const const_streams = [
-  //     {
-  //       id: "stream1",
-  //       address: new PublicKey("A63sDLc5uRJrMhC43MRLN3DXXw5xTDQc6qnnZW43HmNV"),
-  //       collections: [
-  //         {
-  //             address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-  //       ],
-  //     },
-  //     {
-  //       id: "stream2",
-  //       address: new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
-  //       collections: [
-  //         {
-  //           address: new PublicKey(
-  //             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
-  //           ),
-  //         },
-  //         {
-  //           address: new PublicKey(
-  //             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
-  //           ),
-  //         },
-
-  //       ],
-  //     },
-  //     {
-  //       id: "stream3",
-  //       address: new PublicKey("FMF6FFMRZ6djUokcaD6DujcPT4vmCxk7VVqFmxoSgHGT"),
-  //       collections: [
-  //         {
-  //             address:new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
-  //       ],
-  //     },
-  //   ];
-  //   let streams_const=[];
-  let flag=false;
-  if(currentDao.streams!=undefined){
-      flag=true;
+  let flag = false;
+  if (currentDao.streams != undefined && owner.address!=undefined) {
+    flag = true;
   }
   const getPromiseOfCheckingConn = () => {
     let promises_array = [];
     let streams_addresses = [];
     let tmp_streams = [];
-    console.log("nft length=",eligibleNfts.length);
-    console.log("stream length=",currentDao.streams?.length);
+    console.log("nft length=", eligibleNfts.length);
+    console.log("stream length=", currentDao.streams?.length);
 
     for (const nft of eligibleNfts) {
       for (const stream of currentDao.streams) {
@@ -188,7 +100,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
               !streams_addresses.includes(stream.address.toString()) &&
               stream.is_active
             ) {
-                console.log("push=",stream);
+              console.log("push=", stream);
               tmp_streams.push(stream);
               streams_addresses.push(stream.address.toString());
             }
@@ -223,9 +135,10 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
 
   useEffect(() => {
     (async () => {
+        console.log("owner=",owner);
       console.log("dao==", currentDao);
       const { tmp_streams, promises_array } = await getPromiseOfCheckingConn();
-      console.log("tmp_streams=",tmp_streams);
+      console.log("tmp_streams=", tmp_streams);
       console.log("use effect promise array=", promises_array);
       setStreams(tmp_streams);
       //   console.log("promise state=",promises);
@@ -236,7 +149,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         console.log("connection status=", result_connections[0].status);
       }
     })();
-  }, [flag===true]);
+  }, [flag === true]);
 
   return (
     <div className="container mt-4">
