@@ -11,6 +11,8 @@ import _debounce from "lodash/debounce";
 import ReactGA from "react-ga4";
 import * as pic_pic from "../pic/pic";
 import { PublicKey } from "@solana/web3.js";
+import * as chain from "../pic/live_utils/onchain-data-helpers";
+
 export type DaoProps = {
   dao_id: string;
 };
@@ -27,23 +29,18 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   console.log("owner=", owner);
   console.log("currentDao=", currentDao);
   let streams: Array<Stream> | undefined = currentDao.streams;
-  
-  // useEffect(() => {
-  //     (async () => {
-  //       if (connected) {
-  //         const newOwner: pic_pic.Owner = { address: publicKey };
-  //         console.log("newOwner=",newOwner.address?.toString());
-  //         console.log("connected");
-  //         let member_daos = await pic.getMemberDaos(newOwner, wallet);
-  //         console.log("member_daos=",member_daos);
-  //         for(const dao of member_daos){
-  //             if(dao.dao_id===currentDao.dao_id){
-  //                 streams=currentDao.streams;
-  //             }
-  //         }
-  //       }
-  //     })();
-  //   }, [connected]);
+
+  useEffect(() => {
+    (async () => {
+      console.log("dao==", currentDao);
+      let result_connections = await Promise.allSettled(promises);
+      console.log("result connections=", result_connections);
+      if (result_connections.length > 0) {
+        console.log("result_connections[0]=", result_connections[0]);
+        console.log("connection status=", result_connections[0].status);
+      }
+    })();
+  }, []);
 
   // request a refresh
   useEffect(() => {
@@ -100,108 +97,118 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   // if(MAX_CARDS>0){
   //     streams=currentDao.streams;
   // }
-//   if (currentDao.streams) {
-//     for (const stream of currentDao.streams) {
-//       console.log("--------------------");
-//       console.log("stream address=", stream.address.toString());
-//       stream.collections.map((item) =>
-//         console.log("collection address=", item.address.toString())
-//       );
-//     }
-//   }
-//   const const_eligibleNfts = [
-//     {
-//       id: "nft1",
-//       collection: {address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-//     },
-//     {
-//       id: "nft2",
-//       collection: {address: new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-//     },
-//     {
-//       id: "nft3",
-//       collection: {address: new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
-//     },
-//   ];
+  //   if (currentDao.streams) {
+  //     for (const stream of currentDao.streams) {
+  //       console.log("--------------------");
+  //       console.log("stream address=", stream.address.toString());
+  //       stream.collections.map((item) =>
+  //         console.log("collection address=", item.address.toString())
+  //       );
+  //     }
+  //   }
+  //   const const_eligibleNfts = [
+  //     {
+  //       id: "nft1",
+  //       collection: {address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
+  //     },
+  //     {
+  //       id: "nft2",
+  //       collection: {address: new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
+  //     },
+  //     {
+  //       id: "nft3",
+  //       collection: {address: new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
+  //     },
+  //   ];
 
-//   const const_streams = [
-//     {
-//       id: "stream1",
-//       address: new PublicKey("A63sDLc5uRJrMhC43MRLN3DXXw5xTDQc6qnnZW43HmNV"),
-//       collections: [
-//         {
-//             address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
-//       ],
-//     },
-//     {
-//       id: "stream2",
-//       address: new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
-//       collections: [
-//         {
-//           address: new PublicKey(
-//             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
-//           ),
-//         },
-//         {
-//           address: new PublicKey(
-//             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
-//           ),
-//         },
-//         {
-//           address: new PublicKey(
-//             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
-//           ),
-//         },
-//         {
-//           address: new PublicKey(
-//             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
-//           ),
-//         },
-//         {
-//           address: new PublicKey(
-//             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
-//           ),
-//         },
-//         {
-//           address: new PublicKey(
-//             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
-//           ),
-//         },
-        
-//       ],
-//     },
-//     {
-//       id: "stream3",
-//       address: new PublicKey("FMF6FFMRZ6djUokcaD6DujcPT4vmCxk7VVqFmxoSgHGT"),
-//       collections: [
-//         {
-//             address:new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
-//       ],
-//     },
-//   ];
-//   let streams_const=[];
+  //   const const_streams = [
+  //     {
+  //       id: "stream1",
+  //       address: new PublicKey("A63sDLc5uRJrMhC43MRLN3DXXw5xTDQc6qnnZW43HmNV"),
+  //       collections: [
+  //         {
+  //             address:new PublicKey("Dn4z4UQuTaRJdELxwzT2mTQr9WE6BJhMH7mnzQjtz1x4")},
+  //       ],
+  //     },
+  //     {
+  //       id: "stream2",
+  //       address: new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
+  //       collections: [
+  //         {
+  //           address: new PublicKey(
+  //             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
+  //           ),
+  //         },
+  //         {
+  //           address: new PublicKey(
+  //             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
+  //           ),
+  //         },
+  //         {
+  //           address: new PublicKey(
+  //             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
+  //           ),
+  //         },
+  //         {
+  //           address: new PublicKey(
+  //             "DwGeCH6KoiVcP3smDsYQ9BWQ6nQdcunFLhXbbzV3hne4"
+  //           ),
+  //         },
+  //         {
+  //           address: new PublicKey(
+  //             "5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH"
+  //           ),
+  //         },
+  //         {
+  //           address: new PublicKey(
+  //             "AX46GmCYrvj8rWw3F9yW7X1H4Uf4oLgCDbvXM3QuBFyB"
+  //           ),
+  //         },
 
+  //       ],
+  //     },
+  //     {
+  //       id: "stream3",
+  //       address: new PublicKey("FMF6FFMRZ6djUokcaD6DujcPT4vmCxk7VVqFmxoSgHGT"),
+  //       collections: [
+  //         {
+  //             address:new PublicKey("5sUgyV4GKvqsfRfwB6651MfFM8LQsUDZfhpkG2ZrpRkH")},
+  //       ],
+  //     },
+  //   ];
+  //   let streams_const=[];
+  let promises = [];
   for (const nft of eligibleNfts) {
-      for (const stream of currentDao.streams) {
+    for (const stream of currentDao.streams) {
       if (!streams_addresses.includes(stream.address.toString())) {
         stream.collections.map((collection) => {
           if (
-            collection.address.toString() === nft.collection.address.toString() &&
-            !streams_addresses.includes(stream.address.toString())  && stream.is_active
+            collection.address.toString() ===
+              nft.collection.address.toString() &&
+            !streams_addresses.includes(stream.address.toString()) &&
+            stream.is_active
           ) {
             streams.push(stream);
             streams_addresses.push(stream.address.toString());
           }
         });
+        if (!stream.is_active) {
+          promises.push(
+            chain.checkIfConnectionExists(
+              nft.wallet,
+              nft.network,
+              nft.stake.address,
+              stream.address,
+              stream.decimals,
+              stream.daily_stream_rate
+            )
+          );
+        }
       }
     }
   }
-
-  console.log("final streams=",streams);
-  
-
-  
-  
+  console.log("proimses=", promises);
+  console.log("final streams=", streams);
 
   return (
     <div className="container mt-4">
