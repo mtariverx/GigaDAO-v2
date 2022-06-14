@@ -141,7 +141,9 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         for (const conn_result of result_connections) {
           if (conn_result.status === "fulfilled") {
             let connection: pic_pic.Connection = conn_result.value;
+            
             try {
+                console.log("connection stream address=",connection.address.toString());
               if (
                 !streams_addresses.includes(
                   connection.stream_address?.toString()
@@ -155,6 +157,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
                     connection.stream_address?.toString()
                   ) {
                     console.log("stream address=connection stream address");
+                    streams_addresses.push(stream.address.toString());
                     tmp_streams.push(stream);
                   }
                 }
