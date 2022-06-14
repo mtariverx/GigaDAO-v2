@@ -127,22 +127,21 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         }
       }
     }
-    console.log("conn promises_array=", promises_array);
     // setStreams(tmp_streams);
-    return { tmp_streams, promises_array };
+    return { streams_addresses, tmp_streams, promises_array };
   };
 
   useEffect(() => {
     (async () => {
-      const { tmp_streams, promises_array } = await getPromiseOfCheckingConn();
-      
+      const { streams_addresses, tmp_streams, promises_array } = await getPromiseOfCheckingConn();
+      console.log("tmp_streams 1=",tmp_streams);
       let result_connections = await Promise.allSettled(promises_array);
       if (result_connections.length > 0) {
         for (const conn_result of result_connections) {
           if (conn_result.status === "fulfilled") {
             let connection: pic_pic.Connection = conn_result.value;
             if (
-              !tmp_streams.includes(connection.stream_address.toString()) &&
+              !streams_addresses.includes(connection.stream_address.toString()) &&
               connection.is_active
             ) {
                 console.log("connection is active=",connection.is_active);
@@ -159,6 +158,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
           }
         }
       }
+      console.log("tmp_streams 2=",tmp_streams);
       setStreams(tmp_streams);
     })();
   }, [flag === true]);
