@@ -30,10 +30,14 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   console.log("owner=", owner);
   console.log("currentDao=", currentDao);
   let streams: Array<Stream> | undefined = currentDao.streams;
+    const [promises, setPromises]=useState([]);
 
   useEffect(() => {
     (async () => {
       console.log("dao==", currentDao);
+      console.log("use effect promise=",promises_array);
+
+      console.log("promise state=",promises);
       let result_connections = await Promise.allSettled(promises);
       console.log("result connections=", result_connections);
       if (result_connections.length > 0) {
@@ -179,7 +183,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   //   ];
   //   let streams_const=[];
 
-  let promises = [];
+  let promises_array = [];
 
   for (const nft of eligibleNfts) {
     for (const stream of currentDao.streams) {
@@ -202,7 +206,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
           !streams_addresses.includes(stream.address.toString()) &&
           nft.stake.address != undefined
         ) {
-          promises.push(
+            promises_array.push(
             chain.checkIfConnectionExists(
               wallet,
               NETWORK,
@@ -218,7 +222,8 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       }
     }
   }
-  console.log("promises=", promises);
+  setPromises(promises_array);
+  console.log("promises=", promises_array);
   console.log("final streams=", streams);
 
   return (
