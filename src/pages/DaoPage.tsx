@@ -33,12 +33,12 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   useEffect(() => {
     (async () => {
       console.log("dao==", currentDao);
-      let result_connections = await Promise.allSettled(promises);
-      console.log("result connections=", result_connections);
-      if (result_connections.length > 0) {
-        console.log("result_connections[0]=", result_connections[0]);
-        console.log("connection status=", result_connections[0].status);
-      }
+    //   let result_connections = await Promise.allSettled(promises);
+    //   console.log("result connections=", result_connections);
+    //   if (result_connections.length > 0) {
+    //     console.log("result_connections[0]=", result_connections[0]);
+    //     console.log("connection status=", result_connections[0].status);
+    //   }
     })();
   }, []);
 
