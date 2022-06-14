@@ -12,6 +12,7 @@ import ReactGA from "react-ga4";
 import * as pic_pic from "../pic/pic";
 import { PublicKey } from "@solana/web3.js";
 import * as chain from "../pic/live_utils/onchain-data-helpers";
+import { nextTick } from "process";
 
 export type DaoProps = {
   dao_id: string;
@@ -177,31 +178,58 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   //     },
   //   ];
   //   let streams_const=[];
+//   (async () => {
+//       console.log("checkIf");
+//     await chain.checkIfConnectionExists(
+//       undefined,
+//       undefined,
+//       new PublicKey("3NaAZxvhgrxSUMRYVAvC75Jg6bwKwEHisH8WFbkEvrNb"),
+//       new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
+//       undefined,
+//       345.6
+//     );
+//   })();
+
   let promises = [];
   for (const nft of eligibleNfts) {
+    if (nft.wallet != undefined) {
+      console.log("wallet");
+      console.log("wallet=", nft.wallet.toString());
+      console.log("network=", nft.network);
+    }
+    if (nft.network != undefined) {
+      console.log("network");
+      console.log("wallet=", nft.wallet.toString());
+      console.log("network=", nft.network);
+    }
+    if (nft.network != undefined && nft.wallet) {
+        console.log("network wallet");
+        console.log("wallet=", nft.wallet.toString());
+        console.log("network=", nft.network);
+      }
     for (const stream of currentDao.streams) {
       if (!streams_addresses.includes(stream.address.toString())) {
         stream.collections.map((collection) => {
           if (
             collection.address.toString() ===
               nft.collection.address.toString() &&
-            !streams_addresses.includes(stream.address.toString()) &&
-            stream.is_active
+            !streams_addresses.includes(stream.address.toString())
+            // && stream.is_active
           ) {
             streams.push(stream);
             streams_addresses.push(stream.address.toString());
           }
         });
         try {
-            console.log("nft=",nft);
+          // console.log("nft=",nft);
           if (!stream.is_active && nft.stake?.address) {
-            console.log("nft.wallet=", nft.wallet?.toString());
-            console.log("network=", nft.network);
-            console.log("nft.stake.address=", nft.stake?.address?.toString());
-            console.log("stream.address=", stream.address.toString());
-            console.log("stream.decimals=", stream.decimals);
-            console.log("stream.daily_stream_rate=", stream.daily_stream_rate);
-            // promises.push(
+            // console.log("nft.wallet=", nft.wallet?.toString());
+            // console.log("network=", nft.network);
+            // console.log("nft.stake.address=", nft.stake?.address?.toString());
+            // console.log("stream.address=", stream.address.toString());
+            // console.log("stream.decimals=", stream.decimals);
+            // console.log("stream.daily_stream_rate=", stream.daily_stream_rate);
+            // // promises.push(
             //   chain.checkIfConnectionExists(
             //     nft.wallet,
             //     nft.network,

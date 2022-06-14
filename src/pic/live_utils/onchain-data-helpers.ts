@@ -75,6 +75,7 @@ export async function checkIfConnectionExists(
   dailyStreamRateRelative
 ): Promise<pic.Connection | undefined> {
   let program = await initProgram(wallet, network);
+  console.log("program=",program);
   const [connection_pda] = await PublicKey.findProgramAddress(
     [
       stake_pda.toBuffer(),
