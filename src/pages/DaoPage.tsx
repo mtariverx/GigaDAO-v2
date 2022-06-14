@@ -78,9 +78,8 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   let idxs = [...Array(reducedNumCards).keys()];
   let nftsArray: Array<Nft> = idxs.map((idx, _) => eligibleNfts[idx]);
 
-  
   let flag = false;
-  if (currentDao.streams != undefined && owner.address!=undefined) {
+  if (currentDao.streams != undefined && owner.address != undefined) {
     flag = true;
   }
   const getPromiseOfCheckingConn = () => {
@@ -135,19 +134,32 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
 
   useEffect(() => {
     (async () => {
-        console.log("owner=",owner);
-      console.log("dao==", currentDao);
       const { tmp_streams, promises_array } = await getPromiseOfCheckingConn();
-      console.log("tmp_streams=", tmp_streams);
-      console.log("use effect promise array=", promises_array);
-      setStreams(tmp_streams);
-      //   console.log("promise state=",promises);
+      
       let result_connections = await Promise.allSettled(promises_array);
-      console.log("result connections=", result_connections);
       if (result_connections.length > 0) {
-        console.log("result_connections[0]=", result_connections[0]);
-        console.log("connection status=", result_connections[0].status);
+        for (const conn_result of result_connections) {
+          if (conn_result.status === "fulfilled") {
+            let connection: pic_pic.Connection = conn_result.value;
+            if (
+              !tmp_streams.includes(connection.stream_address.toString()) &&
+              connection.is_active
+            ) {
+                console.log("connection is active=",connection.is_active);
+              for (const stream of currentDao.streams) {
+                if (
+                  stream.address.toString() ===
+                  connection.stream_address.toString()
+                ) {
+                    console.log("stream address=connection stream address");
+                  tmp_streams.push(stream);
+                }
+              }
+            }
+          }
+        }
       }
+      setStreams(tmp_streams);
     })();
   }, [flag === true]);
 
