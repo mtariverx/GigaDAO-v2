@@ -178,23 +178,25 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   //     },
   //   ];
   //   let streams_const=[];
-//   (async () => {
-//       console.log("checkIf");
-//     await chain.checkIfConnectionExists(
-//       undefined,
-//       undefined,
-//       new PublicKey("3NaAZxvhgrxSUMRYVAvC75Jg6bwKwEHisH8WFbkEvrNb"),
-//       new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
-//       undefined,
-//       345.6
-//     );
-//   })();
+  //   (async () => {
+  //       console.log("checkIf");
+  //     await chain.checkIfConnectionExists(
+  //       undefined,
+  //       undefined,
+  //       new PublicKey("3NaAZxvhgrxSUMRYVAvC75Jg6bwKwEHisH8WFbkEvrNb"),
+  //       new PublicKey("EJmnJyE6ynV7Xy5Xcti8QWoWqPpDZQXNWuytWjhz854H"),
+  //       undefined,
+  //       345.6
+  //     );
+  //   })();
 
   let promises = [];
+  let cnt=0;
+  console.log("num of NFTs=", eligibleNfts.length);
   for (const nft of eligibleNfts) {
     if (nft.wallet != undefined) {
       console.log("wallet");
-      console.log("wallet=", nft.wallet.toString());
+      console.log("wallet=", nft.wallet);
       console.log("network=", nft.network);
     }
     if (nft.network != undefined) {
@@ -203,10 +205,14 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       console.log("network=", nft.network);
     }
     if (nft.network != undefined && nft.wallet) {
-        console.log("network wallet");
-        console.log("wallet=", nft.wallet.toString());
-        console.log("network=", nft.network);
-      }
+       cnt++; 
+      console.log("network wallet");
+      console.log("wallet=", nft.wallet.toString());
+      console.log("network=", nft.network);
+    }
+  }
+  console.log("cnt=",cnt);
+  for (const nft of eligibleNfts) {
     for (const stream of currentDao.streams) {
       if (!streams_addresses.includes(stream.address.toString())) {
         stream.collections.map((collection) => {
