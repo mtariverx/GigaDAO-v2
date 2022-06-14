@@ -58,9 +58,9 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
 
   let currentCollectionsAddresses = [];
   if (currentDao.streams != undefined) {
-    currentCollectionsAddresses = getCurrentCollections(streams);
+    currentCollectionsAddresses = getCurrentCollections(currentDao.streams);
   }
-
+//   console.log("currentCollections=",currentCollectionsAddresses);
   const eligibleNfts: Array<Nft> = getEligibleNfts(
     owner,
     currentCollectionsAddresses
