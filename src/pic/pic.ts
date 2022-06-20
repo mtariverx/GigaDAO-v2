@@ -1,4 +1,5 @@
 // PIC
+import { Wallet } from "@project-serum/anchor";
 import { PublicKey,Keypair } from "@solana/web3.js";
 // saps
 export type Owner = {
@@ -63,6 +64,7 @@ export type Stream = {
   decimals?: number;
   stream_keypair?: Keypair;
   token_mint_address?: PublicKey;
+  token_pool_address?: PublicKey;
   confirmed?:boolean;
 };
 // stream_address, dao_address, token_image_url, stream_rate_relative, is_active, num_connections,
@@ -126,9 +128,9 @@ export type InitializeStream = (
   stream: Stream
 ) => Promise<{ dao: Dao; stream: Stream }>;
 export type ReactivateStream = (
-  dao: Dao,
+  wallet,
   stream: Stream
-) => Promise<{ dao: Dao; stream: Stream }>;
+) => Promise<{ stream: Stream }>;
 export type ProposeDaoCommand = (dao: Dao) => Promise<Dao>; // all relevant args should be included in the governance object of the dao passed into this call
 export type ApproveDaoCommand = (dao: Dao) => Promise<Dao>;
 export type ExecuteDaoCommand = (dao: Dao) => Promise<Dao>;

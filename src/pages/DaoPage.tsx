@@ -28,7 +28,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const { owner } = useOwnerData();
   const wallet = useAnchorWallet();
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
-  //   let streams: Array<Stream> | undefined = currentDao.streams;
 
   // request a refresh
   useEffect(() => {
@@ -41,7 +40,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   if (currentDao.streams != undefined) {
     currentCollectionsAddresses = getCurrentCollections(currentDao.streams);
   }
-  //   console.log("currentCollections=",currentCollectionsAddresses);
   const eligibleNfts: Array<Nft> = getEligibleNfts(
     owner,
     currentCollectionsAddresses
@@ -86,9 +84,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     let promises_array = [];
     let streams_addresses = [];
     let tmp_streams = [];
-    console.log("nft length=", eligibleNfts.length);
-    console.log("stream length=", currentDao.streams?.length);
-
     for (const nft of eligibleNfts) {
       for (const stream of currentDao.streams) {
         if (!streams_addresses.includes(stream.address.toString())) {
@@ -99,7 +94,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
               !streams_addresses.includes(stream.address.toString()) &&
               stream.is_active
             ) {
-              console.log("push=", stream);
               tmp_streams.push(stream);
               streams_addresses.push(stream.address.toString());
             }
@@ -127,7 +121,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         }
       }
     }
-    // setStreams(tmp_streams);
     return { streams_addresses, tmp_streams, promises_array };
   };
 
@@ -135,40 +128,40 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     (async () => {
       const { streams_addresses, tmp_streams, promises_array } =
         await getPromiseOfCheckingConn();
-      console.log("tmp_streams 1=", tmp_streams);
       let result_connections = await Promise.allSettled(promises_array);
       if (result_connections.length > 0) {
         for (const conn_result of result_connections) {
-          if (conn_result.status === "fulfilled") {
+          if(conn_result.status === "fulfilled"){
+            console.log("connection=",conn_result.value);
+          }
+          if (conn_result.status === "fulfilled" && conn_result.value) {
             let connection: pic_pic.Connection = conn_result.value;
-            
+
             try {
-                console.log("connection stream address=",connection.address.toString());
               if (
                 !streams_addresses.includes(
                   connection.stream_address?.toString()
                 ) &&
                 connection.is_active
               ) {
-                console.log("connection is active=", connection.is_active);
                 for (const stream of currentDao.streams) {
                   if (
                     stream.address.toString() ===
                     connection.stream_address?.toString()
                   ) {
-                    console.log("stream address=connection stream address");
                     streams_addresses.push(stream.address.toString());
                     tmp_streams.push(stream);
                   }
                 }
               }
-            } catch (e) {
-              console.log(e);
-            }
+            } catch (e) {}
           }
         }
       }
-      console.log("tmp_streams 2=", tmp_streams);
+      console.log("tmp_streams=", tmp_streams);
+      if (tmp_streams.length > 0) {
+        console.log(await chain.getStream(wallet, NETWORK, tmp_streams[0]));
+      }
       setStreams(tmp_streams);
     })();
   }, [flag === true]);
@@ -746,6 +739,7 @@ const NftCardComponent: React.FC<{
 
   function selectNft(e) {
     ReactGA.event({ category: "click", action: "select_nft" });
+    console.log("selectNFT clicked");
     if (props.isBusy) {
       alertIsBuys();
       e.stopPropagation();

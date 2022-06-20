@@ -3,9 +3,9 @@ import "../common/LabelInput/style.scss";
 import { useEffect, useState } from "react";
 import Button from "components/common/Button";
 import Plus_fill from "img/icons/plus_symbol_fill.png";
-import * as pic from "../../pic/pic";
+import * as pic from "pic/pic";
 import * as simPic from "../../pic/sim";
-import * as livePic from "../../pic/live";
+import * as livePic from "pic/live";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { validateSolanaAddress } from "../CommonCalls";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
@@ -69,7 +69,7 @@ const NewDAO = (props) => {
       num_streams:0,
     };
      
-    if (dao_id!=undefined && dao_disp_name!=undefined && dao_disp_img!=undefined) {
+    if (dao_id!=undefined && dao_disp_name!=undefined && dao_disp_img!=undefined && approval_threshold>0) {
       
       new_dao.dao_id = dao_id;
       new_dao.display_name = dao_disp_name;

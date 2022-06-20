@@ -106,8 +106,8 @@
           grid-template-rows: 1fr 2fr;
           border-radius: 10px;
           background-image: linear-gradient(
-              rgba(30, 36, 35, 0.6),
-              rgba(30, 36, 35, 0.6)
+              rgba(30, 36, 35, 0.5),
+              rgba(30, 36, 35, 0.5)
             ),
             url("../../img/background-images/Platinum_Loot_box_small.jpg");
           background-size: cover;
@@ -165,16 +165,16 @@
             align-items: center;
             &:hover {
               background-image: linear-gradient(
-                  rgba(30, 36, 35, 0.2),
-                  rgba(30, 36, 35, 0.2)
+                  rgba(30, 36, 35, 0.1),
+                  rgba(30, 36, 35, 0.1)
                 ),
                 url("../../img/background-images/gigaDAO_bg.png");
               color: $text-color-common;
             }
             border-radius: 10px;
             background-image: linear-gradient(
-                rgba(30, 36, 35, 0.5),
-                rgba(30, 36, 35, 0.5)
+                rgba(30, 36, 35, 0.3),
+                rgba(30, 36, 35, 0.3)
               ),
               url("../../img/background-images/gigaDAO_bg.png");
             background-size: cover;

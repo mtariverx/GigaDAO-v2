@@ -64,6 +64,7 @@ export async function initializeDAO(dao: pic.Dao) {
   // return {};
 }
 
+
 export async function insertCouncillors(dao: pic.Dao) {
   const dao_address = dao.address.toString();
   const councillors = dao.governance.councillors;
@@ -79,6 +80,7 @@ export async function insertCouncillors(dao: pic.Dao) {
   }
   return result;
 }
+
 export async function updateDao(dao: pic.Dao) {
   // def make_update_dao(dao_address, num_streams, display_name, image_url, dao_id, confirmed):
   // dao_address, num_streams, display_name, image_url, dao_id, confirmed

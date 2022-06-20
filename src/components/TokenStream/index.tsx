@@ -4,7 +4,7 @@ import "./style.scss";
 import "../common/LabelInput/style.scss";
 import Plus_fill from "img/icons/plus_symbol_fill.png";
 
-import * as pic from "../../pic/pic";
+import * as pic from "pic/pic";
 import * as simPic from "../../pic/sim";
 import * as livePic from "../../pic/live";
 import { Keypair, PublicKey } from "@solana/web3.js";
@@ -19,23 +19,20 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import { DaoState } from "store/DaoReducer";
 import { useDispatch, shallowEqual } from "react-redux";
+import { NETWORK } from "pic/connect";
+import * as chain from "../../pic/live_utils/onchain-data-helpers";
+
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const TokenStream = (props) => {
   // const { dao } = props;
-  const [is_stream, setStream] = useState(1);
-  const [pool_name, setPoolName] = useState<string>();
-  const [token_mint_address, setTokenMintAddress] = useState<string>();
-  const [token_ticker, setTokenTicker] = useState<string>();
-  const [token_img_url, setTokenImgUrl] = useState<string>();
-  const [stream_rate, setStreamRate] = useState<number>();
-  const [collections, setCollections] = useState<string[]>([]);
-  const [num_connections, setNumCollections] = useState(0);
-  const [collect, setCollect] = useState<string>();
-
   const [selected_dao, setSelectedDao] = useState<pic.Dao>();
   const [stream_compensate_arr, setStreamCompensateArr] = useState<string[]>(
     []
   );
+  const [streams, setStreams] = useState<Array<pic.Stream>>();
+  const [flag, setFlag] = useState(true);
   const dispatch_state = useDispatch();
   const onSetDao = React.useCallback(
     (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
@@ -47,29 +44,65 @@ const TokenStream = (props) => {
   );
   const wallet = useAnchorWallet();
   useEffect(() => {
-    setSelectedDao({ ...dao });
-    setStreamCompArr();
+    (async () => {
+      setSelectedDao({ ...dao });
+      const streams = await getStreamsFromChain();
+      setStreams(streams);
+      setStreamCompArr();
+    })();
   }, []);
+  useEffect(() => {
+    (async () => {
+      setSelectedDao({ ...dao });
+      const streams = await getStreamsFromChain();
+      setStreams(streams);
+      setStreamCompArr();
+      console.log("flag=", flag);
+    })();
+  }, [flag]);
 
-  const table_rows = 10;
-  const changeCollections = (index: number) => (value: string) => {
-    const temp = [...collections];
-    temp[index] = value;
-    setCollections(temp);
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const fileName = "mycollections";
+  const onClickExportToExcel = (stream: pic.Stream) => {
+    let collections = [];
+    stream.collections?.map((collection) => collections.push({
+      address: collection.address.toString()
+    }));
+    const ws = XLSX.utils.json_to_sheet(collections);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
   };
-  const onAddCollections = async () => {
-    const temp = [...collections];
-    let flag = true;
-    if (flag) {
-      if (!temp.includes(collect)) {
-        temp.push(collect);
-        setCollections(temp);
-      } else {
-        alert("The collection address is duplicated");
+  const onClickReactivateStream = (stream: pic.Stream) => {
+    livePic.reactivateStream(wallet, stream);
+    setFlag(!flag);
+  };
+  const getStreamsFromChain = async () => {
+    let tmp_stream = [];
+    let streams: Array<pic.Stream> | undefined = dao.streams;
+    streams = streams ? streams : [];
+    let promises = [];
+    for (const stream of streams) {
+      promises.push(chain.getStream(wallet, NETWORK, stream));
+    }
+    const results = await Promise.allSettled(promises);
+    for (const result of results) {
+      if (result.status === "fulfilled") {
+        const tmp: pic.Stream = result.value;
+        tmp_stream.push(tmp);
       }
     }
-    setCollect("");
+
+    return tmp_stream;
   };
+  const table_rows = 30;
+  const tmp_arr = [];
+  for (let i = 0; i < table_rows; i++) {
+    tmp_arr.push("tmp");
+  }
 
   const setStreamCompArr = () => {
     const remain_rows = dao.streams
@@ -84,7 +117,6 @@ const TokenStream = (props) => {
     setStreamCompensateArr(tmp_stream);
   };
 
-  const streams = dao.streams;
   return (
     <div className="new-stream">
       <div className="pool-stream-table">
@@ -94,6 +126,7 @@ const TokenStream = (props) => {
             <table>
               <tr>
                 <th>Pool Name</th>
+                <th>Token Stream</th>
                 <th>Pool Address</th>
                 <th>Active</th>
                 <th>Token Image Url</th>
@@ -102,13 +135,36 @@ const TokenStream = (props) => {
                 <th>Total Claimed</th>
                 <th>Current Pool Amount</th>
                 <th>Token Tickers</th>
+                <th>Collections</th>
+                <th>Reactivate Stream</th>
               </tr>
-              {selected_dao && selected_dao.streams
-                ? selected_dao.streams.map((stream) => {
+              {streams == undefined
+                ? tmp_arr.map((item) => {
+                    return (
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    );
+                  })
+                : ""}
+              {streams != undefined
+                ? streams.map((stream) => {
                     return (
                       <tr>
                         <td>{stream.name}</td>
                         <td>{stream.address.toString()}</td>
+                        <td>{stream.token_pool_address.toString()}</td>
                         <td>{stream.is_active ? "Yes" : "No"}</td>
                         <td>{stream.token_image_url}</td>
                         <td>{stream.daily_stream_rate}</td>
@@ -116,14 +172,37 @@ const TokenStream = (props) => {
                         <td>{stream.total_claimed}</td>
                         <td>{stream.current_pool_amount}</td>
                         <td>{stream.token_ticker}</td>
+                        <td>
+                          <div className="th-div">
+                            <Button
+                              btn_type="common"
+                              btn_title="Save in csv"
+                              onClick={() => onClickExportToExcel(stream)}
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          {!stream.is_active ? (
+                            <div className="th-div">
+                              <Button
+                                btn_type="common"
+                                btn_title="Reactivate"
+                                onClick={() => onClickReactivateStream(stream)}
+                              />
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                        </td>
                       </tr>
                     );
                   })
                 : ""}
-              {}
               {stream_compensate_arr.map((item) => {
                 return (
                   <tr>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

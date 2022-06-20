@@ -58,11 +58,20 @@
   }
 
 }
+.th-div{
+  display: grid;
+  justify-content: center;
+  width: 100%;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
+
+//remove white corner point
+::-webkit-scrollbar-corner {background-color: #161b19;}
+// ::-webkit-scrollbar-corner {background-color: transparent;}
 
 /* Track */
 ::-webkit-scrollbar-track {

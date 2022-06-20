@@ -130,7 +130,6 @@ export async function getStream(wallet, network, stream: pic.Stream) {
   const numConnections = streamAccount.numConnections.toNumber();
   const totalClaimed = streamAccount.totalClaimed.toNumber() / divFactor;
   const totalStreamed = streamAccount.totalStreamed.toNumber() / divFactor;
-
   stream.num_connections = numConnections;
   stream.is_active = isActive;
   stream.total_earned = totalStreamed;
@@ -138,6 +137,7 @@ export async function getStream(wallet, network, stream: pic.Stream) {
   stream.current_pool_amount = poolAmount;
   stream.last_update_timestamp = lastUpdateTimestamp;
   stream.decimals = decimals;
+  stream.token_pool_address= tokenPoolAddress;
 
   return stream;
 }

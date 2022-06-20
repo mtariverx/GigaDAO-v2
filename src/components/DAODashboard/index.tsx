@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./style.scss";
-import MemberGraph from "components/common/MemberGraph";
+// import MemberGraph from "components/common/MemberGraph";
 import Refresh from "img/icons/refresh_1.png";
 import Profile from "img/icons/profile.png";
 import Plus_fill from "img/icons/plus_symbol_fill.png";
@@ -15,9 +15,9 @@ import NewDAO from "components/NewDAO";
 import Button from "components/common/Button";
 import { ConnectWalletNavButton } from "../ConnectWalletNavButton";
 
-import * as pic from "../../pic/pic";
-import * as simPic from "../../pic/sim";
-import * as livePic from "../../pic/live";
+import * as pic from "pic/pic";
+import * as simPic from "pic/sim";
+import * as livePic from "pic/live";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
 import { useOwnerData } from "providers/owner";
@@ -63,7 +63,7 @@ const DAODashboard: React.FC = (props) => {
 
           let member_daos_promise = await livePic.getMemberDaos(
             newOwner,
-            wallet
+            wallet,
           );
           console.log("member_daos_promise=", member_daos_promise);
 
@@ -99,7 +99,7 @@ const DAODashboard: React.FC = (props) => {
 
           let member_daos_promise = await livePic.getMemberDaos(
             newOwner,
-            wallet
+            wallet,
           );
           console.log("member_daos_promise=", member_daos_promise);
 

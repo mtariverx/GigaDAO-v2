@@ -115,7 +115,7 @@ const NewStream = (props) => {
         current_pool_amount: sampleTokenStream1.pool_reserve_amount,
         token_ticker: token_ticker,
         last_update_timestamp: Math.floor(Date.now() / 1000),
-        is_active: false,
+        is_active: true,
         token_mint_address: new PublicKey(token_mint_address),
         stream_keypair: key,
       };

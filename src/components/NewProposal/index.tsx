@@ -44,7 +44,10 @@ const NewProposal = (props) => {
     (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
     [dispatch_state]
   );
-  const dao: pic.Dao = useSelector((state:DaoState) => state.dao, shallowEqual);
+  const dao: pic.Dao = useSelector(
+    (state: DaoState) => state.dao,
+    shallowEqual
+  );
   useEffect(() => {
     if (proposal_type == -1) {
       setShowAddresses(false);
@@ -93,17 +96,16 @@ const NewProposal = (props) => {
       num_streams: 0,
     };
     dao.governance = governance;
-    if ((await validateSolanaAddress(stream_pubkey)) == false) {
-      setStreamPubkey("");
-    }
-    if ((await validateSolanaAddress(proposed_withdrawal_stream)) == false) {
-      setProposedWithdrawalStream("");
-    }
+    // if ((await validateSolanaAddress(stream_pubkey)) == false) {
+    //   setStreamPubkey("");
+    // }
+    // if ((await validateSolanaAddress(proposed_withdrawal_stream)) == false) {
+    //   setProposedWithdrawalStream("");
+    // }
     if (
-      proposed_councillors.length > 0 ||
-      (await validateSolanaAddress(stream_pubkey)) ||
-      (proposed_withdrawal_receiver &&
-        (await validateSolanaAddress(proposed_withdrawal_stream)))
+      proposed_councillors.length > 1 ||
+      stream_pubkey!="" ||
+      (proposed_withdrawal_receiver!="" && proposed_withdrawal_stream!="")
     ) {
       if (proposed_councillors && proposed_councillors.length > 0) {
         let proposed_councillors_pubkey = [];
@@ -112,15 +114,14 @@ const NewProposal = (props) => {
             new PublicKey(proposed_councillors[i])
           );
         }
-  
+
         dao.governance.proposed_councillors = proposed_councillors_pubkey;
         dao.governance.proposed_councillors.push(wallet.publicKey); //add owner
       }
       dao.governance.proposal_type = proposal_type;
 
       dao.governance.proposal_is_active = true;
-      dao.governance.proposed_approval_threshold =
-        proposed_approval_threshold;
+      dao.governance.proposed_approval_threshold = proposed_approval_threshold;
       if (stream_pubkey)
         dao.governance.proposed_deactivation_stream = new PublicKey(
           stream_pubkey

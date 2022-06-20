@@ -190,6 +190,7 @@ const ActiveProposal = (props) => {
       }
     }
      getActiveProposalInfo(dao);
+     props.onClose(); //close btn
   };
   return (
     // <div>

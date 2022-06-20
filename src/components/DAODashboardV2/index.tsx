@@ -22,9 +22,10 @@ import NewDAO from "components/NewDAO";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
 import { useOwnerData } from "providers/owner";
-import * as pic from "../../pic/pic";
-import * as simPic from "../../pic/sim";
-import * as livePic from "../../pic/live";
+import * as pic from "pic/pic";
+import * as simPic from "pic/sim";
+// import * as simPic from "../../pic/sim";
+import * as livePic from "pic/live";
 
 import { useSelector, useDispatch } from "react-redux";
 import { DaoState } from "store/DaoReducer";
@@ -60,30 +61,39 @@ const DAODashboardV2: React.FC = (props) => {
 
   useEffect(() => {
     (async () => {
-      if (connected) {
-        setIsConnectingToOwner(true);
-        const newOwner: pic.Owner = { address: publicKey };
-        // const newOwner: pic.Owner = { address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi")};;
-        callConnectOwner(dispatch, newOwner).then(() => {
-          setIsConnectingToOwner(false);
-        });
-        let member_daos_promise = await livePic.getMemberDaos(newOwner, wallet);
-        let mdis: Array<string> = [];
-        let m_daos: Array<pic.Dao> = [];
-        m_daos = member_daos_promise;
-        setMemberDAOs(m_daos); //set daos to memberdaos but the dao has only address and streams
-        mdis = m_daos.map((dao) => dao.dao_id);
-        setMemberDaoIds(mdis);
-        setSelectDaoId(mdis[0]);
-        let [daos_with_stream] = await livePic.getDaos([{ ...m_daos[0] }]);
-        await livePic.checkIfStreamOnChain(wallet, { ...daos_with_stream });
-        let [confirmedDaos] = await livePic.getConfirmedStream([
-          { ...daos_with_stream },
-        ]);
-        setSelectedMemberDAO({ ...confirmedDaos }); //only first
-        onSetDao({ ...confirmedDaos });
-      } else {
-        callDisconnectOwner(dispatch);
+      try {
+        if (connected) {
+          setIsConnectingToOwner(true);
+          const newOwner: pic.Owner = { address: publicKey };
+          // const newOwner: pic.Owner = { address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi")};;
+          callConnectOwner(dispatch, newOwner).then(() => {
+            setIsConnectingToOwner(false);
+          });
+          let member_daos_promise = await livePic.getMemberDaos(
+            newOwner,
+            wallet
+          );
+          console.log("=======",member_daos_promise);
+          let mdis: Array<string> = [];
+          let m_daos: Array<pic.Dao> = [];
+          m_daos = member_daos_promise;
+          setMemberDAOs(m_daos); //set daos to memberdaos but the dao has only address and streams
+          mdis = m_daos.map((dao) => dao.dao_id);
+          setMemberDaoIds(mdis);
+          setSelectDaoId(mdis[0]);
+          let [daos_with_stream] = await livePic.getDaos([{ ...m_daos[0] }]);
+          await livePic.checkIfStreamOnChain(wallet, { ...daos_with_stream });
+          let [confirmedDaos] = await livePic.getConfirmedStream([
+            { ...daos_with_stream },
+          ]);
+          setSelectedMemberDAO({ ...confirmedDaos }); //only first
+          console.log("-------------",confirmedDaos);
+          onSetDao({ ...confirmedDaos });
+        } else {
+          callDisconnectOwner(dispatch);
+        }
+      } catch (e) {
+        console.log(e);
       }
     })();
   }, [connected]);
@@ -97,8 +107,6 @@ const DAODashboardV2: React.FC = (props) => {
         });
 
         let member_daos_promise = await livePic.getMemberDaos(newOwner, wallet);
-        console.log("member_daos_promise=", member_daos_promise);
-
         let mdis: Array<string> = [];
         let m_daos: Array<pic.Dao> = [];
         m_daos = member_daos_promise;
@@ -227,7 +235,7 @@ const DAODashboardV2: React.FC = (props) => {
                     <div className="each-dao-info">
                       <div className="dao-summary-value">
                         {stream.current_pool_amount}
-                        <div className="unit-color"> GIGS</div>
+                        <div className="unit-color"> {stream.token_ticker}</div>
                       </div>
                       <div className="dao-summary-percent">+100.0%</div>
                     </div>
@@ -271,14 +279,14 @@ const DAODashboardV2: React.FC = (props) => {
                   <div
                     className="councillor-action-others"
                     // onClick={() => setShowModal(5)}
-                    onClick={()=>alert("Coming soon")}
+                    onClick={() => alert("Coming soon")}
                   >
                     New Multisig Treasury
                   </div>
                   <div
                     className="councillor-action-others"
                     // onClick={() => setShowModal(6)}
-                    onClick={()=>alert("Coming soon")}
+                    onClick={() => alert("Coming soon")}
                   >
                     Treasury
                   </div>
