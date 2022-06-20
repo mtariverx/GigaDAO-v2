@@ -276,7 +276,7 @@ export async function executeWithdrawFromStream(
   const streamAccount = await program.account.stream.fetch(
     dao.governance.proposed_withdrawal_stream
   );
-  const token_mint_address = streamAccount.token_mint_address;
+  const token_mint_address = streamAccount.tokenMintAddress;
   console.log("token mint address=",token_mint_address);
   // get or create ata
   let receiverAta;
