@@ -782,9 +782,9 @@ let initializeStream: pic.InitializeStream = async (
   stream: pic.Stream
 ) => {
   try {
-    // mirror
-    //   .insertNewStream(stream)
-    //   .then((result) => alert("Initializing stream in database was success!"));
+    mirror
+      .insertNewStream(stream)
+      .then((result) => alert("Initializing stream in database was success!"));
     await rpc
       .initializeStream(wallet, NETWORK, dao, stream)
       .then((result) => alert("Initializing stream on chain was success!"))
