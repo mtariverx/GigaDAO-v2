@@ -31,6 +31,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { DaoState } from "store/DaoReducer";
 import { shallowEqual } from "react-redux";
 import ActiveProposal from "components/ActiveProposal";
+import NewMultisigTreasury from "components/NewMultisigTreasury";
+import MultisigTreausry from "components/MultisigTreasury";
 
 const DAODashboardV2: React.FC = (props) => {
   const { publicKey, connected } = useWallet();
@@ -73,7 +75,7 @@ const DAODashboardV2: React.FC = (props) => {
             newOwner,
             wallet
           );
-          console.log("=======",member_daos_promise);
+          console.log("=======", member_daos_promise);
           let mdis: Array<string> = [];
           let m_daos: Array<pic.Dao> = [];
           m_daos = member_daos_promise;
@@ -82,13 +84,14 @@ const DAODashboardV2: React.FC = (props) => {
           setMemberDaoIds(mdis);
           setSelectDaoId(mdis[0]);
           let [daos_with_stream] = await livePic.getDaos([{ ...m_daos[0] }]);
-          await livePic.checkIfStreamOnChain(wallet, { ...daos_with_stream });
-          let [confirmedDaos] = await livePic.getConfirmedStream([
-            { ...daos_with_stream },
-          ]);
-          setSelectedMemberDAO({ ...confirmedDaos }); //only first
-          console.log("-------------",confirmedDaos);
-          onSetDao({ ...confirmedDaos });
+          let streams = await livePic.checkIfStreamOnChain(wallet, {
+            ...daos_with_stream,
+          });
+          console.log("---", streams);
+          const dao = { ...m_daos[0], streams: streams };
+          console.log("--dao--", dao);
+          setSelectedMemberDAO({ ...dao }); //only first
+          onSetDao({ ...dao });
         } else {
           callDisconnectOwner(dispatch);
         }
@@ -100,29 +103,22 @@ const DAODashboardV2: React.FC = (props) => {
   useEffect(() => {
     (async () => {
       if (connected) {
-        setIsConnectingToOwner(true);
-        const newOwner: pic.Owner = { address: publicKey };
-        callConnectOwner(dispatch, newOwner).then(() => {
-          setIsConnectingToOwner(false);
-        });
-
-        let member_daos_promise = await livePic.getMemberDaos(newOwner, wallet);
-        let mdis: Array<string> = [];
-        let m_daos: Array<pic.Dao> = [];
-        m_daos = member_daos_promise;
-        setMemberDAOs(m_daos); //set daos to memberdaos but the dao has only address and streams
-        mdis = m_daos.map((dao) => dao.dao_id);
-        setMemberDaoIds(mdis);
-        setSelectDaoId(select_dao_id);
+        console.log("select*******dao");
         let [daos_with_stream] = await livePic.getDaos([
           { ...selected_member_dao },
         ]);
-        await livePic.checkIfStreamOnChain(wallet, { ...daos_with_stream });
-        let [confirmedDaos] = await livePic.getConfirmedStream([
-          { ...daos_with_stream },
-        ]);
-        setSelectedMemberDAO({ ...confirmedDaos }); //only first
-        onSetDao({ ...confirmedDaos });
+        console.log("+++++", selected_member_dao);
+        let streams = await livePic.checkIfStreamOnChain(wallet, {
+          ...daos_with_stream,
+        });
+        const dao = { ...selected_member_dao, streams: streams };
+        // let [confirmedDaos] = await livePic.getConfirmedStream([
+        //   { ...daos_with_stream },
+        // ]);
+        console.log("---", streams);
+        // console.log("-------------", confirmedDaos);
+        setSelectedMemberDAO({ ...dao }); //only first
+        onSetDao({ ...dao });
       } else {
         callDisconnectOwner(dispatch);
       }
@@ -155,13 +151,12 @@ const DAODashboardV2: React.FC = (props) => {
     for (const dao of member_daos) {
       if (dao.dao_id == dao_id) {
         let [daos_with_stream] = await livePic.getDaos([{ ...dao }]);
-        await livePic.checkIfStreamOnChain(wallet, { ...daos_with_stream });
-        let [confirmedDaos] = await livePic.getConfirmedStream([
-          { ...daos_with_stream },
-        ]);
-        setSelectedMemberDAO({ ...confirmedDaos });
+        const streams=await livePic.checkIfStreamOnChain(wallet, { ...daos_with_stream });
+        const dao_tmp={...dao, streams:streams}
+        setSelectedMemberDAO({ ...dao_tmp });
         setSelectDaoId(dao_id);
-        onSetDao({ ...confirmedDaos });
+        onSetDao({ ...dao_tmp });
+       
       }
     }
   };
@@ -278,15 +273,15 @@ const DAODashboardV2: React.FC = (props) => {
                   </div>
                   <div
                     className="councillor-action-others"
-                    // onClick={() => setShowModal(5)}
-                    onClick={() => alert("Coming soon")}
+                    onClick={() => setShowModal(5)}
+                    // onClick={() => alert("Coming soon")}
                   >
                     New Multisig Treasury
                   </div>
                   <div
                     className="councillor-action-others"
-                    // onClick={() => setShowModal(6)}
-                    onClick={() => alert("Coming soon")}
+                    onClick={() => setShowModal(6)}
+                    // onClick={() => alert("Coming soon")}
                   >
                     Treasury
                   </div>
@@ -347,6 +342,23 @@ const DAODashboardV2: React.FC = (props) => {
       {show_modal == 4 && connected ? (
         <DAODetailModal onClick={() => setShowModal(-1)}>
           <ActiveProposal dao={selected_member_dao} onClose={onCloseModeal} />
+        </DAODetailModal>
+      ) : (
+        ""
+      )}
+      {show_modal == 5 && connected ? (
+        <DAODetailModal onClick={() => setShowModal(-1)}>
+          <NewMultisigTreasury
+            dao={selected_member_dao}
+            onClose={onCloseModeal}
+          />
+        </DAODetailModal>
+      ) : (
+        ""
+      )}
+      {show_modal == 6 && connected ? (
+        <DAODetailModal onClick={() => setShowModal(-1)}>
+          <MultisigTreausry dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""

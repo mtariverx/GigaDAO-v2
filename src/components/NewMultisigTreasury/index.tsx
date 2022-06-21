@@ -20,17 +20,16 @@ import { useSelector } from "react-redux";
 import { DaoState } from "store/DaoReducer";
 import { useDispatch, shallowEqual } from "react-redux";
 
-const NewStream = (props) => {
-  const [pool_name, setPoolName] = useState<string>();
+const NewMultisigTreausry = (props) => {
+  const [treasury_name, setTreasuryName] = useState<string>();
   const [token_mint_address, setTokenMintAddress] = useState<string>();
   const [token_ticker, setTokenTicker] = useState<string>();
   const [token_img_url, setTokenImgUrl] = useState<string>();
-  const [stream_rate, setStreamRate] = useState<number>();
-  const [collections, setCollections] = useState<string[]>([]);
-  const [num_connections, setNumCollections] = useState(0);
-  const [collect, setCollect] = useState<string>();
 
   const [selected_dao, setSelectedDao] = useState<pic.Dao>();
+  const [stream_compensate_arr, setStreamCompensateArr] = useState<string[]>(
+    []
+  );
   const wallet = useAnchorWallet();
 
   const dispatch_state = useDispatch();
@@ -48,55 +47,24 @@ const NewStream = (props) => {
   }, []);
 
   const table_rows = 10;
-  const changeCollections = (index: number) => (value: string) => {
-    const temp = [...collections];
-    temp[index] = value;
-    setCollections(temp);
-  };
-  const onAddCollections = async () => {
-    const temp = [...collections];
-    let flag = true;
-    if (flag) {
-      if (!temp.includes(collect)) {
-        temp.push(collect);
-        setCollections(temp);
-      } else {
-        alert("The collection address is duplicated");
-      }
-    }
-    setCollect("");
-  };
-  const onClickCreateNewStreamBtn = async () => {
+
+  const onClickMultisigTreasury = async () => {
     if ((await validateSolanaAddress(token_mint_address)) == false) {
       setTokenMintAddress("");
     }
-    if(stream_rate==0 || stream_rate==undefined){
-      alert("Stream rate should be greater than zero!!!");
-    }
-    if (
-      pool_name &&
-      token_ticker &&
-      token_img_url &&
-      token_mint_address &&
-      collections.length > 0 && stream_rate>0
-    ) {
+    if (treasury_name && token_ticker && token_img_url && token_mint_address) {
       const key = Keypair.generate();
-      let new_stream: pic.Stream = {
-        name: pool_name,
+      let new_treasury: pic.Stream = {
+        name: treasury_name,
         address: key.publicKey,
         dao_address: new PublicKey(dao.address),
-        collections: collections.map((collect) => {
-          let collection = {
-            address: new PublicKey(collect),
-          };
-          return collection;
-        }),
-        num_connections: num_connections,
+        collections: [],
+        num_connections: 0,
         token_image_url: token_img_url,
-        daily_stream_rate: stream_rate,
+        daily_stream_rate: 0,
         total_earned: 0,
         total_claimed: 0,
-        current_pool_amount: sampleTokenStream1.pool_reserve_amount,
+        current_pool_amount: 0,
         token_ticker: token_ticker,
         last_update_timestamp: Math.floor(Date.now() / 1000),
         is_active: true,
@@ -104,7 +72,7 @@ const NewStream = (props) => {
         stream_keypair: key,
       };
 
-      await livePic.initializeStream(wallet, dao, new_stream); //initializeStream
+      await livePic.initializeStream(wallet, dao, new_treasury); //initializeStream
       setSelectedDao({ ...dao }); //setting dao with streams
       props.onClose(); //close btn
     }
@@ -113,15 +81,15 @@ const NewStream = (props) => {
   const streams = dao.streams;
   return (
     <div className="new-stream">
-      <div className="content-title">Create Token Streams</div>
+      <div className="content-title">Create Multi-sig Treasury</div>
       <div className="stream-pool-content">
         <div className="stream-content">
           <div className="item-wrapper">
-            <div className="title">Name</div>
+            <div className="title">Treasury Name</div>
             <input
               required
-              value={pool_name}
-              onChange={(evt) => setPoolName(evt.target.value)}
+              value={treasury_name}
+              onChange={(evt) => setTreasuryName(evt.target.value)}
             />
           </div>
           <div className="item-wrapper">
@@ -148,51 +116,12 @@ const NewStream = (props) => {
               onChange={(evt) => setTokenImgUrl(evt.target.value)}
             />
           </div>
-          <div className="item-wrapper">
-            <div className="title">Stream Rate</div>
-            <input
-              required
-              type="number"
-              value={stream_rate}
-              onChange={(evt) => setStreamRate(parseFloat(evt.target.value))}
-            />
-          </div>
-          <div className="item-wrapper plus-button">
-            <div className="title">Collections</div>
-            <input
-              value={collect}
-              onChange={(evt) => setCollect(evt.target.value)}
-            />
-            <div className="input-side-btn">
-              <img src={Plus_fill} onClick={onAddCollections} />
-            </div>
-          </div>
-          <div className="item-wrapper">
-            <div></div>
-            <div className="show-collections">
-              {collections != undefined
-                ? collections.map((item, index) => (
-                    <div className="item">{item}</div>
-                  ))
-                : ""}
-            </div>
-          </div>
-          <div className="item-wrapper">
-            <div className="title">Num_collections</div>
-            <input
-              value={num_connections}
-              className="num"
-              onChange={(evt) =>
-                setNumCollections(parseInt(evt.target.value || "0"))
-              }
-            />
-          </div>
         </div>
         <div className="stream-initial-btn">
           <Button
             btn_type="common"
             btn_title="Initialize Stream"
-            onClick={onClickCreateNewStreamBtn}
+            onClick={onClickMultisigTreasury}
           />
         </div>
       </div>
@@ -200,4 +129,4 @@ const NewStream = (props) => {
   );
 };
 
-export default NewStream;
+export default NewMultisigTreausry;

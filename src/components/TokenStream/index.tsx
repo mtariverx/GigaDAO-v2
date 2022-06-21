@@ -42,11 +42,12 @@ const TokenStream = (props) => {
     (state: DaoState) => state.dao,
     shallowEqual
   );
+  // console.log("token stream dao=",dao);
   const wallet = useAnchorWallet();
   useEffect(() => {
     (async () => {
       setSelectedDao({ ...dao });
-      const streams = await getStreamsFromChain();
+      const streams = dao.streams ? getStreamsFiltered(dao.streams) : [];
       setStreams(streams);
       setStreamCompArr();
     })();
@@ -54,22 +55,34 @@ const TokenStream = (props) => {
   useEffect(() => {
     (async () => {
       setSelectedDao({ ...dao });
-      const streams = await getStreamsFromChain();
+      const streams = dao.streams ? getStreamsFiltered(dao.streams) : [];
+      let streams_filtered=[];
+      
       setStreams(streams);
       setStreamCompArr();
       console.log("flag=", flag);
     })();
   }, [flag]);
-
+  const getStreamsFiltered=(streams:pic.Stream[])=>{
+    let streams_filtered=[];
+    for(const stream of streams){
+      if(stream.collections?.length>0 && stream.daily_stream_rate>0){
+        streams_filtered.push(stream);
+      }
+    }
+    return streams_filtered;
+  }
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
   const fileExtension = ".xlsx";
   const fileName = "mycollections";
   const onClickExportToExcel = (stream: pic.Stream) => {
     let collections = [];
-    stream.collections?.map((collection) => collections.push({
-      address: collection.address.toString()
-    }));
+    stream.collections?.map((collection) =>
+      collections.push({
+        address: collection.address.toString(),
+      })
+    );
     const ws = XLSX.utils.json_to_sheet(collections);
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
@@ -80,24 +93,24 @@ const TokenStream = (props) => {
     livePic.reactivateStream(wallet, stream);
     setFlag(!flag);
   };
-  const getStreamsFromChain = async () => {
-    let tmp_stream = [];
-    let streams: Array<pic.Stream> | undefined = dao.streams;
-    streams = streams ? streams : [];
-    let promises = [];
-    for (const stream of streams) {
-      promises.push(chain.getStream(wallet, NETWORK, stream));
-    }
-    const results = await Promise.allSettled(promises);
-    for (const result of results) {
-      if (result.status === "fulfilled") {
-        const tmp: pic.Stream = result.value;
-        tmp_stream.push(tmp);
-      }
-    }
+  // const getStreamsFromChain = async () => {
+  //   let tmp_stream = [];
+  //   let streams: Array<pic.Stream> | undefined = dao.streams;
+  //   streams = streams ? streams : [];
+  //   let promises = [];
+  //   for (const stream of streams) {
+  //     promises.push(chain.getStream(wallet, NETWORK, stream));
+  //   }
+  //   const results = await Promise.allSettled(promises);
+  //   for (const result of results) {
+  //     if (result.status === "fulfilled") {
+  //       const tmp: pic.Stream = result.value;
+  //       tmp_stream.push(tmp);
+  //     }
+  //   }
 
-    return tmp_stream;
-  };
+  //   return tmp_stream;
+  // };
   const table_rows = 30;
   const tmp_arr = [];
   for (let i = 0; i < table_rows; i++) {
@@ -119,107 +132,107 @@ const TokenStream = (props) => {
 
   return (
     <div className="new-stream">
-      <div className="pool-stream-table">
-        <div className="table-container">
-          <div className="table-title">Token Streams</div>
-          <div className="table-content">
-            <table>
-              <tr>
-                <th>Pool Name</th>
-                <th>Token Stream</th>
-                <th>Pool Address</th>
-                <th>Active</th>
-                <th>Token Image Url</th>
-                <th>Stream Rate</th>
-                <th>Total Earned</th>
-                <th>Total Claimed</th>
-                <th>Current Pool Amount</th>
-                <th>Token Tickers</th>
-                <th>Collections</th>
-                <th>Reactivate Stream</th>
-              </tr>
-              {streams == undefined
-                ? tmp_arr.map((item) => {
-                    return (
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    );
-                  })
-                : ""}
-              {streams != undefined
-                ? streams.map((stream) => {
-                    return (
-                      <tr>
-                        <td>{stream.name}</td>
-                        <td>{stream.address.toString()}</td>
-                        <td>{stream.token_pool_address.toString()}</td>
-                        <td>{stream.is_active ? "Yes" : "No"}</td>
-                        <td>{stream.token_image_url}</td>
-                        <td>{stream.daily_stream_rate}</td>
-                        <td>{stream.total_earned}</td>
-                        <td>{stream.total_claimed}</td>
-                        <td>{stream.current_pool_amount}</td>
-                        <td>{stream.token_ticker}</td>
-                        <td>
+      <div className="content-title">Token Streams</div>
+      {/* <div className="pool-stream-table"> */}
+      <div className="table-container">
+        <div className="table-content">
+          <table>
+            <tr>
+              <th>Pool Name</th>
+              <th>Token Stream</th>
+              <th>Pool Address</th>
+              <th>Active</th>
+              <th>Token Image Url</th>
+              <th>Stream Rate</th>
+              <th>Total Earned</th>
+              <th>Total Claimed</th>
+              <th>Current Pool Amount</th>
+              <th>Token Tickers</th>
+              <th>Collections</th>
+              <th>Reactivate Stream</th>
+            </tr>
+            {streams == undefined
+              ? tmp_arr.map((item) => {
+                  return (
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  );
+                })
+              : ""}
+            {streams != undefined
+              ? streams.map((stream) => {
+                  return (
+                    <tr>
+                      <td>{stream.name}</td>
+                      <td>{stream.address.toString()}</td>
+                      <td>{stream.token_pool_address.toString()}</td>
+                      <td>{stream.is_active ? "Yes" : "No"}</td>
+                      <td>{stream.token_image_url}</td>
+                      <td>{stream.daily_stream_rate}</td>
+                      <td>{stream.total_earned}</td>
+                      <td>{stream.total_claimed}</td>
+                      <td>{stream.current_pool_amount}</td>
+                      <td>{stream.token_ticker}</td>
+                      <td>
+                        <div className="th-div">
+                          <Button
+                            btn_type="narrow"
+                            btn_title="Save in csv"
+                            onClick={() => onClickExportToExcel(stream)}
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        {!stream.is_active ? (
                           <div className="th-div">
                             <Button
-                              btn_type="common"
-                              btn_title="Save in csv"
-                              onClick={() => onClickExportToExcel(stream)}
+                              btn_type="narrow"
+                              btn_title="Reactivate"
+                              onClick={() => onClickReactivateStream(stream)}
                             />
                           </div>
-                        </td>
-                        <td>
-                          {!stream.is_active ? (
-                            <div className="th-div">
-                              <Button
-                                btn_type="common"
-                                btn_title="Reactivate"
-                                onClick={() => onClickReactivateStream(stream)}
-                              />
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })
-                : ""}
-              {stream_compensate_arr.map((item) => {
-                return (
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                );
-              })}
-            </table>
-          </div>
+                        ) : (
+                          ""
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              : ""}
+            {stream_compensate_arr.map((item) => {
+              return (
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              );
+            })}
+          </table>
         </div>
       </div>
+      {/* </div> */}
     </div>
   );
 };

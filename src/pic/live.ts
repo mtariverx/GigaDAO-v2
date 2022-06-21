@@ -692,7 +692,7 @@ let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
       index++;
       if (
         dao_promise.status === "fulfilled" &&
-        dao_promise.value.success &&
+        dao_promise.value.success && dao_promise.value.data[0]!=undefined &&
         dao_promise.value.data[0]?.confirmed
       ) {
         new_daos[index].dao_id = dao_promise.value.data[0].dao_id;
@@ -832,6 +832,7 @@ let reactivateStream: pic.ReactivateStream = async (
 };
 
 export async function checkIfStreamOnChain(wallet, dao) {
+  let tmp_streams=[];
   try {
     let promises = [];
     let new_dao = { ...dao, streams: [] };
@@ -846,8 +847,9 @@ export async function checkIfStreamOnChain(wallet, dao) {
     let stream_unconfirmed = [];
     const confirmed = true;
     for (const result of results) {
-      if (result.status === "fulfilled") {
+      if (result.status === "fulfilled" && result.value!=undefined) {
         let stream = result.value;
+        tmp_streams.push(stream);
         stream_unconfirmed.push(
           mirror.updateStream(
             stream.address,
@@ -874,6 +876,7 @@ export async function checkIfStreamOnChain(wallet, dao) {
   } catch (e) {
     console.log(e);
   }
+  return tmp_streams;
 }
 //check later
 export async function getConfirmedStream(daos) {

@@ -8,9 +8,8 @@ import {
   sendAndConfirmTransaction,
   SystemProgram,
   Transaction,
-  
 } from "@solana/web3.js";
-  
+
 import { TOKEN_PROGRAM_ID } from "libs/spl-token";
 import * as spl_token from "libs/spl-token";
 import * as pic from "../pic";
@@ -250,7 +249,6 @@ export async function executeWithdrawFromStream(
   network: string,
   dao: pic.Dao
 ) {
-  console.log("rpc--withdraw");
   let program = await initProgram(wallet, network);
   [fee_controller] = await PublicKey.findProgramAddress(
     [Buffer.from(FEE_CONTROLLER_PDA_SEED)],
@@ -263,7 +261,6 @@ export async function executeWithdrawFromStream(
     ],
     program.programId
   );
-  console.log("tokenPool=", tokenPool.toString());
   [daoAuthPda] = await PublicKey.findProgramAddress(
     [
       dao.address.toBuffer(),
@@ -271,37 +268,20 @@ export async function executeWithdrawFromStream(
     ],
     program.programId
   );
-  // init tx
-  let transaction = new Transaction();
   const streamAccount = await program.account.stream.fetch(
     dao.governance.proposed_withdrawal_stream
   );
   const token_mint_address = streamAccount.tokenMintAddress;
-  console.log("token mint address=",token_mint_address);
+  
   // get or create ata
   let receiverAta;
- 
+  let instructions = [];
   try {
     // @ts-ignore
-    const receiverAtaInfo = await spl_token.getOrCreateAssociatedTokenAccount(program.provider.connection, program.provider.wallet,token_mint_address,dao.governance.proposed_withdrawal_receiver);
-    
+    const receiverAtaInfo = await spl_token.getOrCreateAssociatedTokenAccount(program.provider.connection, program.provider.wallet, token_mint_address, dao.governance.proposed_withdrawal_receiver );
+
     receiverAta = receiverAtaInfo.address;
     console.log("got receiverATA: ", receiverAta.toString());
-    await program.rpc.executeWithdrawFromStream({
-      accounts: {
-        signer: wallet.publicKey,
-        dao: dao.address,
-        stream: dao.governance.proposed_withdrawal_stream,
-        tokenPool: tokenPool,
-        receiverTokenAccount: receiverAta, //
-        daoAuthPda: daoAuthPda,
-        feeReceiverAddress: FEE_RX_ADDRESS,
-        feeController: fee_controller,
-        systemProgram: SystemProgram.programId,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      },
-    });
   } catch (e) {
     console.log("getAssociatedTokenAddress error: ", e);
     // add create ata ix to tx
@@ -310,57 +290,34 @@ export async function executeWithdrawFromStream(
       dao.governance.proposed_withdrawal_receiver,
       false,
       SystemProgram.programId,
-      TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID
     );
-    console.log("==receiverAta=",receiverAta);
-    console.log("==receiverAta.pubkey=",receiverAta.toString());
-    // receiverAta = await spl_token.getAssociatedTokenAddress(
-    //   token_mint_address,
-    //   dao.governance.proposed_withdrawal_receiver
-    // );
-    // const create_ata_ix = spl_token.createAssociatedTokenAccountInstruction(
-    //   wallet.publicKey,
-    //   receiverAta,
-    //   recevier,
-    //   token_mint_address
-    // );
     const create_ata_ix = spl_token.createAssociatedTokenAccountInstruction(
-      program.provider.wallet.publicKey,
+      wallet.publicKey,
       receiverAta,
       dao.governance.proposed_withdrawal_receiver,
-      token_mint_address
+      token_mint_address,
+      SystemProgram.programId,
+      TOKEN_PROGRAM_ID
     );
-    transaction.add(create_ata_ix);
-    // await sendAndConfirmTransaction(program.provider.connection, transaction, [wallet.payer]);
-    console.log("-------program.rpc.exe---");
-    await program.rpc.executeWithdrawFromStream({
-      accounts: {
-        signer: wallet.publicKey,
-        dao: dao.address,
-        stream: dao.governance.proposed_withdrawal_stream,
-        tokenPool: tokenPool,
-        receiverTokenAccount: receiverAta, //
-        daoAuthPda: daoAuthPda,
-        feeReceiverAddress: FEE_RX_ADDRESS,
-        feeController: fee_controller,
-        systemProgram: SystemProgram.programId,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      },
-      instructions: [
-        await spl_token.createAssociatedTokenAccountInstruction(
-          wallet.publicKey,
-          receiverAta,
-          dao.governance.proposed_withdrawal_receiver,
-          token_mint_address,
-          SystemProgram.programId,
-          TOKEN_PROGRAM_ID,
-        ),
-      ],
-    });
-    // transaction.add(create_ata_ix);
-    console.log("added create account ix for ata: ", receiverAta.toString());
+    instructions.push(create_ata_ix);
   }
+  await program.rpc.executeWithdrawFromStream({
+    accounts: {
+      signer: wallet.publicKey,
+      dao: dao.address,
+      stream: dao.governance.proposed_withdrawal_stream,
+      tokenPool: tokenPool,
+      receiverTokenAccount: receiverAta, //
+      daoAuthPda: daoAuthPda,
+      feeReceiverAddress: FEE_RX_ADDRESS,
+      feeController: fee_controller,
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    },
+    instructions: instructions
+  });
   console.log("executeWithdrawFromStream success");
 }
 

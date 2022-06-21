@@ -1,18 +1,21 @@
 @import "../../scss/DAOVariable.scss";
 .new-stream {
   display: grid;
-  grid-template-rows: min-content 1fr;
   background-color: $bg-color-layer2;
-  .content-title {
+  grid-template-rows: min-content 1fr;
+  height: 100%;
+  &>.content-title {
     padding: 20px;
     padding-left: 30px;
+    padding-top: 30px;
     font-size: 20px;
   }
   & > .stream-pool-content {
-    
+   
     display: grid;
     grid-template-columns: 1fr 20%;
     border-radius: 10px;
+    min-height:28rem;
  
     & > .stream-content {
       // display: grid;
