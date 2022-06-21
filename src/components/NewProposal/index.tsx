@@ -25,6 +25,10 @@ const NewProposal = (props) => {
       value: pic.ProposalType.WITHDRAW_FROM_STREAM,
       label: "Withdraw from Stream",
     },
+    {
+      value: pic.ProposalType.WITHDRAW_FROM_TREASURY,
+      label: "Withdraw from Treasury",
+    },
   ];
   const [proposed_councillors, setProposedCouncillors] = useState<string[]>([]);
   const [one_councillor, setOneCouncillor] = useState<string>();
@@ -104,8 +108,8 @@ const NewProposal = (props) => {
     // }
     if (
       proposed_councillors.length > 1 ||
-      stream_pubkey!="" ||
-      (proposed_withdrawal_receiver!="" && proposed_withdrawal_stream!="")
+      stream_pubkey != "" ||
+      (proposed_withdrawal_receiver != "" && proposed_withdrawal_stream != "")
     ) {
       if (proposed_councillors && proposed_councillors.length > 0) {
         let proposed_councillors_pubkey = [];
@@ -235,6 +239,43 @@ const NewProposal = (props) => {
                     </div>
                     <div className="item-wrapper">
                       <div className="title">Withdrawal Stream</div>
+                      <input
+                        required
+                        key="5"
+                        value={proposed_withdrawal_stream}
+                        onChange={(evt) =>
+                          setProposedWithdrawalStream(evt.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                ) : proposal_type == pic.ProposalType.WITHDRAW_FROM_TREASURY ? (
+                  <div>
+                    <div className="item-wrapper">
+                      <div className="title">Amount</div>
+                      <input
+                        required
+                        key="6"
+                        type="number"
+                        value={amount}
+                        onChange={(evt) =>
+                          setAmount(parseFloat(evt.target.value))
+                        }
+                      />
+                    </div>
+                    <div className="item-wrapper">
+                      <div className="title">Withdrawal Receiver</div>
+                      <input
+                        required
+                        key="4"
+                        value={proposed_withdrawal_receiver}
+                        onChange={(evt) =>
+                          setProposedWithdrawalReceiver(evt.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="item-wrapper">
+                      <div className="title">Withdrawal Treasury</div>
                       <input
                         required
                         key="5"

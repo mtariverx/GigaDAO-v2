@@ -70,7 +70,7 @@ const NewStream = (props) => {
     if ((await validateSolanaAddress(token_mint_address)) == false) {
       setTokenMintAddress("");
     }
-    if(stream_rate==0 || stream_rate==undefined){
+    if (stream_rate == 0 || stream_rate == undefined) {
       alert("Stream rate should be greater than zero!!!");
     }
     if (
@@ -78,7 +78,8 @@ const NewStream = (props) => {
       token_ticker &&
       token_img_url &&
       token_mint_address &&
-      collections.length > 0 && stream_rate>0
+      collections.length > 0 &&
+      stream_rate > 0
     ) {
       const key = Keypair.generate();
       let new_stream: pic.Stream = {

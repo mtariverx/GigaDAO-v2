@@ -144,6 +144,30 @@ export async function getStream(wallet, network, stream: pic.Stream) {
   stream.daily_stream_rate = daily_stream_rate;
   return stream;
 }
+export async function checkIfSteramRateExist(wallet, network, stream_address ) {
+  let program = await initProgram(wallet, network);
+  const streamAccount = await program.account.stream.fetch(stream_address);
+  // const tokenMintAddress: PublicKey = streamAccount.tokenMintAddress;
+  // const tokenPoolAddress: PublicKey = streamAccount.tokenPoolAddress;
+  // let tokenMint: spl_token.Mint = await spl_token.getMint(
+  //   program.provider.connection,
+  //   tokenMintAddress
+  // );
+  // let poolAccount = await spl_token.getAccount(
+  //   program.provider.connection,
+  //   tokenPoolAddress
+  // );
+  // const decimals = tokenMint.decimals;
+  // const divFactor = Math.pow(10, decimals);
+  // const poolAmount = Number(poolAccount.amount) / divFactor;
+  // const isActive = streamAccount.isActive;
+  // const lastUpdateTimestamp = streamAccount.lastUpdateTimestamp.toNumber();
+  // const numConnections = streamAccount.numConnections.toNumber();
+  // const totalClaimed = streamAccount.totalClaimed.toNumber() / divFactor;
+  // const totalStreamed = streamAccount.totalStreamed.toNumber() / divFactor;
+  const daily_stream_rate =streamAccount.streamRate.toNumber();
+  return daily_stream_rate;
+}
 
 export async function getConn(wallet, network, conn: pic.Connection, decimals) {
   let program = await initProgram(wallet, network);

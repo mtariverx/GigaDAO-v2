@@ -14,8 +14,10 @@ import { DaoState } from "store/DaoReducer";
 import { shallowEqual } from "react-redux";
 import * as React from "react";
 import { useDispatch } from "react-redux";
+import * as chain from "pic/live_utils/onchain-data-helpers";
+import { NETWORK } from "pic/connect";
+
 const ActiveProposal = (props) => {
-  
   type counc_sign_pair = {
     councillor: PublicKey;
     signer: boolean;
@@ -27,6 +29,10 @@ const ActiveProposal = (props) => {
     {
       value: pic.ProposalType.WITHDRAW_FROM_STREAM,
       label: "Withdraw from Stream",
+    },
+    {
+      value: pic.ProposalType.WITHDRAW_FROM_TREASURY,
+      label: "Withdraw from Treasury",
     },
   ];
   const [proposal_type, setProposalType] = useState(-1);
@@ -51,7 +57,10 @@ const ActiveProposal = (props) => {
     (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
     [dispatch_state]
   );
-  const dao: pic.Dao = useSelector((state:DaoState) => state.dao, shallowEqual);
+  const dao: pic.Dao = useSelector(
+    (state: DaoState) => state.dao,
+    shallowEqual
+  );
   useEffect(() => {
     (async () => {
       getActiveProposalInfo(dao);
@@ -98,35 +107,42 @@ const ActiveProposal = (props) => {
         dao.governance &&
         Object.keys(dao.governance.proposal_type)[0] == "withdrawFromStream"
       ) {
-        setProposalType(3);
         setAmount(Number(dao.governance.proposed_withdrawal_amount));
         setProposedWithdrawalReceiver(
           dao.governance.proposed_withdrawal_receiver.toString()
         );
-
         setProposedWithdrawalStream(
           dao.governance.proposed_withdrawal_stream.toString()
         );
-        
-        
+        const withdrawal_address=dao.governance.proposed_withdrawal_stream.toString();
+        console.log("activ proposal streams=", dao.streams);
+        const stream_rate=await chain.checkIfSteramRateExist(wallet, NETWORK,withdrawal_address);
+        console.log("active stream=",);
+        if(stream_rate>0){
+          setProposalType(3);
+        }else{
+          setProposalType(4);
+        }
       } else if (
         dao.governance &&
         dao.governance.proposed_councillors.length > 0 &&
         Object.keys(dao.governance.proposal_type)[0] == "updateMultisig"
       ) {
         setProposalType(1);
-        tmp = dao.governance.proposed_councillors
-          .map((councillor) => councillor.toString())
-          setProposedCouncillors(tmp);
-          setProposedApprovalThresold(Number(dao.governance.proposed_approval_threshold));
-        
+        tmp = dao.governance.proposed_councillors.map((councillor) =>
+          councillor.toString()
+        );
+        setProposedCouncillors(tmp);
+        setProposedApprovalThresold(
+          Number(dao.governance.proposed_approval_threshold)
+        );
       }
     } catch (e) {
       console.log(e);
     }
     setCounc_Sign(tmp_counc_sign_arr);
   };
-  
+
   //call for clicking Approve button on Active Proposal
   const onClickApproveProposeBtn = async () => {
     // const dao: pic.Dao = props.dao;
@@ -160,7 +176,7 @@ const ActiveProposal = (props) => {
         proposed_signers.splice(index, 1, false);
         dao.governance.proposed_signers = [];
         dao.governance.proposed_signers = proposed_signers;
-        livePic.approveDaoCommand(wallet, {...dao});
+        livePic.approveDaoCommand(wallet, { ...dao });
         getActiveProposalInfo(dao);
       } else {
         alert("Proposal has already declined");
@@ -170,7 +186,6 @@ const ActiveProposal = (props) => {
   };
 
   const onClickExecuteProposeBtn = () => {
-    
     if (dao.governance != undefined) {
       if (
         dao.governance &&
@@ -189,8 +204,8 @@ const ActiveProposal = (props) => {
         livePic.executeUpdateDaoMultisig(wallet, dao);
       }
     }
-     getActiveProposalInfo(dao);
-     props.onClose(); //close btn
+    getActiveProposalInfo(dao);
+    props.onClose(); //close btn
   };
   return (
     // <div>
@@ -210,6 +225,8 @@ const ActiveProposal = (props) => {
                   ? "Deactivate stream"
                   : proposal_type === 3
                   ? "Withdraw from stream"
+                  : proposal_type === 4
+                  ? "Withdraw from Treasury"
                   : ""}
               </div>
             </div>
@@ -252,6 +269,25 @@ const ActiveProposal = (props) => {
                   </div>
                   <div className="item-wrapper">
                     <div className="title">Withdrawal Stream</div>
+                    <div className="show-item">
+                      {proposed_withdrawal_stream}
+                    </div>
+                  </div>
+                </div>
+              ) : proposal_type == pic.ProposalType.WITHDRAW_FROM_TREASURY ? (
+                <div>
+                  <div className="item-wrapper">
+                    <div className="title">Amount</div>
+                    <div className="show-item">{amount}</div>
+                  </div>
+                  <div className="item-wrapper">
+                    <div className="title">Withdrawal Receiver</div>
+                    <div className="show-item">
+                      {proposed_withdrawal_receiver}
+                    </div>
+                  </div>
+                  <div className="item-wrapper">
+                    <div className="title">Withdrawal Treasury</div>
                     <div className="show-item">
                       {proposed_withdrawal_stream}
                     </div>

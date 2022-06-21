@@ -117,6 +117,7 @@ export enum ProposalType {
   UPDATE_MULTISIG = 1,
   DEACTIVATE_STREAM = 2,
   WITHDRAW_FROM_STREAM = 3,
+  WITHDRAW_FROM_TREASURY = 4,
 }
 
 export type GetMemberDaos = (owner: Owner, wallet) => Promise<Array<Dao>>; // retrieves list of daos that owner is a councillor of, but does not lookup Governance data
