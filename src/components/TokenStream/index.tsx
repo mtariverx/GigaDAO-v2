@@ -111,7 +111,7 @@ const TokenStream = (props) => {
 
   //   return tmp_stream;
   // };
-  const table_rows = 30;
+  const table_rows = 50;
   const tmp_arr = [];
   for (let i = 0; i < table_rows; i++) {
     tmp_arr.push("tmp");
