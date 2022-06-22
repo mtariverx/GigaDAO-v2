@@ -132,7 +132,6 @@ export async function getStream(wallet, network, stream: pic.Stream) {
   const totalStreamed = streamAccount.totalStreamed.toNumber() / divFactor;
   const daily_stream_rate =
     (streamAccount.streamRate.toNumber() * 24 * 60 * 60) / divFactor;
-  console.log("streamAccount=", streamAccount);
   stream.num_connections = numConnections;
   stream.is_active = isActive;
   stream.total_earned = totalStreamed;

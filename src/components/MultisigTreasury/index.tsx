@@ -65,7 +65,6 @@ const MultisigTreausry = (props) => {
   const getStreamsFiltered = (streams: pic.Stream[]) => {
     let streams_filtered = [];
     for (const stream of streams) {
-      console.log("streams=", streams);
       if (stream.daily_stream_rate == 0) {
         streams_filtered.push(stream);
       }

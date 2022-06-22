@@ -115,9 +115,7 @@ const ActiveProposal = (props) => {
           dao.governance.proposed_withdrawal_stream.toString()
         );
         const withdrawal_address=dao.governance.proposed_withdrawal_stream.toString();
-        console.log("activ proposal streams=", dao.streams);
         const stream_rate=await chain.checkIfSteramRateExist(wallet, NETWORK,withdrawal_address);
-        console.log("active stream=",);
         if(stream_rate>0){
           setProposalType(3);
         }else{

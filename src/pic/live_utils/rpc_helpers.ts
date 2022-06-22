@@ -143,7 +143,7 @@ export async function proposeDaoCommand(
   }
 
   if (dao.governance.proposal_type == pic.ProposalType.WITHDRAW_FROM_STREAM || dao.governance.proposal_type == pic.ProposalType.WITHDRAW_FROM_TREASURY) {
-    let proposal_type = new anchor.BN(pic.ProposalType.WITHDRAW_FROM_STREAM);
+    proposal_type = new anchor.BN(pic.ProposalType.WITHDRAW_FROM_STREAM);
     const streamAccount = await program.account.stream.fetch(
       proposed_withdraw_stream
     );
@@ -154,6 +154,7 @@ export async function proposeDaoCommand(
     );
     decimals = tokenMint.decimals;
   }
+  console.log("proposal-type=",proposal_type.toNumber());
   const withdraw_amount =
     dao.governance.proposed_withdrawal_amount * Math.pow(10, decimals);
   let proposed_withdraw_amount = new anchor.BN(withdraw_amount);
