@@ -157,28 +157,26 @@ export async function proposeDaoCommand(
   const withdraw_amount =
     dao.governance.proposed_withdrawal_amount * Math.pow(10, decimals);
   let proposed_withdraw_amount = new anchor.BN(withdraw_amount);
-
-  console.log("propose type=",dao.governance.proposal_type);
-  // await program.rpc.proposeDaoCommand(
-  //   proposal_type,
-  //   proposed_councillors,
-  //   proposed_approval_threshold,
-  //   proposed_deactivation_stream,
-  //   proposed_withdraw_amount,
-  //   proposed_withdraw_receiver_owner,
-  //   proposed_withdraw_stream,
-  //   {
-  //     accounts: {
-  //       signer: wallet.publicKey,
-  //       dao: dao.address,
-  //       feeReceiverAddress: FEE_RX_ADDRESS,
-  //       feeController: fee_controller,
-  //       systemProgram: SystemProgram.programId,
-  //       tokenProgram: TOKEN_PROGRAM_ID,
-  //       rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-  //     },
-  //   }
-  // );
+  await program.rpc.proposeDaoCommand(
+    proposal_type,
+    proposed_councillors,
+    proposed_approval_threshold,
+    proposed_deactivation_stream,
+    proposed_withdraw_amount,
+    proposed_withdraw_receiver_owner,
+    proposed_withdraw_stream,
+    {
+      accounts: {
+        signer: wallet.publicKey,
+        dao: dao.address,
+        feeReceiverAddress: FEE_RX_ADDRESS,
+        feeController: fee_controller,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      },
+    }
+  );
   console.log("proposeDaoCommand success");
 }
 
@@ -393,7 +391,6 @@ export async function reactivateStream(
 ) {
   let program = await initProgram(wallet, network);
   const streamAccount = await program.account.stream.fetch(stream.address);
-  console.log("streamAccount=", streamAccount);
   const tokenMintAddress: PublicKey = streamAccount.tokenMintAddress;
   const tokenPoolAddress: PublicKey = streamAccount.tokenPoolAddress;
   const daoAddress: PublicKey = streamAccount.daoAddress;
