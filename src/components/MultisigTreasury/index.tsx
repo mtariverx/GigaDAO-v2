@@ -100,6 +100,7 @@ const MultisigTreausry = (props) => {
           <table>
             <tr>
               <th>Treasury Name</th>
+              <th>Treasury Address</th>
               <th>Token Pool Address</th>
               <th>Token Image Url</th>
               <th>Current Pool Amount</th>
@@ -114,6 +115,7 @@ const MultisigTreausry = (props) => {
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td></td>
                     </tr>
                   );
                 })
@@ -123,7 +125,7 @@ const MultisigTreausry = (props) => {
                   return (
                     <tr>
                       <td>{stream.name}</td>
-                      {/* <td>{stream.address.toString()}</td> */}
+                      <td>{stream.address.toString()}</td>
                       <td>{stream.token_pool_address.toString()}</td>
                       {/* <td>{stream.is_active ? "Yes" : "No"}</td> */}
                       <td>{stream.token_image_url}</td>
@@ -136,6 +138,7 @@ const MultisigTreausry = (props) => {
             {stream_compensate_arr.map((item) => {
               return (
                 <tr>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
