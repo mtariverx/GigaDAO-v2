@@ -167,7 +167,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       setStreams([stream_selected]);
     }
     console.log("-----sf--", selectedNft);
-  }, [flag == true, selectedNft != undefined]);
+  }, [selectedNft]);
 
   useEffect(() => {
     (async () => {
