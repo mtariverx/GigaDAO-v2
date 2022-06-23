@@ -557,6 +557,8 @@ let claimFromStream: pic.ClaimFromStream = async (
       });
   } catch (e) {
     console.log(e);
+    displayError(e);
+    alert(e);
   }
   return finalResult;
 };
@@ -643,9 +645,7 @@ let unstakeNft: pic.UnstakeNft = async (nft: pic.Nft) => {
 let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
   //getting member daos from database if the owner address is a councillor of
   try {
-    // owner = {
-    //   address: new PublicKey("7yXtZ4MAwV6wztgBJarUQPEWSNh3RMMgxLRbbdKJfDg"),
-    // };
+  
     // owner = {
     //   address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi"),
     // };
