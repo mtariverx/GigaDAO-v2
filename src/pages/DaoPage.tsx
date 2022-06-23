@@ -91,15 +91,12 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     let tmp_streams = [];
     let tmp_nfts = [];
     for (const nft of eligibleNfts) {
-      console.log("nft=", nft);
-      console.log("nft=", nft.address.toString());
       if (
         !nft.stake?.address ||
         nft.stake == undefined ||
         !nft.stake.is_active
       ) {
         NFT_unstaked.push(nft);
-        console.log("nft_unstaked=", nft);
       } else {
         for (const stream of currentDao.streams) {
           try {
@@ -124,9 +121,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     return { tmp_nfts, tmp_streams, NFT_unstaked, promises_array };
     // return { streams_addresses, tmp_streams, promises_array };
   };
- 
-
-  const [stream_pack, setStreamPack] = useState([]);
+   const [stream_pack, setStreamPack] = useState([]);
   const [nft_pack, setNftPack] = useState([]);
   const [nft_stream_pack, setNftStreamPack] = useState([]);
 
@@ -191,10 +186,10 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
             stream_selected = tmp_streams[index_nft];
             if (connection.is_active) {
               NFT_staked_connected.push(tmp_nfts[index_nft]);
-              console.log("NFT_staked_connected=", tmp_nfts[index_nft]);
+              // console.log("NFT_staked_connected=", tmp_nfts[index_nft]);
             } else {
               NFT_staked_unconnected.push(tmp_nfts[index_nft]);
-              console.log("NFT_staked_unconnected=", tmp_nfts[index_nft]);
+              // console.log("NFT_staked_unconnected=", tmp_nfts[index_nft]);
             }
           }
         }
