@@ -84,12 +84,13 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   }
 
   //Filter NFTS in order of unstaked or staked and connected, staked
-  const getFilteredNFTs = () => {
+  const getFilteredNFTs = async () => {
     let promises_array = [];
     // let streams_addresses = [];
     let NFT_unstaked = [];
     let tmp_streams = [];
     let tmp_nfts = [];
+
     for (const nft of eligibleNfts) {
       if (
         !nft.stake?.address ||
@@ -118,18 +119,59 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         }
       }
     }
-    return { tmp_nfts, tmp_streams, NFT_unstaked, promises_array };
-    // return { streams_addresses, tmp_streams, promises_array };
+    const NFT_staked_connected = [];
+    const NFT_staked_unconnected = [];
+
+    let result_connections = await Promise.allSettled(promises_array);
+    let index_nft = -1;
+    setStreamPack(tmp_streams);
+    setNftPack(tmp_nfts);
+    setNftStreamPack(result_connections);
+
+    if (result_connections.length > 0) {
+      for (const conn_result of result_connections) {
+        index_nft++;
+        if (conn_result.status === "fulfilled" && conn_result.value) {
+          let connection: pic_pic.Connection = conn_result.value;
+
+          if (connection.is_active) {
+            if (!NFT_staked_connected.includes(tmp_nfts[index_nft])) {
+              NFT_staked_connected.push(tmp_nfts[index_nft]);
+              console.log("NFT_staked_connected=", tmp_nfts[index_nft]);
+            }
+          } else {
+            if (!NFT_staked_unconnected.includes(tmp_nfts[index_nft])) {
+              NFT_staked_unconnected.push(tmp_nfts[index_nft]);
+              console.log("NFT_staked_unconnected=", tmp_nfts[index_nft]);
+            }
+          }
+        }
+      }
+    }
+    let NFT_all = NFT_unstaked.concat(NFT_staked_unconnected).concat(
+      NFT_staked_connected
+    );
+    console.log("NFT all=", NFT_all);
+
+    console.log("#elibiglbeNFTs=", eligibleNfts.length);
+    console.log("#NFT all=", NFT_all.length);
+    console.log("#NFTUnstaked=", NFT_unstaked.length);
+    console.log("#StakedConnected=", NFT_staked_connected.length);
+    console.log("#StakedUnconnected=", NFT_staked_unconnected.length);
+
+    setNftsArray(NFT_all);
   };
-   const [stream_pack, setStreamPack] = useState([]);
+
+  const [stream_pack, setStreamPack] = useState([]);
   const [nft_pack, setNftPack] = useState([]);
   const [nft_stream_pack, setNftStreamPack] = useState([]);
 
   useEffect(() => {
-    console.log("selected NFT");
     let index = -1;
-    let stream_selected;
     let flag_connected = false;
+    let stream_connected;
+    let stream_unconnected;
+    let stream_select_active;
     if (selectedNft == undefined) {
     } else {
       for (const nft of nft_pack) {
@@ -140,72 +182,59 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
             nft_stream_pack[index].value
           ) {
             let connection: pic_pic.Connection = nft_stream_pack[index].value;
-            stream_selected = stream_pack[index];
-            flag_connected = true;
-            break;
+            if (connection.is_active) {
+              stream_connected = stream_pack[index];
+              break;
+            } else {
+              stream_unconnected = stream_pack[index];
+            }
           }
+          flag_connected = true;
+          // break;
         }
       }
-      for (const stream of currentDao.streams) {
-        stream.collections.map((collection) => {
-          if (
-            collection.address.toString() ===
-              selectedNft.collection.address.toString() &&
-            stream.is_active
-          ) {
-            stream_selected = stream;
+
+      if (flag_connected) {
+      } else {
+        let flag_found = false;
+        for (const stream of currentDao.streams) {
+          if (stream.collections != undefined) {
+            for (const collection of stream.collections) {
+              if (
+                collection.address.toString() ===
+                  selectedNft.collection.address.toString() &&
+                stream.is_active
+              ) {
+                stream_select_active = stream;
+                flag_found = true;
+                break;
+              }
+            }
           }
-        });
+          if(flag_found)break;
+        }
       }
     }
-    if(stream_selected!=undefined){
-      setStreams([stream_selected]);
+
+    if (stream_connected != undefined) {
+      setStreams([stream_connected]);
+    } else if (stream_unconnected != undefined) {
+      setStreams([stream_unconnected]);
+    } else if (stream_select_active != undefined) {
+      setStreams([stream_select_active]);
     }
-    console.log("-----sf--", selectedNft);
+
+    console.log("--useEffect-selected NFT--", selectedNft);
   }, [selectedNft]);
 
   useEffect(() => {
     (async () => {
-      const { tmp_nfts, tmp_streams, NFT_unstaked, promises_array } =
-        await getFilteredNFTs();
-      const NFT_staked_connected = [];
-      const NFT_staked_unconnected = [];
-      let stream_selected;
-      // const { streams_addresses, tmp_streams, promises_array } = await getPromiseOfCheckingConn();
-
-      let result_connections = await Promise.allSettled(promises_array);
-      let index_nft = -1;
-      setStreamPack(tmp_streams);
-      setNftPack(tmp_nfts);
-      setNftStreamPack(result_connections);
-      if (result_connections.length > 0) {
-        for (const conn_result of result_connections) {
-          index_nft++;
-          if (conn_result.status === "fulfilled" && conn_result.value) {
-            let connection: pic_pic.Connection = conn_result.value;
-            stream_selected = tmp_streams[index_nft];
-            if (connection.is_active) {
-              NFT_staked_connected.push(tmp_nfts[index_nft]);
-              // console.log("NFT_staked_connected=", tmp_nfts[index_nft]);
-            } else {
-              NFT_staked_unconnected.push(tmp_nfts[index_nft]);
-              // console.log("NFT_staked_unconnected=", tmp_nfts[index_nft]);
-            }
-          }
-        }
-      }
-      let NFT_all = NFT_unstaked.concat(NFT_staked_unconnected).concat(
-        NFT_staked_connected
-      );
-      console.log("NFT all=", NFT_all);
-      setNftsArray(NFT_all);
+      await getFilteredNFTs();
       if (currentDao.streams != undefined) {
-        // setStreams([stream_selected]);
         setStreams([currentDao.streams[0]]);
       }
-      console.log("useEffect selectedNFT=", selectedNft);
     })();
-  }, [flag == true]);
+  }, [flag]);
   return (
     <div className="container mt-4">
       {streams.map(function (val, idx) {
