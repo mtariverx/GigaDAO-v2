@@ -137,12 +137,12 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
           if (connection.is_active) {
             if (!NFT_staked_connected.includes(tmp_nfts[index_nft])) {
               NFT_staked_connected.push(tmp_nfts[index_nft]);
-              console.log("NFT_staked_connected=", tmp_nfts[index_nft]);
+              // console.log("NFT_staked_connected=", tmp_nfts[index_nft]);
             }
           } else {
             if (!NFT_staked_unconnected.includes(tmp_nfts[index_nft])) {
               NFT_staked_unconnected.push(tmp_nfts[index_nft]);
-              console.log("NFT_staked_unconnected=", tmp_nfts[index_nft]);
+              // console.log("NFT_staked_unconnected=", tmp_nfts[index_nft]);
             }
           }
         }
@@ -217,10 +217,13 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     }
 
     if (stream_connected != undefined) {
+      console.log("stream_connected=",stream_connected)
       setStreams([stream_connected]);
     } else if (stream_unconnected != undefined) {
+      console.log("stream_unconnected=",stream_unconnected)
       setStreams([stream_unconnected]);
     } else if (stream_select_active != undefined) {
+      console.log("stream_select_active=",stream_select_active)
       setStreams([stream_select_active]);
     }
 
