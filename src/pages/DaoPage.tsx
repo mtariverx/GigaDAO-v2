@@ -39,7 +39,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       refreshStreams(dispatch, [currentDao]);
     }
   }, []);
-
   let currentCollectionsAddresses = [];
   if (currentDao.streams != undefined) {
     currentCollectionsAddresses = getCurrentCollections(currentDao.streams);
@@ -91,20 +90,28 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     let NFT_unstaked = [];
     let NFT_staked_connected = [];
     let NFT_staked_unconnected = [];
+    let NFT_staked_connection_zero=[];
     let connections = [];
     for (const nft of eligibleNfts) {
       if (!nft.stake) {
         NFT_unstaked.push(nft);
       } else {
-        connections = await livePic.getConnectionByStake(nft.stake.address);
-        for (const connect of connections) {
-          if (connect.is_active) {
-            NFT_staked_connected.push(nft);
-            break;
-          } else {
-            NFT_staked_unconnected.push(nft);
-            break;
-          }
+        //check the connection status
+
+        // connections = await livePic.getConnectionByStake(nft.stake.address);
+        // for (const connect of connections) {
+        //   if (connect.is_active) {
+        //     NFT_staked_connected.push(nft);
+        //     break;
+        //   } else {
+        //     NFT_staked_unconnected.push(nft);
+        //     break;
+        //   }
+        // }
+        if(nft.stake?.num_connections==0){
+          NFT_staked_unconnected.push(nft);
+        } else if( nft.stake.num_connections>0){
+          NFT_staked_connected.push(nft);
         }
       }
     }
