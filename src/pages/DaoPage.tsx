@@ -141,9 +141,11 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   useEffect(() => {
     (async () => {
       let index = -1;
-      let flag_connected = false;
-      let stream_connected;
-      let stream_unconnected;
+      let flag_visited = false;
+      let stream_active_connected;
+      let stream_active_unconnected;
+      let stream_inactive_connected;
+      let stream_inactive_unconnected;
       let stream_select_active;
       if (
         selectedNft == undefined ||
@@ -153,61 +155,58 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       ) {
       } else {
         for (const stream of currentDao.streams) {
-          if (stream.is_active) {
-            let connection: pic_pic.Connection =
-              await chain.checkIfConnectionExists(
-                wallet,
-                NETWORK,
-                selectedNft.stake.address,
-                stream.address,
-                stream.decimals,
-                stream.daily_stream_rate
-              );
-            if (connection) {
-              if (connection.is_active) {
-                stream_connected = stream;
-                break;
+          let connection: pic_pic.Connection =
+            await chain.checkIfConnectionExists(
+              wallet,
+              NETWORK,
+              selectedNft.stake.address,
+              stream.address,
+              stream.decimals,
+              stream.daily_stream_rate
+            );
+          if (connection) {
+            if (connection.is_active) {
+              if (stream.is_active) {
+                stream_active_connected = stream;
               } else {
-                stream_unconnected = stream;
+                stream_inactive_connected = stream;
               }
-              //update connection table in mirror
-              mirror.updateConnection(connection.address, connection.is_active);
-              flag_connected = true;
+            } else {
+              if (stream.is_active) {
+                stream_active_unconnected = stream;
+              } else {
+                stream_inactive_unconnected = stream;
+              }
             }
-          } 
+            //update connection table in mirror
+            mirror.updateConnection(connection.address, connection.is_active);
+          } else {
+            if (stream.collections != undefined && stream.is_active) {
+              for (const collection of stream.collections) {
+                if (
+                  collection.address.toString() ===
+                  selectedNft.collection.address.toString()
+                ) {
+                  stream_select_active = stream;
+                  break;
+                }
+              }
+            }
+          }
         }
-        // if (flag_connected) {
-        // } else {
-        //   let flag_found = false;
-        //   for (const stream of currentDao.streams) {
-        //     if (stream.collections != undefined) {
-        //       for (const collection of stream.collections) {
-        //         if (
-        //           collection.address.toString() ===
-        //             selectedNft.collection.address.toString() &&
-        //           stream.is_active
-        //         ) {
-        //           stream_select_active = stream;
-        //           flag_found = true;
-        //           break;
-        //         }
-        //       }
-        //     }
-        //     if (flag_found) break;
-        //   }
-        // }
-
-        if (stream_connected != undefined) {
-          // console.log("stream_connected=", stream_connected);
-          setStreams([stream_connected]);
-        } else if (stream_unconnected != undefined) {
-          // console.log("stream_unconnected=", stream_unconnected);
-          setStreams([stream_unconnected]);
-        } 
-        // else if (stream_select_active != undefined) {
-        //   // console.log("stream_select_active=", stream_select_active);
-        //   setStreams([stream_select_active]);
-        // }
+        if (stream_active_connected != undefined) {
+          setStreams([stream_active_connected]);
+          flag_visited=true;
+        } else if (stream_active_unconnected != undefined && !flag_visited) {
+          setStreams([stream_active_unconnected]);
+          flag_visited=true;
+        } else if ( stream_inactive_connected !=undefined && !flag_visited){
+          setStreams([stream_inactive_connected]);
+          flag_visited=true;
+        } else if (stream_select_active != undefined && !flag_visited) {
+          flag_visited=true;
+          setStreams([stream_select_active]);
+        }
 
         console.log("--useEffect-selected NFT--", selectedNft);
       }
