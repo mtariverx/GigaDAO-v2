@@ -11,9 +11,11 @@ import _debounce from "lodash/debounce";
 import ReactGA from "react-ga4";
 import * as pic_pic from "../pic/pic";
 import * as chain from "../pic/live_utils/onchain-data-helpers";
+import * as mirror from "pic/live_utils/mirror_helpers";
 import { nextTick } from "process";
 import * as livePic from "pic/live";
 import { Keypair, PublicKey } from "@solana/web3.js";
+
 export type DaoProps = {
   dao_id: string;
 };
@@ -26,6 +28,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const [numCards, setNumCards] = useState(10);
   const [streams, setStreams] = useState([]);
   const [nftsArray, setNftsArray] = useState([]);
+  const [nft_filterd, setNftFiltered] = useState([]);
   const { owner } = useOwnerData();
   const wallet = useAnchorWallet();
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
@@ -75,9 +78,8 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
 
   // refresh initial indexes
   let idxs = [...Array(reducedNumCards).keys()];
-  // let nftsArray: Array<Nft> = [];
-  // let nftsArray: Array<Nft> = idxs.map((idx, _) => eligibleNfts[idx]);
 
+  // let nftsArray: Array<Nft> = idxs.map((idx, _) => eligibleNfts[idx]);
   let flag = false;
   if (currentDao.streams != undefined && owner.address != undefined) {
     flag = true;
@@ -86,65 +88,22 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   //Filter NFTS in order of unstaked or staked and connected, staked
   const getFilteredNFTs = async () => {
     let promises_array = [];
-    // let streams_addresses = [];
     let NFT_unstaked = [];
-    let tmp_streams = [];
-    let tmp_nfts = [];
-
+    let NFT_staked_connected = [];
+    let NFT_staked_unconnected = [];
+    let connections = [];
     for (const nft of eligibleNfts) {
-      if (
-        !nft.stake?.address ||
-        nft.stake == undefined ||
-        !nft.stake.is_active
-      ) {
+      connections = await livePic.getConnectionByStake(nft.stake.address);
+      if (connections.length == 0) {
         NFT_unstaked.push(nft);
-      } else {
-        for (const stream of currentDao.streams) {
-          try {
-            tmp_nfts.push(nft);
-            tmp_streams.push(stream);
-            promises_array.push(
-              chain.checkIfConnectionExists(
-                wallet,
-                NETWORK,
-                nft.stake.address,
-                stream.address,
-                stream.decimals,
-                stream.daily_stream_rate
-              )
-            );
-          } catch (e) {
-            console.log(e);
-          }
-        }
       }
-    }
-    const NFT_staked_connected = [];
-    const NFT_staked_unconnected = [];
-
-    let result_connections = await Promise.allSettled(promises_array);
-    let index_nft = -1;
-    setStreamPack(tmp_streams);
-    setNftPack(tmp_nfts);
-    setNftStreamPack(result_connections);
-
-    if (result_connections.length > 0) {
-      for (const conn_result of result_connections) {
-        index_nft++;
-        if (conn_result.status === "fulfilled" && conn_result.value) {
-          let connection: pic_pic.Connection = conn_result.value;
-
-          if (connection.is_active) {
-            if (!NFT_staked_connected.includes(tmp_nfts[index_nft])) {
-              NFT_staked_connected.push(tmp_nfts[index_nft]);
-              // console.log("NFT_staked_connected=", tmp_nfts[index_nft]);
-            }
-          } else {
-            if (!NFT_staked_unconnected.includes(tmp_nfts[index_nft])) {
-              NFT_staked_unconnected.push(tmp_nfts[index_nft]);
-              // console.log("NFT_staked_unconnected=", tmp_nfts[index_nft]);
-            }
-          }
+      for (const connect of connections) {
+        if (connect.is_active) {
+          NFT_staked_connected.push(nft);
+          break;
+        } else {
+          NFT_staked_unconnected.push(nft);
+          break;
         }
       }
     }
@@ -158,86 +117,91 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     console.log("#NFTUnstaked=", NFT_unstaked.length);
     console.log("#StakedConnected=", NFT_staked_connected.length);
     console.log("#StakedUnconnected=", NFT_staked_unconnected.length);
-
-    setNftsArray(NFT_all);
+    const tmp_nftsArray = idxs.map((idx, _) => NFT_all[idx]);
+    return tmp_nftsArray;
   };
-
-  const [stream_pack, setStreamPack] = useState([]);
-  const [nft_pack, setNftPack] = useState([]);
-  const [nft_stream_pack, setNftStreamPack] = useState([]);
-
-  useEffect(() => {
-    let index = -1;
-    let flag_connected = false;
-    let stream_connected;
-    let stream_unconnected;
-    let stream_select_active;
-    if (selectedNft == undefined) {
-    } else {
-      for (const nft of nft_pack) {
-        index++;
-        if (nft.address.toString() === selectedNft.address.toString()) {
-          if (
-            nft_stream_pack[index].status === "fulfilled" &&
-            nft_stream_pack[index].value
-          ) {
-            let connection: pic_pic.Connection = nft_stream_pack[index].value;
-            if (connection.is_active) {
-              stream_connected = stream_pack[index];
-              break;
-            } else {
-              stream_unconnected = stream_pack[index];
-            }
-          }
-          flag_connected = true;
-          // break;
-        }
-      }
-
-      if (flag_connected) {
-      } else {
-        let flag_found = false;
-        for (const stream of currentDao.streams) {
-          if (stream.collections != undefined) {
-            for (const collection of stream.collections) {
-              if (
-                collection.address.toString() ===
-                  selectedNft.collection.address.toString() &&
-                stream.is_active
-              ) {
-                stream_select_active = stream;
-                flag_found = true;
-                break;
-              }
-            }
-          }
-          if(flag_found)break;
-        }
-      }
-    }
-
-    if (stream_connected != undefined) {
-      console.log("stream_connected=",stream_connected)
-      setStreams([stream_connected]);
-    } else if (stream_unconnected != undefined) {
-      console.log("stream_unconnected=",stream_unconnected)
-      setStreams([stream_unconnected]);
-    } else if (stream_select_active != undefined) {
-      console.log("stream_select_active=",stream_select_active)
-      setStreams([stream_select_active]);
-    }
-
-    console.log("--useEffect-selected NFT--", selectedNft);
-  }, [selectedNft]);
-
   useEffect(() => {
     (async () => {
-      await getFilteredNFTs();
-      if (currentDao.streams != undefined) {
+      if (currentDao.streams != undefined && flag == true) {
         setStreams([currentDao.streams[0]]);
+        const nfts = await getFilteredNFTs();
+        setNftsArray(nfts);
       }
     })();
   }, [flag]);
+  useEffect(() => {
+    (async () => {
+      let index = -1;
+      let flag_connected = false;
+      let stream_connected;
+      let stream_unconnected;
+      let stream_select_active;
+      if (
+        selectedNft == undefined ||
+        currentDao.streams == undefined ||
+        flag == false
+      ) {
+      } else {
+        for (const stream of currentDao.streams) {
+          let connection: pic_pic.Connection =
+            await chain.checkIfConnectionExists(
+              wallet,
+              NETWORK,
+              selectedNft.stake.address,
+              stream.address,
+              stream.decimals,
+              stream.daily_stream_rate
+            );
+          if (connection) {
+            if (connection.is_active) {
+              stream_connected = stream;
+              break;
+            } else {
+              stream_unconnected = stream;
+            }
+            //update connection table in mirror
+            mirror.updateConnection(connection.address, connection.is_active);
+            flag_connected = true;
+            break;
+          }
+        }
+        if (flag_connected) {
+        } else {
+          let flag_found = false;
+          for (const stream of currentDao.streams) {
+            if (stream.collections != undefined) {
+              for (const collection of stream.collections) {
+                if (
+                  collection.address.toString() ===
+                    selectedNft.collection.address.toString() &&
+                  stream.is_active
+                ) {
+                  stream_select_active = stream;
+                  flag_found = true;
+                  break;
+                }
+              }
+            }
+            if (flag_found) break;
+          }
+        }
+
+        if (stream_connected != undefined) {
+          console.log("stream_connected=", stream_connected);
+          setStreams([stream_connected]);
+        } else if (stream_unconnected != undefined) {
+          console.log("stream_unconnected=", stream_unconnected);
+          setStreams([stream_unconnected]);
+        } else if (stream_select_active != undefined) {
+          console.log("stream_select_active=", stream_select_active);
+          setStreams([stream_select_active]);
+        }
+
+        console.log("--useEffect-selected NFT--", selectedNft);
+      }
+    })();
+  }, [selectedNft]);
+
   return (
     <div className="container mt-4">
       {streams.map(function (val, idx) {

@@ -187,7 +187,24 @@ export async function insertNewConnection(
   const data = await response.json();
   return data;
 }
-
+export async function getConnectionByStake(
+  stakeAddress,
+){
+  const URL =
+    BASE_URL +
+    `get_connection_by_stake?stake_address=${stakeAddress.toString()}`;
+  const response = await fetch(URL, { mode: "cors" });
+  const data = await response.json();
+  return data;
+}
+export async function getConnection(connectionAddress){
+  const URL =
+    BASE_URL +
+    `get_connection?connection_address=${connectionAddress.toString()}`;
+  const response = await fetch(URL, { mode: "cors" });
+  const data = await response.json();
+  return data;
+}
 export async function updateConnection(connectionAddress, isActive) {
   const URL =
     BASE_URL +
