@@ -27,13 +27,12 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const { verifiedDaos, dispatch, refreshStreams } = useDaoData();
   const [numCards, setNumCards] = useState(10);
   const [streams, setStreams] = useState([]);
-  const [nftsArray, setNftsArray] = useState([]);
   const [nft_filterd, setNftFiltered] = useState([]);
-  
+
   const { owner } = useOwnerData();
   const wallet = useAnchorWallet();
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
-  console.log("dao=", currentDao);
+
   // request a refresh
   useEffect(() => {
     if (currentDao.streams === undefined) {
@@ -43,7 +42,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   let currentCollectionsAddresses = [];
   if (currentDao.streams != undefined) {
     currentCollectionsAddresses = getCurrentCollections(currentDao.streams);
-    console.log("currentDao has streams");
   }
   let eligibleNfts: Array<Nft> = getEligibleNfts(
     owner,
@@ -82,12 +80,13 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
 
   // let nftsArray: Array<Nft> = idxs.map((idx, _) => eligibleNfts[idx]);
   let flag = false;
+  
   if (currentDao.streams != undefined && owner.address != undefined) {
     flag = true;
   }
-
+  
   //Filter NFTS in order of unstaked or staked and connected, staked
-  const getFilteredNFTs = async () => {
+  const getFilteredNFTs = () => {
     let promises_array = [];
     let NFT_unstaked = [];
     let NFT_staked_connected = [];
@@ -121,25 +120,23 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       NFT_staked_connected
     );
     console.log("NFT all=", NFT_all);
-
     console.log("#elibiglbeNFTs=", eligibleNfts.length);
-    console.log("#NFT all=", NFT_all.length);
-    console.log("#NFTUnstaked=", NFT_unstaked.length);
-    console.log("#StakedConnected=", NFT_staked_connected.length);
-    console.log("#StakedUnconnected=", NFT_staked_unconnected.length);
+    // console.log("#NFT all=", NFT_all.length);
+    // console.log("#NFTUnstaked=", NFT_unstaked.length);
+    // console.log("#StakedConnected=", NFT_staked_connected.length);
+    // console.log("#StakedUnconnected=", NFT_staked_unconnected.length);
     // const tmp_nftsArray = idxs.map((idx, _) => NFT_all[idx]);
     return NFT_all;
   };
+
+  let nftsArray = getFilteredNFTs();
+
   useEffect(() => {
     (async () => {
       if (currentDao.streams != undefined && flag == true) {
         setStreams([currentDao.streams[0]]);
-        const nfts = await getFilteredNFTs();
-        let tmp_nfts=[];
-        for(let i=0;i<nfts.length/16;i++){
-          tmp_nfts.push(nfts[i]);
-        }
-        setNftsArray(tmp_nfts);
+        // const nfts = getFilteredNFTs();
+        // setNftsArray(tmp_nfts);
         // setNftsArray(nfts);
       }
     })();
