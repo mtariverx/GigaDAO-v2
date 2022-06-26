@@ -443,14 +443,6 @@ let connectToStream: pic.ConnectToStream = async (
       stream.num_connections += 1;
       finalResult.stream = stream;
       finalResult.nft = nft;
-      //insert connection into mirror scan
-      mirror.insertNewConnection(
-        connectionAddress,
-        nft.owner_address,
-        nft.stake.address,
-        stream.address,
-        stream.dao_address
-      );
     } else {
       if (existingConnection.is_active) {
         finalResult.conn = existingConnection;
@@ -488,9 +480,6 @@ let connectToStream: pic.ConnectToStream = async (
         nft.stake.num_connections += 1;
         finalResult.stream = stream;
         finalResult.nft = nft;
-        //update connection table in mirror
-        const is_active = true;
-        mirror.updateConnection(existingConnection.address, is_active);
       }
     }
     const confirmed = true;
@@ -517,7 +506,6 @@ let connectToStream: pic.ConnectToStream = async (
       .catch((err) => {
         console.log("error updating State in mirror: " + err);
       });
-    //should insert connection
   } catch (e) {
     console.log(e);
   }
@@ -569,8 +557,6 @@ let claimFromStream: pic.ClaimFromStream = async (
       });
   } catch (e) {
     console.log(e);
-    displayError(e);
-    alert(e);
   }
   return finalResult;
 };
@@ -623,9 +609,6 @@ let disconnectFromStream: pic.DisconnectFromStream = async (
       .catch((err) => {
         console.log("err updating conn: " + err);
       });
-    //should update connection
-    const is_active = false;
-    mirror.updateConnection(conn.address, is_active);
   } catch (e) {
     console.log(e);
   }
@@ -660,6 +643,9 @@ let unstakeNft: pic.UnstakeNft = async (nft: pic.Nft) => {
 let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
   //getting member daos from database if the owner address is a councillor of
   try {
+    // owner = {
+    //   address: new PublicKey("7yXtZ4MAwV6wztgBJarUQPEWSNh3RMMgxLRbbdKJfDg"),
+    // };
     // owner = {
     //   address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi"),
     // };
@@ -706,8 +692,7 @@ let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
       index++;
       if (
         dao_promise.status === "fulfilled" &&
-        dao_promise.value.success &&
-        dao_promise.value.data[0] != undefined &&
+        dao_promise.value.success && dao_promise.value.data[0]!=undefined &&
         dao_promise.value.data[0]?.confirmed
       ) {
         new_daos[index].dao_id = dao_promise.value.data[0].dao_id;
@@ -766,13 +751,15 @@ let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
 
 let initializeDao: pic.InitializeDao = async (wallet, dao: pic.Dao) => {
   try {
-    await mirror.initializeDAO(dao).then((result) => {
-      if (result.success === false) {
-        alert("Initializing Dao in DB was failed");
-      } else {
-        console.log("insert dao result=", result);
-      }
-    });
+    await mirror
+      .initializeDAO(dao)
+      .then((result) => {
+        if(result.success===false){
+          alert("Initializing Dao in DB was failed");
+        }else{
+          console.log("insert dao result=", result)
+        }
+      });
     await mirror
       .insertCouncillors(dao)
       .then((result) => console.log("insert councillors result=", result));
@@ -781,8 +768,7 @@ let initializeDao: pic.InitializeDao = async (wallet, dao: pic.Dao) => {
       .then((result) => alert("Initializing dao on chain was success!"))
       .catch((err) => {
         alert(err);
-        console.log("Initializing Dao error");
-      });
+      console.log("Initializing Dao error")});
   } catch (err) {
     displayError(err);
   }
@@ -846,12 +832,12 @@ let reactivateStream: pic.ReactivateStream = async (
 };
 
 export async function checkIfStreamOnChain(wallet, dao) {
-  let tmp_streams = [];
+  let tmp_streams=[];
   try {
     let promises = [];
     let new_dao = { ...dao, streams: [] };
-    if (dao.streams === undefined) {
-      dao.streams = [];
+    if(dao.streams === undefined){
+      dao.streams=[];
     }
     for (const stream of dao.streams) {
       promises.push(chain.getStream(wallet, NETWORK, stream));
@@ -861,7 +847,7 @@ export async function checkIfStreamOnChain(wallet, dao) {
     let stream_unconfirmed = [];
     const confirmed = true;
     for (const result of results) {
-      if (result.status === "fulfilled" && result.value != undefined) {
+      if (result.status === "fulfilled" && result.value!=undefined) {
         let stream = result.value;
         tmp_streams.push(stream);
         stream_unconfirmed.push(
@@ -891,19 +877,6 @@ export async function checkIfStreamOnChain(wallet, dao) {
     console.log(e);
   }
   return tmp_streams;
-}
-
-export async function getConnectionByStake(stakeAddress) {
-  let result = await mirror.getConnectionByStake(stakeAddress);
-  let connections = [];
-  if (result.success == true && result.data != undefined) {
-    connections = result.data;
-  }
-  return connections;
-}
-export async function getConnection(connectionAddress) {
-  let result = await mirror.getConnection(connectionAddress);
-  console.log("getConnection result=", result);
 }
 //check later
 export async function getConfirmedStream(daos) {
