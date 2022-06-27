@@ -91,10 +91,10 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     let scrollHeight = document.documentElement.scrollTop;
     let newNftToRefresh = [];
     if (viewHeight + scrollHeight > contentHeight - viewHeight / 3) {
-      if (reducedNumCards < MAX_CARDS) {
-        let newNumCards = reducedNumCards + SCROLL_LOAD_AMOUNT;
-      // if (numCards < MAX_CARDS) {
-      //   let newNumCards = numCards + SCROLL_LOAD_AMOUNT;
+      // if (reducedNumCards < MAX_CARDS) {
+      //   let newNumCards = reducedNumCards + SCROLL_LOAD_AMOUNT;
+      if (numCards < MAX_CARDS) {
+        let newNumCards = numCards + SCROLL_LOAD_AMOUNT;
         newNumCards = newNumCards < MAX_CARDS ? newNumCards : MAX_CARDS;
         for (let i = numCards; i < newNumCards; i++) {
           newNftToRefresh.push(nftsArray_all[i]);
@@ -114,16 +114,14 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   });
 
   // refresh initial indexes
-  // let idxs = [...Array(numCards).keys()];
   let idxs = [...Array(numCards).keys()];
   console.log("new cards=", numCards);
   let nftsArray = [];
   if (nftsArray_all.length > 0) {
     nftsArray = idxs.map((idx, _) => nftsArray_all[idx]);
   }
-  console.log("nftsArray=", nftsArray);
-  let flag = false;
 
+  let flag = false;
   if (currentDao.streams != undefined && owner.address != undefined) {
     flag = true;
   }
