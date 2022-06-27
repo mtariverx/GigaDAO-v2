@@ -28,7 +28,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const [numCards, setNumCards] = useState(10);
   const [streams, setStreams] = useState([]);
   const [nft_filterd, setNftFiltered] = useState([]);
-
+  const [flag_selectedNFT, setFlagSelectedNFT]= useState(false);
   const { owner } = useOwnerData();
   const wallet = useAnchorWallet();
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
@@ -119,9 +119,8 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     let NFT_all = NFT_unstaked.concat(NFT_staked_unconnected).concat(
       NFT_staked_connected
     );
-    console.log("NFT all=", NFT_all);
     console.log("#elibiglbeNFTs=", eligibleNfts.length);
-    // console.log("#NFT all=", NFT_all.length);
+    console.log("#NFT all=", NFT_all.length);
     // console.log("#NFTUnstaked=", NFT_unstaked.length);
     // console.log("#StakedConnected=", NFT_staked_connected.length);
     // console.log("#StakedUnconnected=", NFT_staked_unconnected.length);
@@ -151,6 +150,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       let stream_inactive_connected;
       let stream_inactive_unconnected;
       let stream_select_active;
+      let tmp_stream=[];
       if (
         selectedNft == undefined ||
         currentDao.streams == undefined ||
@@ -158,40 +158,49 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         nftsArray.length == 0
       ) {
       } else {
+        let connection_promise=[];
         for (const stream of currentDao.streams) {
-          let connection: pic_pic.Connection =
-            await chain.checkIfConnectionExists(
-              wallet,
-              NETWORK,
-              selectedNft.stake.address,
-              stream.address,
-              stream.decimals,
-              stream.daily_stream_rate
-            );
-          if (connection) {
+          tmp_stream.push(stream);
+          connection_promise.push(chain.checkIfConnectionExists(
+            wallet,
+            NETWORK,
+            selectedNft.stake.address,
+            stream.address,
+            stream.decimals,
+            stream.daily_stream_rate
+          ));
+        }
+        let connection_results=await Promise.allSettled(connection_promise);
+        let index=-1;
+        for(const connection_result of connection_results){
+          
+          index++;
+          if (connection_result.status==='fulfilled' && connection_result.value!=undefined) {
+            console.log("conn=",connection_result);
+            let connection=connection_result.value;  
             if (connection.is_active) {
-              if (stream.is_active) {
-                stream_active_connected = stream;
+              if (tmp_stream[index].is_active) {
+                stream_active_connected = tmp_stream[index];
               } else {
-                stream_inactive_connected = stream;
+                stream_inactive_connected = tmp_stream[index];
               }
             } else {
-              if (stream.is_active) {
-                stream_active_unconnected = stream;
+              if (tmp_stream[index].is_active) {
+                stream_active_unconnected = tmp_stream[index];
               } else {
-                stream_inactive_unconnected = stream;
+                stream_inactive_unconnected = tmp_stream[index];
               }
             }
             //update connection table in mirror
             mirror.updateConnection(connection.address, connection.is_active);
           } else {
-            if (stream.collections != undefined && stream.is_active) {
-              for (const collection of stream.collections) {
+            if (tmp_stream[index].collections != undefined && tmp_stream[index].is_active) {
+              for (const collection of tmp_stream[index].collections) {
                 if (
                   collection.address.toString() ===
                   selectedNft.collection.address.toString()
                 ) {
-                  stream_select_active = stream;
+                  stream_select_active = tmp_stream[index];
                   break;
                 }
               }
@@ -215,8 +224,9 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         console.log("--useEffect-selected NFT--", selectedNft);
       }
     })();
+    console.log("flag_selectedNFT=",flag_selectedNFT)
+  // }, []);
   }, [selectedNft]);
-
   return (
     <div className="container mt-4">
       {streams.map(function (val, idx) {
@@ -238,6 +248,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
             <NftCardComponent
               nft={val}
               setSelectedNft={setSelectedNft}
+              setFlagSelectedNFT={setFlagSelectedNFT}
               key={val.address.toString()}
               isBusy={isBusy}
               setIsBusy={setIsBusy}
@@ -351,14 +362,14 @@ const StreamCardComponent: React.FC<{
 
   // live number go up effect
   useEffect(() => {
-    if (streamState === StreamStates.CONNECTED_NFT) {
-      const interval_ms = 100;
-      let timer = setTimeout(() => {
-        const newNft = cloneObject(props.currentNft);
-        props.setCurrentNft(newNft); // TODO this is horrible and should be isolated to a smaller component
-      }, interval_ms);
-      return () => clearTimeout(timer);
-    }
+    // if (streamState === StreamStates.CONNECTED_NFT) {
+    //   const interval_ms = 100;
+    //   let timer = setTimeout(() => {
+    //     const newNft = cloneObject(props.currentNft);
+    //     props.setCurrentNft(newNft); // TODO this is horrible and should be isolated to a smaller component
+    //   }, interval_ms);
+    //   return () => clearTimeout(timer);
+    // }
   });
 
   function handleRefreshConnection(e) {
@@ -763,6 +774,7 @@ const StreamCardComponent: React.FC<{
 const NftCardComponent: React.FC<{
   nft: Nft;
   setSelectedNft;
+  setFlagSelectedNFT;
   isBusy;
   setIsBusy;
 }> = (props) => {
@@ -797,6 +809,7 @@ const NftCardComponent: React.FC<{
       return;
     } else if (currentNftState === NftStates.STAKED) {
       props.setSelectedNft(currentNft);
+      console.log("select nft");
     } else {
       alert("NFT must be staked to view its streams.");
     }
