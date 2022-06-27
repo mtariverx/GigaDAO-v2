@@ -89,22 +89,14 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
     let viewHeight = window.innerHeight;
     let contentHeight = window.document.body.offsetHeight;
     let scrollHeight = document.documentElement.scrollTop;
-    let newNftToRefresh = [];
     if (viewHeight + scrollHeight > contentHeight - viewHeight / 3) {
-      // if (reducedNumCards < MAX_CARDS) {
-      //   let newNumCards = reducedNumCards + SCROLL_LOAD_AMOUNT;
       if (numCards < MAX_CARDS) {
         let newNumCards = numCards + SCROLL_LOAD_AMOUNT;
         newNumCards = newNumCards < MAX_CARDS ? newNumCards : MAX_CARDS;
-        for (let i = numCards; i < newNumCards; i++) {
-          newNftToRefresh.push(nftsArray_all[i]);
-        }
+       
         setNumCards(newNumCards);
       } else {
         console.log("no more nfts");
-      }
-      if (newNftToRefresh.length > 0) {
-        refreshStreams(dispatch, newNftToRefresh);
       }
     }
   }
