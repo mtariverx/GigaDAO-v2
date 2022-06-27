@@ -28,7 +28,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const [numCards, setNumCards] = useState(10);
   const [streams, setStreams] = useState([]);
   const [nft_filterd, setNftFiltered] = useState([]);
-  const [flag_selectedNFT, setFlagSelectedNFT]= useState(false);
   const { owner } = useOwnerData();
   const wallet = useAnchorWallet();
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
@@ -176,7 +175,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
           
           index++;
           if (connection_result.status==='fulfilled' && connection_result.value!=undefined) {
-            console.log("conn=",connection_result);
             let connection=connection_result.value;  
             if (connection.is_active) {
               if (tmp_stream[index].is_active) {
@@ -224,7 +222,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         console.log("--useEffect-selected NFT--", selectedNft);
       }
     })();
-    console.log("flag_selectedNFT=",flag_selectedNFT)
   // }, []);
   }, [selectedNft]);
   return (
@@ -248,7 +245,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
             <NftCardComponent
               nft={val}
               setSelectedNft={setSelectedNft}
-              setFlagSelectedNFT={setFlagSelectedNFT}
               key={val.address.toString()}
               isBusy={isBusy}
               setIsBusy={setIsBusy}
@@ -272,6 +268,8 @@ const StreamCardComponent: React.FC<{
   const [currentConnections, setCurrentConnections] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isUnknown, setIsUnknown] = useState(false);
+  const [earned, setEarned] = useState(0);
+  const [available, setAvailable] = useState (0);
   const wallet = useAnchorWallet();
 
   enum StreamStates {
@@ -362,14 +360,28 @@ const StreamCardComponent: React.FC<{
 
   // live number go up effect
   useEffect(() => {
-    // if (streamState === StreamStates.CONNECTED_NFT) {
-    //   const interval_ms = 100;
-    //   let timer = setTimeout(() => {
-    //     const newNft = cloneObject(props.currentNft);
-    //     props.setCurrentNft(newNft); // TODO this is horrible and should be isolated to a smaller component
-    //   }, interval_ms);
-    //   return () => clearTimeout(timer);
-    // }
+    if (streamState === StreamStates.CONNECTED_NFT) {
+      const interval_ms = 100;
+      let timer = setTimeout(() => {
+        const tokens_per_second = currentStream.daily_stream_rate / 24 / 60 / 60;
+        const currentTime = Date.now() / 1000;
+        const connectionLastUpdateTimestamp =
+          currentConnections[props.currentNft.stake.address.toString()]
+            .last_update_timestamp;
+        const elapsedSeconds = currentTime - connectionLastUpdateTimestamp;
+        const earnedSinceLastUpdate = elapsedSeconds * tokens_per_second;
+  
+        const totalEarned =
+          currentConnections[props.currentNft.stake.address.toString()]
+            .total_earned + earnedSinceLastUpdate;
+        setEarned(totalEarned);
+        // setEarned();
+        // setAvailable();
+        // const newNft = cloneObject(props.currentNft);
+        // props.setCurrentNft(newNft); // TODO this is horrible and should be isolated to a smaller component
+      }, interval_ms);
+      return () => clearTimeout(timer);
+    }
   });
 
   function handleRefreshConnection(e) {
@@ -624,14 +636,15 @@ const StreamCardComponent: React.FC<{
       const totalEarned =
         currentConnections[props.currentNft.stake.address.toString()]
           .total_earned + earnedSinceLastUpdate;
-
+      // setEarned(totalEarned);
       stream_info_box = (
         <div className="stream-section-dynamic">
           <div className="stream-section-3">
             <div className="stream-info-box">
               <h3>{props.currentNft.name}</h3>
               <h4 className="desktop-only">
-                earned: <em>{totalEarned.toFixed(4)}</em>
+                earned: <em>{earned.toFixed(4)}</em>
+                {/* earned: <em>{totalEarned.toFixed(4)}</em> */}
               </h4>
               <h4 className="desktop-only">
                 claimed:{" "}
@@ -774,7 +787,6 @@ const StreamCardComponent: React.FC<{
 const NftCardComponent: React.FC<{
   nft: Nft;
   setSelectedNft;
-  setFlagSelectedNFT;
   isBusy;
   setIsBusy;
 }> = (props) => {
