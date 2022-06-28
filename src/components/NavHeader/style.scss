@@ -24,3 +24,21 @@
     justify-content: right;
   }
 }
+@media (max-width: 1204px) {
+  .nav-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    & > .top-log {
+      padding-left: 20px;
+      padding-top: 20px;
+      text-align: left;
+      & > img {
+        width: 180px;
+      }
+    }
+    & > .top-nav-right {
+      padding-right: 20px;
+      gap: 10px;
+    }
+  }
+}

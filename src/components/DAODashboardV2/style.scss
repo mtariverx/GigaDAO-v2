@@ -210,12 +210,13 @@
                 display: grid;
                 cursor: pointer;
                 &:hover {
-                  background-color: $bg-color-layer2;
+                  background-color: $bg-color-layer2-hover;
                   color: $text-color-common;
                 }
                 background-color: $bg-color-layer2;
                 background-size: cover;
                 background-position: center;
+                color:$text-color-common-hover;
                 justify-content: center;
                 align-items: center;
                 border-radius: 10px;
