@@ -62,6 +62,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         if (nft.stake?.num_connections == 0) {
           NFT_staked_unconnected.push(nft);
         } else if (nft.stake.num_connections > 0) {
+          
           NFT_staked_connected.push(nft);
         }
       }

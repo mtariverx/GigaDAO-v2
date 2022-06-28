@@ -1,0 +1,26 @@
+@import "../../scss/DAOVariable.scss";
+.nav-header {
+  display: fixed;
+  top: 0px;
+  background-color: $bg-color-layer1;
+  font-family: "Roboto";
+  height: $nav-header-height;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  & > .top-log {
+    padding-left: 100px;
+    padding-top: 20px;
+    text-align: left;
+    & > img {
+      width: 240px;
+    }
+  }
+  & > .top-nav-right {
+    display: grid;
+    grid-auto-flow: column;
+    padding-right: 100px;
+    gap: 10px;
+    align-items: center;
+    justify-content: right;
+  }
+}

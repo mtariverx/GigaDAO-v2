@@ -10,6 +10,9 @@ import { ConnectWalletBannerButton } from "./components/ConnectWalletNavButton";
 import { DaoPage } from "./pages/DaoPage";
 import DAODashboardV2 from "components/DAODashboardV2";
 import ReactGA from "react-ga4";
+import TokenStreamV2 from "components/TokenStreamV2";
+import SocialFooter from "components/SocialFooter";
+import NavHeader from "components/NavHeader";
 
 const PROD_GA_MID = "G-7ZX9B5QVXZ";
 const TEST_GA_MID = "G-RGDZ6GH4CH";
@@ -37,7 +40,13 @@ function App() {
           <ConnectWalletBannerButton />
           <SearchBar /> */}
         <Switch>
-          <Route path="/maindashboard" component={DAODashboardV2} />
+          {/* <Route path="/maindashboard" component={DAODashboardV2} /> */}
+          <Route path="/maindashboard">
+            <NavHeader />
+            <DAODashboardV2 />
+            <SocialFooter />
+          </Route>
+          <Route path="/tokenstreamv2" component={TokenStreamV2} />
           <Route exact path={"/"}>
             <Navbar />
             <MessageBanner />

@@ -34,7 +34,7 @@ import ActiveProposal from "components/ActiveProposal";
 import NewMultisigTreasury from "components/NewMultisigTreasury";
 import MultisigTreausry from "components/MultisigTreasury";
 
-const DAODashboardV2: React.FC = (props) => {
+const TokenStreamV2: React.FC = (props) => {
   const { publicKey, connected } = useWallet();
   const { dispatch, callConnectOwner, callDisconnectOwner } = useOwnerData();
   const [isConnectingToOwner, setIsConnectingToOwner] = useState(false);
@@ -187,8 +187,8 @@ const DAODashboardV2: React.FC = (props) => {
   };
 
   return (
-    <div className="dashboard-main">
-      {/* <div className="top-nav-bar">
+    <div className="tokenstream-main">
+      <div className="top-nav-bar">
         <div className="top-log">
           <img src={Giga_logo} alt="Solana Explorer" />
         </div>
@@ -199,24 +199,10 @@ const DAODashboardV2: React.FC = (props) => {
             <IconButton icon_img={Profile} background="unfill" />
           </div>
         </div>
-      </div> */}
+      </div>
       <div className="dashboard-body">
-        <div className="dashboard-dao-group">
-          <div onClick={() => setShowModal(0)}>
-            <IconButton icon_img={Plus_fill} background="unfill" />
-          </div>
-          <div className="select-memeberDAO">
-            <select value={select_dao_id} onChange={onChangeSelectMemberDAO}>
-              {member_dao_ids.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div onClick={onClickRefresh}>
-            <IconButton icon_img={Refresh} background="unfill" />
-          </div>
+        <div className="body-title">
+          Token Streams
         </div>
         <div className="dashboard-content">
           <div className="dashboard-content-center">
@@ -260,26 +246,26 @@ const DAODashboardV2: React.FC = (props) => {
                     New Proposal
                   </div>
                   <div
-                    className="councillor-action-proposal"
+                    className="councillor-action-others"
                     onClick={() => setShowModal(1)}
                   >
                     New Token Stream
                   </div>
                   <div
-                    className="councillor-action-proposal"
+                    className="councillor-action-others"
                     onClick={() => setShowModal(3)}
                   >
                     Token Stream
                   </div>
                   <div
-                    className="councillor-action-proposal"
+                    className="councillor-action-others"
                     onClick={() => setShowModal(5)}
                     // onClick={() => alert("Coming soon")}
                   >
                     New Multisig Treasury
                   </div>
                   <div
-                    className="councillor-action-proposal"
+                    className="councillor-action-others"
                     onClick={() => setShowModal(6)}
                     // onClick={() => alert("Coming soon")}
                   >
@@ -291,7 +277,7 @@ const DAODashboardV2: React.FC = (props) => {
           </div>
         </div>
       </div>
-      {/* <div className="dashboard-bottom">
+      <div className="dashboard-bottom">
         <div className="bottom-social-group">
           <div className="social-icon" onClick={onLaunchDiscord}>
             <IconButton
@@ -310,7 +296,7 @@ const DAODashboardV2: React.FC = (props) => {
             <IconButton icon_img={ME_logo} background="social_unfill" />
           </div>
         </div>
-      </div> */}
+      </div>
       {show_modal == 0 && connected ? (
         <DAODetailModal onClick={() => setShowModal(-1)}>
           <NewDAO dao={selected_member_dao} onClose={onCloseModeal} />
@@ -366,4 +352,4 @@ const DAODashboardV2: React.FC = (props) => {
     </div>
   );
 };
-export default DAODashboardV2;
+export default TokenStreamV2;
