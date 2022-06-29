@@ -660,9 +660,9 @@ let unstakeNft: pic.UnstakeNft = async (nft: pic.Nft) => {
 let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
   //getting member daos from database if the owner address is a councillor of
   try {
-    owner = {
-      address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi"),
-    };
+    // owner = {
+    //   address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi"),
+    // };
     const result = await mirror.getMembers(owner.address.toString()); //get dao address lists from councillor tables
 
     //getting daos if the owner has daos
