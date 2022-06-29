@@ -19,6 +19,7 @@ import TokenStream from "components/TokenStream";
 import NewProposal from "components/NewProposal";
 import NewDAO from "components/NewDAO";
 
+import { Link, NavLink } from "react-router-dom";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
 import { useOwnerData } from "providers/owner";
@@ -33,6 +34,7 @@ import { shallowEqual } from "react-redux";
 import ActiveProposal from "components/ActiveProposal";
 import NewMultisigTreasury from "components/NewMultisigTreasury";
 import MultisigTreausry from "components/MultisigTreasury";
+import { clusterPath } from "utils/url";
 
 const DAODashboardV2: React.FC = (props) => {
   const { publicKey, connected } = useWallet();
@@ -59,7 +61,6 @@ const DAODashboardV2: React.FC = (props) => {
     (state: DaoState) => state.dao,
     shallowEqual
   );
-  // console.log("useSelector=", dao_store);
 
   useEffect(() => {
     (async () => {
@@ -67,7 +68,6 @@ const DAODashboardV2: React.FC = (props) => {
         if (connected) {
           setIsConnectingToOwner(true);
           const newOwner: pic.Owner = { address: publicKey };
-          // const newOwner: pic.Owner = { address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi")};;
           callConnectOwner(dispatch, newOwner).then(() => {
             setIsConnectingToOwner(false);
           });
@@ -75,7 +75,6 @@ const DAODashboardV2: React.FC = (props) => {
             newOwner,
             wallet
           );
-          console.log("=======", member_daos_promise);
           let mdis: Array<string> = [];
           let m_daos: Array<pic.Dao> = [];
           m_daos = member_daos_promise;
@@ -87,9 +86,7 @@ const DAODashboardV2: React.FC = (props) => {
           let streams = await livePic.checkIfStreamOnChain(wallet, {
             ...daos_with_stream,
           });
-          console.log("---", streams);
           const dao = { ...m_daos[0], streams: streams };
-          console.log("--dao--", dao);
           setSelectedMemberDAO({ ...dao }); //only first
           onSetDao({ ...dao });
         } else {
@@ -103,20 +100,13 @@ const DAODashboardV2: React.FC = (props) => {
   useEffect(() => {
     (async () => {
       if (connected) {
-        console.log("select*******dao");
         let [daos_with_stream] = await livePic.getDaos([
           { ...selected_member_dao },
         ]);
-        console.log("+++++", selected_member_dao);
         let streams = await livePic.checkIfStreamOnChain(wallet, {
           ...daos_with_stream,
         });
         const dao = { ...selected_member_dao, streams: streams };
-        // let [confirmedDaos] = await livePic.getConfirmedStream([
-        //   { ...daos_with_stream },
-        // ]);
-        console.log("---", streams);
-        // console.log("-------------", confirmedDaos);
         setSelectedMemberDAO({ ...dao }); //only first
         onSetDao({ ...dao });
       } else {
@@ -188,18 +178,6 @@ const DAODashboardV2: React.FC = (props) => {
 
   return (
     <div className="dashboard-main">
-      {/* <div className="top-nav-bar">
-        <div className="top-log">
-          <img src={Giga_logo} alt="Solana Explorer" />
-        </div>
-        <div className="top-nav-right">
-          <Button btn_type="common" btn_title="Dashboard" />
-          <ConnectWalletNavButton />
-          <div onClick={onLaunchProfile}>
-            <IconButton icon_img={Profile} background="unfill" />
-          </div>
-        </div>
-      </div> */}
       <div className="dashboard-body">
         <div className="dashboard-dao-group">
           <div onClick={() => setShowModal(0)}>
@@ -227,7 +205,7 @@ const DAODashboardV2: React.FC = (props) => {
               <div className="dao-summary-content">
                 {dao_store.streams?.map((stream, index) =>
                   index < 4 ? (
-                    <div className="each-dao-info">
+                    <div className="each-dao-info" key={index}>
                       <div className="dao-summary-value">
                         {stream.current_pool_amount}
                         <div className="unit-color"> {stream.token_ticker}</div>
@@ -257,6 +235,7 @@ const DAODashboardV2: React.FC = (props) => {
                     className="councillor-action-proposal"
                     onClick={() => setShowModal(2)}
                   >
+                  
                     New Proposal
                   </div>
                   <div
@@ -265,12 +244,19 @@ const DAODashboardV2: React.FC = (props) => {
                   >
                     New Token Stream
                   </div>
-                  <div
+                  {/* <div
                     className="councillor-action-proposal"
                     onClick={() => setShowModal(3)}
+                  > */}
+                  <NavLink
+                    className="councillor-action-proposal"
+                    to={clusterPath("/tokenstreamv2")}
+                    exact
+                    // onClick={() => setShowModal(2)}
                   >
                     Token Stream
-                  </div>
+                    </NavLink>
+                  {/* </div> */}
                   <div
                     className="councillor-action-proposal"
                     onClick={() => setShowModal(5)}

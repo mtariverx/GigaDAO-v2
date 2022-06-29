@@ -46,7 +46,11 @@ function App() {
             <DAODashboardV2 />
             <SocialFooter />
           </Route>
-          <Route path="/tokenstreamv2" component={TokenStreamV2} />
+          <Route path="/tokenstreamv2">
+            <NavHeader />
+            <TokenStreamV2 />
+            <SocialFooter />
+          </Route>
           <Route exact path={"/"}>
             <Navbar />
             <MessageBanner />
