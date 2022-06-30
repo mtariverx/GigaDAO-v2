@@ -41,7 +41,7 @@ const TokenStreamV2: React.FC = (props) => {
     (state: DaoState) => state.dao,
     shallowEqual
   );
- console.log("===================")
+  console.log("===================");
   useEffect(() => {
     (async () => {
       try {
@@ -66,7 +66,7 @@ const TokenStreamV2: React.FC = (props) => {
   useEffect(() => {
     (async () => {
       if (connected) {
-        console.log("refresh clicked-",refresh);
+        console.log("refresh clicked-", refresh);
       } else {
         callDisconnectOwner(dispatch);
       }
@@ -173,18 +173,23 @@ const TokenStreamV2: React.FC = (props) => {
             </div>
           </div>
           <div className="card-content">
-            {dao_store.streams?.map((stream, index) => (
-              <StreamCard key={index}
-                setSelectedStream={setSelectedStream}
-                stream={stream}
-                is_selected={
-                  stream.address.toString() ===
-                  selected_stream?.address.toString()
-                }
-                setRefresh={setRefresh}
-                refresh={refresh}
-              />
-            ))}
+            {dao_store.streams?.map((stream, index) =>
+              stream.daily_stream_rate > 0 ? (
+                <StreamCard
+                  key={index}
+                  setSelectedStream={setSelectedStream}
+                  stream={stream}
+                  is_selected={
+                    stream.address.toString() ===
+                    selected_stream?.address.toString()
+                  }
+                  setRefresh={setRefresh}
+                  refresh={refresh}
+                />
+              ) : (
+                ""
+              )
+            )}
           </div>
         </div>
       </div>

@@ -62,7 +62,6 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         if (nft.stake?.num_connections == 0) {
           NFT_staked_unconnected.push(nft);
         } else if (nft.stake.num_connections > 0) {
-          
           NFT_staked_connected.push(nft);
         }
       }
@@ -94,7 +93,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
       if (numCards < MAX_CARDS) {
         let newNumCards = numCards + SCROLL_LOAD_AMOUNT;
         newNumCards = newNumCards < MAX_CARDS ? newNumCards : MAX_CARDS;
-       
+
         setNumCards(newNumCards);
       } else {
         console.log("no more nfts");
@@ -125,10 +124,10 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         setStreams([currentDao.streams[0]]);
       }
     })();
-    if(eligibleNfts.length>10){
+    if (eligibleNfts.length > 10) {
       setNumCards(10);
-    }else{
-      setNumCards(eligibleNfts.length)
+    } else {
+      setNumCards(eligibleNfts.length);
     }
   }, [flag]);
 
@@ -1062,6 +1061,10 @@ function getEligibleNfts(owner, currentCollectionsAddresses) {
         // filter nfts that are eligible for streams here
         for (const nft of owner.nfts) {
           let b58address = nft.collection.address.toString();
+          console.log("nft collection=", b58address);
+          if (b58address == "FvPc1P3hEGC3ajBgdarb2vABwhcDKxxdek88sEoanazD") {
+            console.log("---------matched------------");
+          }
           if (currentCollectionsAddresses.includes(b58address)) {
             eligibleNfts.push(nft);
           }

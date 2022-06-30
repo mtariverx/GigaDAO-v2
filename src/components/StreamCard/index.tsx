@@ -74,7 +74,7 @@ const StreamCard: React.FC<{
             <div className="show-collections">
               {props.stream.collections != undefined
                 ? props.stream.collections.map((item, index) => (
-                    <div className="item">{item.address.toString()}</div>
+                    <div className="item" key={index}>{item.address.toString()}</div>
                   ))
                 : ""}
             </div>
