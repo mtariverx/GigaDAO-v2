@@ -1060,8 +1060,14 @@ function getEligibleNfts(owner, currentCollectionsAddresses) {
       if (owner.nfts.length > 0) {
         // filter nfts that are eligible for streams here
         for (const nft of owner.nfts) {
+          if (
+            nft.address.toString() ==
+            "F4cEJvbqqRs2Pjm9eVEJdXXDQ283426NXf1wGNHHEzfZ"
+          ) {
+            console.log("-----nft existing---");
+          }
           let b58address = nft.collection.address.toString();
-          console.log("nft collection=", b58address);
+          console.log("nft address=", nft.address.toString());
           if (b58address == "FvPc1P3hEGC3ajBgdarb2vABwhcDKxxdek88sEoanazD") {
             console.log("---------matched------------");
           }
