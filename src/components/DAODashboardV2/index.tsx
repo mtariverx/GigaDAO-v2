@@ -447,14 +447,17 @@ const DAODashboardV2: React.FC = (props) => {
                     <div className="each-dao-info">
                       <div className="stream-item">Total NFTs Staked</div>
                       <div className="dao-summary-value">
-                        {selected_stream ? owner.nfts?.length : ""}
+                        {/* {selected_stream ? owner.nfts?.length : ""} */}
+                        {num_staked_nfts}
                         <div className="unit-color">
                           {" "}
-                          {selected_stream
+                          {num_staked_nfts > 1 ? "NFTs" : "NFT"}
+                          {/* {selected_stream
                             ? owner.nfts?.length > 1
                               ? "NFTs"
                               : "NFT"
-                            : ""}
+                            : ""} */}
+
                         </div>
                       </div>
                       <div className="dao-summary-percent">
