@@ -30,6 +30,10 @@ const StreamCard: React.FC<{
     // }
     
   }, [flag]);
+  const onClickStreamAddress=(stream_address)=>{
+    window.open(`https://solscan.io/account/${stream_address}`);
+    return;
+  }
   return (
     <div
       className={`streamcard-main ${
@@ -48,7 +52,8 @@ const StreamCard: React.FC<{
           </div>
           <div className="each-detail">
             <div className="detail-title">Stream Address</div>
-            <div className="detail-info">{props.stream.address.toString()}</div>
+            {/* <div className="detail-info">{props.stream.address.toString()}</div> */}
+            <div className="detail-info stream-address-hint " onClick={()=>onClickStreamAddress(props.stream.address.toString())}>Program Account</div>
           </div>
           <div className="each-detail">
             <div className="detail-title">Pool Address</div>
