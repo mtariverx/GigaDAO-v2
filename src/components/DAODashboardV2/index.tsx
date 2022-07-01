@@ -31,7 +31,6 @@ import ActiveProposal from "components/ActiveProposal";
 import NewMultisigTreasury from "components/NewMultisigTreasury";
 import MultisigTreausry from "components/MultisigTreasury";
 import { clusterPath } from "utils/url";
-
 const DAODashboardV2: React.FC = (props) => {
   const { publicKey, connected } = useWallet();
   const { dispatch, callConnectOwner, callDisconnectOwner } = useOwnerData();
@@ -40,14 +39,14 @@ const DAODashboardV2: React.FC = (props) => {
   const [member_daos, setMemberDAOs] = useState<Array<pic.Dao>>([]);
   const [member_dao_ids, setMemberDaoIds] = useState<string[]>([]);
   const [selected_member_dao, setSelectedMemberDAO] = useState<pic.Dao>();
-  const [show_modal, setShowModal] = useState(-1);
+  const [show_modal, setShowModal] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [select_dao_id, setSelectDaoId] = useState<string>();
   const [selected_stream, setSelectedStream] = useState<undefined | any>();
   const wallet = useAnchorWallet();
   const { owner } = useOwnerData();
   const dispatch_state = useDispatch();
-
+  const content_title = ["Dashboard", "New Token Streams", "New Proposal", "Token Stream", "Active Proposal", "New Multisig Tresury", "Treasury"];
   const onSetDao = React.useCallback(
     (dao: pic.Dao) => dispatch_state({ type: "SET_DAO", payload: dao }),
     [dispatch_state]
@@ -122,13 +121,50 @@ const DAODashboardV2: React.FC = (props) => {
     })();
   }, [refresh]);
 
+  const getNumOfStakedNFTs = () => {
+    let num_staked_nft = 0;
+    try {
+      const num_nfts = owner.nfts.length;
+
+      if (owner.nfts) {
+        for (const nft of owner.nfts) {
+          if (nft.stake) {
+            num_staked_nft++;
+          }
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    return num_staked_nft;
+  }
+
+  const num_staked_nfts = getNumOfStakedNFTs();
   const onChangeSelectMemberDAO = (event) => {
     let dao_id = event.target.value;
     setMemberDao(dao_id);
   };
-
+  const getPercentOfStakedNft = () => {
+    let percent = "0";
+    try {
+      const num_nfts = owner.nfts.length;
+      let num_staked_nft = 0;
+      if (owner.nfts) {
+        for (const nft of owner.nfts) {
+          if (nft.stake) {
+            num_staked_nft++;
+          }
+        }
+        percent = (num_staked_nft / num_nfts).toFixed(2);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    return percent;
+  };
+  const staked_percent_nft = getPercentOfStakedNft();
   const onCloseModeal = () => {
-    setShowModal(-1);
+    setShowModal(0);
     setRefresh(!refresh);
   };
 
@@ -194,7 +230,7 @@ const DAODashboardV2: React.FC = (props) => {
           <img src={Giga_logo} alt="Solana Explorer" />
         </div>
         <div className="dashboard-dao-group">
-          <div onClick={() => setShowModal(0)}>
+          <div onClick={() => setShowModal(7)}>
             <IconButton icon_img={Plus_fill} background="unfill" />
           </div>
           <div className="select-memeberDAO">
@@ -215,7 +251,7 @@ const DAODashboardV2: React.FC = (props) => {
           <Button
             btn_type="common"
             btn_title="Dashboard"
-            onClick={() => setShowModal(-1)}
+            onClick={() => setShowModal(0)}
           />
           {/* </NavLink> */}
           <ConnectWalletNavButton />
@@ -242,6 +278,9 @@ const DAODashboardV2: React.FC = (props) => {
             <IconButton icon_img={Refresh} background="unfill" />
           </div>
         </div> */}
+        <div className="body-header">
+          {content_title[show_modal]}
+        </div>
         <div className="dashboard-content">
           {show_modal != 3 ? (
             <div className="dashboard-content-center">
@@ -271,9 +310,19 @@ const DAODashboardV2: React.FC = (props) => {
                 </div>
                 <div className="dashboard-status-nft">
                   <div className="nft-title">Staking</div>
-                  <div className="nft-staked-cnt">Number of Staked NFT</div>
-                  <div className="nft-unstaked-cnt">
-                    Number of Connected NFTs
+                  <div className="nft-content">
+                    <div className="nft-staked">
+                      <div className="nft-staked-title">
+                        Number of Staked NFT
+                      </div>
+                      <div className="nft-staked-cnt">
+                        {" "}
+                        {num_staked_nfts}
+                      </div>
+                    </div>
+                    <div className="nft-unstaked-cnt">
+                      Number of Connected NFTs
+                    </div>
                   </div>
                 </div>
               </div>
@@ -321,14 +370,14 @@ const DAODashboardV2: React.FC = (props) => {
                     <div
                       className="councillor-action-proposal"
                       onClick={() => setShowModal(5)}
-                      // onClick={() => alert("Coming soon")}
+                    // onClick={() => alert("Coming soon")}
                     >
                       New Multisig Treasury
                     </div>
                     <div
                       className="councillor-action-proposal"
                       onClick={() => setShowModal(6)}
-                      // onClick={() => alert("Coming soon")}
+                    // onClick={() => alert("Coming soon")}
                     >
                       Treasury
                     </div>
@@ -343,6 +392,9 @@ const DAODashboardV2: React.FC = (props) => {
             <div className="stream-content-center">
               <div className="dashboard-status-summary">
                 <div className="stream-info-summary">
+                  <div className="stream-summary-title">
+                    <div className="unit-color">Stream</div>
+                  </div>
                   <div className="stream-summary-content">
                     <div className="each-dao-info">
                       <div className="stream-item">Stream Rate</div>
@@ -405,19 +457,29 @@ const DAODashboardV2: React.FC = (props) => {
                             : ""}
                         </div>
                       </div>
-                       <div className="dao-summary-percent">
-                      &bnsp;
-                    </div> 
+                      <div className="dao-summary-percent">
+                        + {staked_percent_nft} %
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="dashboard-status-nft">
+                {/* <div className="dashboard-status-nft">
                   <div className="nft-title">Staking</div>
-                  <div className="nft-staked-cnt">Number of Staked NFT</div>
-                  <div className="nft-unstaked-cnt">
-                    Number of Connected NFTs
+                  <div className="nft-content">
+                    <div className="nft-staked">
+                      <div className="nft-staked-title">
+                        Number of Staked NFT
+                      </div>
+                      <div className="nft-staked-cnt">
+                        {" "}
+                        {num_staked_nfts}
+                      </div>
+                    </div>
+                    <div className="nft-unstaked-cnt">
+                      Number of Connected NFTs
+                    </div>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <div className="card-content">
@@ -447,43 +509,43 @@ const DAODashboardV2: React.FC = (props) => {
           )}
         </div>
       </div>
-      {show_modal == 0 && connected ? (
-        <DAODetailModal onClick={() => setShowModal(-1)}>
+      {show_modal == 7 && connected ? (
+        <DAODetailModal onClick={() => setShowModal(0)}>
           <NewDAO dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""
       )}
       {show_modal == 1 && connected && selected_member_dao != undefined ? (
-        <DAODetailModal onClick={() => setShowModal(-1)}>
+        <DAODetailModal onClick={() => setShowModal(0)}>
           <NewStream dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""
       )}
       {show_modal == 2 && connected ? (
-        <DAODetailModal onClick={() => setShowModal(-1)}>
+        <DAODetailModal onClick={() => setShowModal(0)}>
           <NewProposal dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""
       )}
       {/* {show_modal == 3 && connected ? (
-        <DAODetailModal onClick={() => setShowModal(-1)}>
+        <DAODetailModal onClick={() => setShowModal(0)}>
           <TokenStream dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""
       )} */}
       {show_modal == 4 && connected ? (
-        <DAODetailModal onClick={() => setShowModal(-1)}>
+        <DAODetailModal onClick={() => setShowModal(0)}>
           <ActiveProposal dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""
       )}
       {show_modal == 5 && connected ? (
-        <DAODetailModal onClick={() => setShowModal(-1)}>
+        <DAODetailModal onClick={() => setShowModal(0)}>
           <NewMultisigTreasury
             dao={selected_member_dao}
             onClose={onCloseModeal}
@@ -493,7 +555,7 @@ const DAODashboardV2: React.FC = (props) => {
         ""
       )}
       {show_modal == 6 && connected ? (
-        <DAODetailModal onClick={() => setShowModal(-1)}>
+        <DAODetailModal onClick={() => setShowModal(0)}>
           <MultisigTreausry dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
