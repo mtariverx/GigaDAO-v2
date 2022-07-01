@@ -50,12 +50,12 @@
           overflow: auto;
           // text-algin: left;
           justify-content: left;
-          
-          & >.active-info{
+
+          & > .active-info {
             display: grid;
             grid-template-columns: 50px 1fr;
-            &>.active-status{
-              padding-left:5px;
+            & > .active-status {
+              padding-left: 5px;
             }
             & > .reactivate-btn {
               padding: 0 5px;
@@ -69,7 +69,7 @@
             }
           }
         }
-     
+
         & > .show-collections {
           padding: 0.2rem;
           border-radius: 10px;

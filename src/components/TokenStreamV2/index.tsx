@@ -26,7 +26,6 @@ const TokenStreamV2: React.FC = (props) => {
   const [show_modal, setShowModal] = useState(-1);
   const [refresh, setRefresh] = useState(false);
   const [select_dao_id, setSelectDaoId] = useState<string>();
-
   const [selected_stream, setSelectedStream] = useState<undefined | any>();
   const wallet = useAnchorWallet();
   const { owner } = useOwnerData();

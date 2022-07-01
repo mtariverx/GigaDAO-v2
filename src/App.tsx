@@ -42,15 +42,15 @@ function App() {
         <Switch>
           {/* <Route path="/maindashboard" component={DAODashboardV2} /> */}
           <Route path="/maindashboard">
-            <NavHeader />
+            {/* <NavHeader /> */}
             <DAODashboardV2 />
             <SocialFooter />
           </Route>
-          <Route path="/tokenstreamv2">
+          {/* <Route path="/tokenstreamv2">
             <NavHeader />
             <TokenStreamV2 />
             <SocialFooter />
-          </Route>
+          </Route> */}
           <Route exact path={"/"}>
             <Navbar />
             <MessageBanner />

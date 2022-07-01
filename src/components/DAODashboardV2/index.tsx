@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import "./style.scss";
 import * as React from "react";
-import Profile from "img/icons/profile.png";
-import Discord from "img/icons/discord_logo_icon_1.png";
-import Twitter from "img/icons/twitter.png";
-import ME_logo from "img/icons/ME_Logo.png";
-import Web from "img/icons/web.png";
-import Github from "img/icons/github.png";
 import Refresh from "img/icons/refresh_1.png";
 import Plus_fill from "img/icons/plus_symbol_fill.png";
-import Giga_logo from "../../img/icons/gigadao-full-brand-cropped.png";
+import Giga_logo from "img/icons/gigadao-full-brand-cropped.png";
+import Profile from "img/icons/profile.png";
 import IconButton from "components/common/IconButton";
 import { ConnectWalletNavButton } from "../ConnectWalletNavButton";
 import Button from "components/common/Button";
@@ -18,6 +13,7 @@ import NewStream from "components/NewStream";
 import TokenStream from "components/TokenStream";
 import NewProposal from "components/NewProposal";
 import NewDAO from "components/NewDAO";
+import StreamCard from "components/StreamCard";
 
 import { Link, NavLink } from "react-router-dom";
 import { Keypair, PublicKey } from "@solana/web3.js";
@@ -47,9 +43,9 @@ const DAODashboardV2: React.FC = (props) => {
   const [show_modal, setShowModal] = useState(-1);
   const [refresh, setRefresh] = useState(false);
   const [select_dao_id, setSelectDaoId] = useState<string>();
-
+  const [selected_stream, setSelectedStream] = useState<undefined | any>();
   const wallet = useAnchorWallet();
-
+  const { owner } = useOwnerData();
   const dispatch_state = useDispatch();
 
   const onSetDao = React.useCallback(
@@ -89,6 +85,11 @@ const DAODashboardV2: React.FC = (props) => {
           const dao = { ...m_daos[0], streams: streams };
           setSelectedMemberDAO({ ...dao }); //only first
           onSetDao({ ...dao });
+          setSelectedStream(undefined);
+          if (streams?.length > 0) {
+            console.log("---useEffect---");
+            setSelectedStream(streams[0]);
+          }
         } else {
           callDisconnectOwner(dispatch);
         }
@@ -109,6 +110,12 @@ const DAODashboardV2: React.FC = (props) => {
         const dao = { ...selected_member_dao, streams: streams };
         setSelectedMemberDAO({ ...dao }); //only first
         onSetDao({ ...dao });
+        setSelectedStream(undefined);
+        console.log("------");
+        if (streams?.length > 0) {
+          console.log("------");
+          setSelectedStream(streams[0]);
+        }
       } else {
         callDisconnectOwner(dispatch);
       }
@@ -117,7 +124,6 @@ const DAODashboardV2: React.FC = (props) => {
 
   const onChangeSelectMemberDAO = (event) => {
     let dao_id = event.target.value;
-    setSelectDaoId(dao_id);
     setMemberDao(dao_id);
   };
 
@@ -141,12 +147,17 @@ const DAODashboardV2: React.FC = (props) => {
     for (const dao of member_daos) {
       if (dao.dao_id == dao_id) {
         let [daos_with_stream] = await livePic.getDaos([{ ...dao }]);
-        const streams=await livePic.checkIfStreamOnChain(wallet, { ...daos_with_stream });
-        const dao_tmp={...dao, streams:streams}
+        const streams = await livePic.checkIfStreamOnChain(wallet, {
+          ...daos_with_stream,
+        });
+        const dao_tmp = { ...dao, streams: streams };
         setSelectedMemberDAO({ ...dao_tmp });
         setSelectDaoId(dao_id);
         onSetDao({ ...dao_tmp });
-       
+        setSelectedStream(undefined);
+        if (streams?.length > 0) {
+          setSelectedStream(streams[0]);
+        }
       }
     }
   };
@@ -178,7 +189,10 @@ const DAODashboardV2: React.FC = (props) => {
 
   return (
     <div className="dashboard-main">
-      <div className="dashboard-body">
+      <div className="dashboard-header">
+        <div className="top-log">
+          <img src={Giga_logo} alt="Solana Explorer" />
+        </div>
         <div className="dashboard-dao-group">
           <div onClick={() => setShowModal(0)}>
             <IconButton icon_img={Plus_fill} background="unfill" />
@@ -196,107 +210,243 @@ const DAODashboardV2: React.FC = (props) => {
             <IconButton icon_img={Refresh} background="unfill" />
           </div>
         </div>
+        <div className="top-nav-right">
+          {/* <NavLink to={clusterPath("/maindashboard")} exact> */}
+          <Button
+            btn_type="common"
+            btn_title="Dashboard"
+            onClick={() => setShowModal(-1)}
+          />
+          {/* </NavLink> */}
+          <ConnectWalletNavButton />
+          <div onClick={onLaunchProfile}>
+            <IconButton icon_img={Profile} background="unfill" />
+          </div>
+        </div>
+      </div>
+      <div className="dashboard-body">
+        {/* <div className="dashboard-dao-group">
+          <div onClick={() => setShowModal(0)}>
+            <IconButton icon_img={Plus_fill} background="unfill" />
+          </div>
+          <div className="select-memeberDAO">
+            <select value={select_dao_id} onChange={onChangeSelectMemberDAO}>
+              {member_dao_ids.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div onClick={onClickRefresh}>
+            <IconButton icon_img={Refresh} background="unfill" />
+          </div>
+        </div> */}
         <div className="dashboard-content">
-          <div className="dashboard-content-center">
-            <div className="dao-info-summary">
-              <div className="dao-summary-title">
-                <div className="unit-color">Treasury Value</div>
+          {show_modal != 3 ? (
+            <div className="dashboard-content-center">
+              <div className="dashboard-status-summary">
+                <div className="dao-info-summary">
+                  <div className="dao-summary-title">
+                    <div className="unit-color">Treasury Value</div>
+                  </div>
+                  <div className="dao-summary-content">
+                    {dao_store.streams?.map((stream, index) =>
+                      index < 4 ? (
+                        <div className="each-dao-info" key={index}>
+                          <div className="dao-summary-value">
+                            {stream.current_pool_amount}
+                            <div className="unit-color">
+                              {" "}
+                              {stream.token_ticker}
+                            </div>
+                          </div>
+                          <div className="dao-summary-percent">+100.0%</div>
+                        </div>
+                      ) : (
+                        ""
+                      )
+                    )}
+                  </div>
+                </div>
+                <div className="dashboard-status-nft">
+                  <div className="nft-title">Staking</div>
+                  <div className="nft-staked-cnt">Number of Staked NFT</div>
+                  <div className="nft-unstaked-cnt">
+                    Number of Connected NFTs
+                  </div>
+                </div>
               </div>
-              <div className="dao-summary-content">
-                {dao_store.streams?.map((stream, index) =>
-                  index < 4 ? (
-                    <div className="each-dao-info" key={index}>
-                      <div className="dao-summary-value">
-                        {stream.current_pool_amount}
-                        <div className="unit-color"> {stream.token_ticker}</div>
-                      </div>
-                      <div className="dao-summary-percent">+100.0%</div>
+
+              <div className="dao-staking-councillor">
+                <div className="dao-staking" onClick={onLaunchStaking}>
+                  Staking
+                </div>
+                <div className="dao-councillor">
+                  <div className="councillor-title">Councillor</div>
+                  <div className="councillor-action-group">
+                    <div
+                      className="councillor-action-proposal"
+                      onClick={() => setShowModal(4)}
+                    >
+                      Active Proposal
                     </div>
-                  ) : (
-                    ""
-                  )
-                )}
-              </div>
-            </div>
-            <div className="dao-staking-councillor">
-              <div className="dao-staking" onClick={onLaunchStaking}>
-                Staking
-              </div>
-              <div className="dao-councillor">
-                <div className="councillor-title">Councillor</div>
-                <div className="councillor-action-group">
-                  <div
-                    className="councillor-action-proposal"
-                    onClick={() => setShowModal(4)}
-                  >
-                    Active Proposal
-                  </div>
-                  <div
-                    className="councillor-action-proposal"
-                    onClick={() => setShowModal(2)}
-                  >
-                  
-                    New Proposal
-                  </div>
-                  <div
-                    className="councillor-action-proposal"
-                    onClick={() => setShowModal(1)}
-                  >
-                    New Token Stream
-                  </div>
-                  {/* <div
-                    className="councillor-action-proposal"
-                    onClick={() => setShowModal(3)}
-                  > */}
-                  <NavLink
+                    <div
+                      className="councillor-action-proposal"
+                      onClick={() => setShowModal(2)}
+                    >
+                      New Proposal
+                    </div>
+                    <div
+                      className="councillor-action-proposal"
+                      onClick={() => setShowModal(1)}
+                    >
+                      New Token Stream
+                    </div>
+                    <div
+                      className="councillor-action-proposal"
+                      onClick={() => setShowModal(3)}
+                    >
+                      Token Stream
+                    </div>
+                    {/* <NavLink
                     className="councillor-action-proposal"
                     to={clusterPath("/tokenstreamv2")}
                     exact
                     // onClick={() => setShowModal(2)}
                   >
                     Token Stream
-                    </NavLink>
-                  {/* </div> */}
-                  <div
-                    className="councillor-action-proposal"
-                    onClick={() => setShowModal(5)}
-                    // onClick={() => alert("Coming soon")}
-                  >
-                    New Multisig Treasury
-                  </div>
-                  <div
-                    className="councillor-action-proposal"
-                    onClick={() => setShowModal(6)}
-                    // onClick={() => alert("Coming soon")}
-                  >
-                    Treasury
+                    </NavLink> */}
+
+                    <div
+                      className="councillor-action-proposal"
+                      onClick={() => setShowModal(5)}
+                      // onClick={() => alert("Coming soon")}
+                    >
+                      New Multisig Treasury
+                    </div>
+                    <div
+                      className="councillor-action-proposal"
+                      onClick={() => setShowModal(6)}
+                      // onClick={() => alert("Coming soon")}
+                    >
+                      Treasury
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            ""
+          )}
+          {show_modal == 3 ? (
+            <div className="stream-content-center">
+              <div className="dashboard-status-summary">
+                <div className="stream-info-summary">
+                  <div className="stream-summary-content">
+                    <div className="each-dao-info">
+                      <div className="stream-item">Stream Rate</div>
+                      <div className="dao-summary-value">
+                        {selected_stream
+                          ? selected_stream.daily_stream_rate
+                          : ""}
+                        <div className="unit-color">
+                          {" "}
+                          {selected_stream ? selected_stream.token_ticker : ""}
+                        </div>
+                      </div>
+                      <div className="dao-summary-percent">&nbsp;</div>
+                    </div>
+                    <div className="each-dao-info">
+                      <div className="stream-item">Total Earned</div>
+                      <div className="dao-summary-value">
+                        {selected_stream ? selected_stream.total_earned : ""}
+                        <div className="unit-color">
+                          {" "}
+                          {selected_stream ? selected_stream.token_ticker : ""}
+                        </div>
+                      </div>
+                      <div className="dao-summary-percent">&nbsp;</div>
+                    </div>
+                    <div className="each-dao-info">
+                      <div className="stream-item">Total Claimed</div>
+                      <div className="dao-summary-value">
+                        {selected_stream ? selected_stream.total_claimed : ""}
+                        <div className="unit-color">
+                          {" "}
+                          {selected_stream ? selected_stream.token_ticker : ""}
+                        </div>
+                      </div>
+                      <div className="dao-summary-percent">&nbsp;</div>
+                    </div>
+                    <div className="each-dao-info">
+                      <div className="stream-item">Current Pool Amount</div>
+                      <div className="dao-summary-value">
+                        {selected_stream
+                          ? selected_stream.current_pool_amount
+                          : ""}
+                        <div className="unit-color">
+                          {" "}
+                          {selected_stream ? selected_stream.token_ticker : ""}
+                        </div>
+                      </div>
+                      <div className="dao-summary-percent">&nbsp;</div>
+                    </div>
+                    <div className="each-dao-info">
+                      <div className="stream-item">Total NFTs Staked</div>
+                      <div className="dao-summary-value">
+                        {selected_stream ? owner.nfts?.length : ""}
+                        <div className="unit-color">
+                          {" "}
+                          {selected_stream
+                            ? owner.nfts?.length > 1
+                              ? "NFTs"
+                              : "NFT"
+                            : ""}
+                        </div>
+                      </div>
+                       <div className="dao-summary-percent">
+                      &bnsp;
+                    </div> 
+                    </div>
+                  </div>
+                </div>
+                <div className="dashboard-status-nft">
+                  <div className="nft-title">Staking</div>
+                  <div className="nft-staked-cnt">Number of Staked NFT</div>
+                  <div className="nft-unstaked-cnt">
+                    Number of Connected NFTs
+                  </div>
+                </div>
+              </div>
+
+              <div className="card-content">
+                <div className="single-card">
+                  {dao_store.streams?.map((stream, index) =>
+                    stream.daily_stream_rate > 0 ? (
+                      <StreamCard
+                        key={index}
+                        setSelectedStream={setSelectedStream}
+                        stream={stream}
+                        is_selected={
+                          stream.address.toString() ===
+                          selected_stream?.address.toString()
+                        }
+                        setRefresh={setRefresh}
+                        refresh={refresh}
+                      />
+                    ) : (
+                      ""
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
-      {/* <div className="dashboard-bottom">
-        <div className="bottom-social-group">
-          <div className="social-icon" onClick={onLaunchDiscord}>
-            <IconButton
-              icon_img={Discord}
-              background="social_unfill"
-              onClick={onLaunchDiscord}
-            />
-          </div>
-          <div className="social-icon" onClick={onLaunchTwitter}>
-            <IconButton icon_img={Twitter} background="social_unfill" />
-          </div>
-          <div className="social-icon" onClick={onLaunchGithub}>
-            <IconButton icon_img={Github} background="social_unfill" />
-          </div>
-          <div className="social-icon" onClick={onLaunchME}>
-            <IconButton icon_img={ME_logo} background="social_unfill" />
-          </div>
-        </div>
-      </div> */}
       {show_modal == 0 && connected ? (
         <DAODetailModal onClick={() => setShowModal(-1)}>
           <NewDAO dao={selected_member_dao} onClose={onCloseModeal} />
@@ -318,13 +468,13 @@ const DAODashboardV2: React.FC = (props) => {
       ) : (
         ""
       )}
-      {show_modal == 3 && connected ? (
+      {/* {show_modal == 3 && connected ? (
         <DAODetailModal onClick={() => setShowModal(-1)}>
           <TokenStream dao={selected_member_dao} onClose={onCloseModeal} />
         </DAODetailModal>
       ) : (
         ""
-      )}
+      )} */}
       {show_modal == 4 && connected ? (
         <DAODetailModal onClick={() => setShowModal(-1)}>
           <ActiveProposal dao={selected_member_dao} onClose={onCloseModeal} />

@@ -22,7 +22,14 @@ const StreamCard: React.FC<{
     setFlag(!flag);
     props.setRefresh(!props.refresh);
   };
-  useEffect(() => {}, [flag]);
+  useEffect(() => {
+    // if(props.stream.collections != undefined){
+    //   props.stream.collections.map((item, index) => (
+    //       console.log("collection=",item.address.toString())
+    //   ))
+    // }
+    
+  }, [flag]);
   return (
     <div
       className={`streamcard-main ${
