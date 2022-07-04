@@ -226,37 +226,40 @@ const DAODashboardV2: React.FC = (props) => {
   return (
     <div className="dashboard-main">
       <div className="dashboard-header">
-        <div className="top-log">
-          <img src={Giga_logo} alt="Solana Explorer" />
-        </div>
-        <div className="dashboard-dao-group">
-          <div onClick={() => setShowModal(7)}>
-            <IconButton icon_img={Plus_fill} background="unfill" />
+        <div className="header-items-group">
+
+          <div className="top-log">
+            <img src={Giga_logo} alt="Solana Explorer" />
           </div>
-          <div className="select-memeberDAO">
-            <select value={select_dao_id} onChange={onChangeSelectMemberDAO}>
-              {member_dao_ids.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
+          <div className="dashboard-dao-group">
+            <div onClick={() => setShowModal(7)}>
+              <IconButton icon_img={Plus_fill} background="unfill" />
+            </div>
+            <div className="select-memeberDAO">
+              <select value={select_dao_id} onChange={onChangeSelectMemberDAO}>
+                {member_dao_ids.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div onClick={onClickRefresh}>
+              <IconButton icon_img={Refresh} background="unfill" />
+            </div>
           </div>
-          <div onClick={onClickRefresh}>
-            <IconButton icon_img={Refresh} background="unfill" />
-          </div>
-        </div>
-        <div className="top-nav-right">
-          {/* <NavLink to={clusterPath("/maindashboard")} exact> */}
-          <Button
-            btn_type="common"
-            btn_title="Dashboard"
-            onClick={() => setShowModal(0)}
-          />
-          {/* </NavLink> */}
-          <ConnectWalletNavButton />
-          <div onClick={onLaunchProfile}>
-            <IconButton icon_img={Profile} background="unfill" />
+          <div className="top-nav-right">
+            {/* <NavLink to={clusterPath("/maindashboard")} exact> */}
+            <Button
+              btn_type="common"
+              btn_title="Dashboard"
+              onClick={() => setShowModal(0)}
+            />
+            {/* </NavLink> */}
+            <ConnectWalletNavButton />
+            <div onClick={onLaunchProfile}>
+              <IconButton icon_img={Profile} background="unfill" />
+            </div>
           </div>
         </div>
       </div>
