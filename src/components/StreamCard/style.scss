@@ -1,69 +1,82 @@
 @import "../../scss/DAOVariable.scss";
+
 .streamcard-main {
-  width: 100%;
-  display: grid;
+  width           : 100%;
+  display         : grid;
   background-color: $bg-color-layer2;
-  border-radius: 5px;
-  padding: 10px;
-  border: 1px solid $card-border-color;
-  box-sizing: border-box;
-  cursor: pointer;
+  border-radius   : 5px;
+  padding         : 10px;
+  border          : 1px solid $card-border-color;
+  box-sizing      : border-box;
+  cursor          : pointer;
+
   &:hover {
     border: 1px solid $card-border-hover-color;
   }
-  & > .stream-body {
-    display: grid;
+
+  &>.stream-body {
+    display              : grid;
     grid-template-columns: 80px 1fr;
-    & > .stream-img {
+
+    &>.stream-img {
+
       // display: grid;
       // justify-content: center;
-      & > img {
-        width: 60px;
+      &>img {
+        width : 60px;
         height: 60px;
       }
     }
-    & > .stream-details {
+
+    &>.stream-details {
+
       // display: grid;
       // grid-template-columns: 1fr 2fr;
-      & > .each-detail {
-        display: grid;
+      &>.each-detail {
+        display              : grid;
         grid-template-columns: 100px 1fr;
-        gap: 6px;
-        & > .detail-title {
-          display: grid;
+        gap                  : 6px;
+
+        &>.detail-title {
+          display        : grid;
           justify-content: right;
-          color: $text-color-common;
-          align-items: center;
-          width: max-content;
+          color          : $text-color-common;
+          align-items    : center;
+          white-space    : nowrap;
         }
-        & > .detail-title-collection {
-          display: grid;
+
+        &>.detail-title-collection {
+          display        : grid;
           // text-algin: right;
           justify-content: right;
-          color: $text-color-common;
+          color          : $text-color-common;
           // align-items:center
         }
-        & > .detail-info {
-          display: grid;
-          width: max-content;
-          padding: 0.1rem;
-          overflow: auto;
+
+        &>.detail-info {
+          display        : grid;
+          width          : max-content;
+          padding        : 0.1rem;
+          overflow       : auto;
           // text-algin: left;
           justify-content: left;
 
-          & > .active-info {
-            display: grid;
+          &>.active-info {
+            display              : grid;
             grid-template-columns: 50px 1fr;
-            & > .active-status {
+
+            &>.active-status {
               // padding-left: 5px;
             }
-            & > .reactivate-btn {
-              display: grid;
-              justify-content:center;
-              padding: 0 5px;
-              width: 100px;
-              border: 1px solid $btn-bgcolor-common;
-              border-radius: 10px;
+
+            &>.reactivate-btn {
+              display        : grid;
+              justify-content: center;
+              padding        : 0 5px;
+              width          : 100px;
+              border         : 1px solid $btn-bgcolor-common;
+              border-radius  : 10px;
+
               &:hover {
                 // border:1px solid $card-border-hover-color;
                 background-color: $btn-bgcolor-common;
@@ -72,16 +85,16 @@
           }
         }
 
-        & > .show-collections {
-          padding: 0.2rem;
-          border-radius: 10px;
-          overflow: auto;
-          height: 5rem;
+        &>.show-collections {
+          padding         : 0.2rem;
+          border-radius   : 10px;
+          overflow        : auto;
+          height          : 5rem;
           background-color: $bg-color-layer1;
 
-          & > .item {
-            vertical-align: top;
-            display: grid;
+          &>.item {
+            vertical-align : top;
+            display        : grid;
             justify-content: left;
           }
         }
@@ -89,20 +102,24 @@
     }
   }
 }
+
 .stream-card-border {
   border: 1px solid $btn-bgcolor-common;
 }
+
 .stream-address-hint {
-  color:$btn-bgcolor-common;
-  &:hover{
-    color:$btn-bgcolor-common-hover;
+  color: $btn-bgcolor-common;
+
+  &:hover {
+    color: $btn-bgcolor-common-hover;
   }
 }
+
 @media (max-width: 768px) {
-.streamcard-main{
-  &>.stream-body {
-    font-size:16px;
+  .streamcard-main {
+    &>.stream-body {
+      font-size: 16px;
+    }
   }
-}  
 
 }
