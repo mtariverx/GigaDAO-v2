@@ -308,7 +308,7 @@ const DAODashboardV2: React.FC = (props) => {
                     )}
                   </div>
                 </div>
-                <div className="dashboard-status-nft">
+                {/* <div className="dashboard-status-nft">
                   <div className="nft-title">Staking</div>
                   <div className="nft-content">
                     <div className="nft-staked">
@@ -324,7 +324,7 @@ const DAODashboardV2: React.FC = (props) => {
                       Number of Connected NFTs
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <div className="dao-staking-councillor">
@@ -407,7 +407,7 @@ const DAODashboardV2: React.FC = (props) => {
                           {selected_stream ? selected_stream.token_ticker : ""}
                         </div>
                       </div>
-                      <div className="dao-summary-percent">&nbsp;</div>
+                      {/* <div className="dao-summary-percent">&nbsp;</div> */}
                     </div>
                     <div className="each-dao-info">
                       <div className="stream-item">Total Earned</div>
@@ -418,7 +418,7 @@ const DAODashboardV2: React.FC = (props) => {
                           {selected_stream ? selected_stream.token_ticker : ""}
                         </div>
                       </div>
-                      <div className="dao-summary-percent">&nbsp;</div>
+                      {/* <div className="dao-summary-percent">&nbsp;</div> */}
                     </div>
                     <div className="each-dao-info">
                       <div className="stream-item">Total Claimed</div>
@@ -429,7 +429,7 @@ const DAODashboardV2: React.FC = (props) => {
                           {selected_stream ? selected_stream.token_ticker : ""}
                         </div>
                       </div>
-                      <div className="dao-summary-percent">&nbsp;</div>
+                      {/* <div className="dao-summary-percent">&nbsp;</div> */}
                     </div>
                     <div className="each-dao-info">
                       <div className="stream-item">Current Pool Amount</div>
@@ -442,7 +442,7 @@ const DAODashboardV2: React.FC = (props) => {
                           {selected_stream ? selected_stream.token_ticker : ""}
                         </div>
                       </div>
-                      <div className="dao-summary-percent">&nbsp;</div>
+                      {/* <div className="dao-summary-percent">&nbsp;</div> */}
                     </div>
                     <div className="each-dao-info">
                       <div className="stream-item">Total NFTs Staked</div>
@@ -460,9 +460,9 @@ const DAODashboardV2: React.FC = (props) => {
 
                         </div>
                       </div>
-                      <div className="dao-summary-percent">
+                      {/* <div className="dao-summary-percent">
                         + {staked_percent_nft} %
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

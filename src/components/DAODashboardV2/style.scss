@@ -10,11 +10,13 @@
   grid-template-rows: min-content 1fr;
 
   &>.dashboard-header {
-    padding-top          : 20px;
-    background-color     : $bg-color-layer1;
-    font-family          : "Roboto";
-    display              : grid;
-    grid-template-columns: min-content 1fr min-content;
+    position                : fixed;
+    // padding-top          : 20px;
+    background-color        : $bg-color-layer1;
+    font-family             : "Roboto";
+    display                 : grid;
+    width                   : 100%;
+    grid-template-columns   : min-content 1fr min-content;
 
     // gap:5px;
     &>.top-log {
@@ -52,6 +54,7 @@
       &>.select-memeberDAO {
         position     : relative;
         display      : flex;
+        // width:500px;
         height       : 42px;
         border-radius: 0.25em;
         overflow     : hidden;
@@ -104,13 +107,15 @@
   }
 
   &>.dashboard-body {
-    // padding-top       : 20px;
+
+    margin-top        : $nav-header-height;
     display           : grid;
     grid-template-rows: min-content 1fr;
+
     &>.body-header {
-      font-size   : 40px;
-      padding-left: 200px;
-      padding-bottom:20px;
+      font-size     : 40px;
+      padding-left  : 200px;
+      padding-bottom: 20px;
     }
 
     &>.dashboard-content {
@@ -118,27 +123,25 @@
       align-items     : center;
       justify-items   : center;
       // text-align   : center;
-      height          : 100%;
 
       &>.dashboard-content-center {
         display           : grid;
         grid-template-rows: max-content 1fr;
         width             : 70vw;
-        height            : 100%;
         gap               : 20px;
 
         &>.dashboard-status-summary {
-          display              : grid;
-          grid-template-columns: 3fr 1fr;
-          gap                  : 20px;
+          display                 : grid;
+          // grid-template-columns: 3fr 1fr;
+          gap                     : 20px;
 
           &>.dao-info-summary {
-            font-family       : "Roboto";
-            display           : grid;
-            grid-template-rows: 1fr 2fr;
-            border-radius     : 10px;
-            height            : 140px;
-            background-image  : linear-gradient(rgba(30, 36, 35, 0.5),
+            font-family          : "Roboto";
+            display              : grid;
+            grid-template-rows   : 1fr 2fr;
+            border-radius        : 10px;
+            // height            : 140px;
+            background-image     : linear-gradient(rgba(30, 36, 35, 0.5),
                 rgba(30, 36, 35, 0.1)),
               url("../../img/background-images/GigaDAO5_NFT_Box_Platinum_032.jpg");
             background-size    : cover;
@@ -158,20 +161,22 @@
               display           : grid;
               // justify-content: center;
               grid-auto-flow    : column;
+              padding           : 0 20px;
 
               &>.each-dao-info {
                 display           : grid;
                 grid-template-rows: repeat (2, 1fr);
                 justify-content   : center;
                 align-items       : center;
-                padding           : 10px;
-                padding-top       : 0px;
+                padding           : 20px;
+                padding-top       : 5px;
 
                 &>.dao-summary-value {
-                  display        : inline-block;
-                  justify-content: left;
-                  align-items    : center;
-                  font-size      : 20px;
+                  display           : inline-block;
+                  // justify-content: left;
+                  // align-items    : center;
+                  text-align        : left;
+                  font-size         : 20px;
                 }
 
                 &>.dao-summary-percent {
@@ -185,47 +190,13 @@
             }
           }
 
-          // .dashboard-status-nft {
-          //   background-color: $bg-color-layer2;
-          //   border-radius   : 5px;
 
-          //   &>.nft-title {
-          //     display      : grid;
-          //     width        : max-content;
-          //     align-items  : center;
-          //     justify-items: left;
-          //     font-size    : 22px;
-          //     padding-left : 10px;
-          //     padding-top  : 10px;
-          //   }
-
-          //   &>.nft-staked-cnt {
-          //     display        : grid;
-          //     font-size      : 20px;
-          //     justify-content: left;
-          //     align-items    : center;
-          //     padding        : 10px;
-          //     padding-left   : 30px;
-          //     padding-top    : 0px;
-          //   }
-
-          //   &>.nft-unstaked-cnt {
-          //     display        : grid;
-          //     font-size      : 20px;
-          //     justify-content: left;
-          //     align-items    : center;
-          //     padding        : 10px;
-          //     padding-left   : 30px;
-          //     padding-top    : 0px;
-          //   }
-          // }
         }
 
         &>.dao-staking-councillor {
           display              : grid;
           grid-template-columns: 1.5fr 1fr;
           gap                  : 20px;
-          height               : 100%;
           padding              : 0 200px;
 
           // justify-content: center;
@@ -258,19 +229,20 @@
             box-sizing        : border-box;
             border            : 1px solid $btn-bgcolor-common;
             border-radius     : 10px;
-            height            : 100%;
             grid-template-rows: max-content 1fr;
             font-family       : "Roboto";
 
             &>.councillor-title {
-              padding                : 10px;
-              background-color       : $btn-bgcolor-common;
-              height                 : min-content;
-              color                  : black;
-              border-top-left-radius : 7px;
-              border-top-right-radius: 7px;
-              font-size              : map-get($map: $font-sizes, $key: "large");
-              font-weight            : bold;
+              display                   : grid;
+              justify-content           : center;
+              padding                   : 10px;
+              background-color          : $btn-bgcolor-common;
+              // height                 : min-content;
+              color                     : black;
+              border-top-left-radius    : 7px;
+              border-top-right-radius   : 7px;
+              font-size                 : map-get($map: $font-sizes, $key: "large");
+              font-weight               : bold;
             }
 
             &>.councillor-action-group {
@@ -306,21 +278,20 @@
         display           : grid;
         grid-template-rows: max-content 1fr;
         width             : 70vw;
-        height            : 100%;
         gap               : 20px;
 
         &>.dashboard-status-summary {
-          display              : grid;
+          display                 : grid;
           // grid-template-columns: 3fr 1fr;
-          gap                  : 20px;
+          gap                     : 20px;
 
           &>.stream-info-summary {
-            font-family       : "Roboto";
-            display           : grid;
-            grid-template-rows: 1fr 2fr;
-            border-radius     : 10px;
-            height            : 140px;
-            background-image  : linear-gradient(rgba(30, 36, 35, 0.5),
+            font-family          : "Roboto";
+            display              : grid;
+            grid-template-rows   : 1fr 2fr;
+            border-radius        : 10px;
+            // height            : 140px;
+            background-image     : linear-gradient(rgba(30, 36, 35, 0.5),
                 rgba(30, 36, 35, 0.1)),
               url("../../img/background-images/GigaDAO5_NFT_Box_Platinum_032.jpg");
             background-size    : cover;
@@ -348,7 +319,7 @@
                 justify-content   : center;
                 align-items       : center;
                 padding           : 20px;
-                padding-top       : 0px;
+                padding-top       : 5px;
                 width             : max-content;
 
                 &>.stream-item {
@@ -356,7 +327,7 @@
                   // justify-content: left;
                   // align-items: center;
                   text-align        : left;
-                  font-size         : 22px;
+                  font-size         : 20px;
                 }
 
                 &>.dao-summary-value {
@@ -368,12 +339,11 @@
                 }
 
                 &>.dao-summary-percent {
-                  display         : grid;
-                  // justify-items: left;
-                  // align-items: center;
-                  text-align      : left;
-                  color           : $btn-bgcolor-common;
-                  font-size       : 18px;
+                  display      : grid;
+                  justify-items: left;
+                  align-items  : center;
+                  color        : $btn-bgcolor-common;
+                  font-size    : 18px;
                 }
               }
             }
@@ -438,8 +408,8 @@
             grid-template-columns: 1fr 1fr;
             // display: flex;
 
-            gap   : 10px;
-            height: max-content;
+            gap      : 10px;
+            // height: max-content;
           }
         }
       }
@@ -564,7 +534,6 @@ span.unit-color {
         &>.dashboard-content-center {
           display: grid;
           width  : 60vw;
-          height : 100%;
           gap    : 20px;
 
           &>.dao-info-summary {
@@ -592,6 +561,7 @@ span.unit-color {
 
             &>.dao-councillor {
               &>.councillor-title {
+
                 font-size: 20px;
               }
 
