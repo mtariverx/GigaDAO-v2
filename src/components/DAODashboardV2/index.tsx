@@ -224,6 +224,7 @@ const DAODashboardV2: React.FC = (props) => {
   };
 
   return (
+    
     <div className="dashboard-main">
       <div className="dashboard-header">
         <div className="header-items-group">

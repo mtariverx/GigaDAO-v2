@@ -482,7 +482,9 @@ span.unit-color {
 @media (min-width: 2000px) {
 
   .dashboard-main {
-    margin: 0 15%;
+    width : 1900px;
+    margin: auto;
+
 
     &>.dashboard-header {
       // margin: 0 30% 0 30%;
