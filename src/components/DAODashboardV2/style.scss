@@ -125,22 +125,22 @@
     }
 
     &>.dashboard-content {
-      display            : grid;
+      // display            : grid;
       // align-items     : center;
-      justify-items      : center;
+      justify-items   : center;
       // text-align   : center;
 
       &>.dashboard-content-center {
-        display              : grid;
-        grid-template-rows   : max-content 1fr;
-        padding              : 0 15%;
-        // width             : 70vw;
-        gap                  : 20px;
+        // display           : grid;
+        // grid-template-rows: max-content 1fr;
+        padding: 0 15%;
+        gap    : 20px;
 
         &>.dashboard-status-summary {
           display                 : grid;
           // grid-template-columns: 3fr 1fr;
           gap                     : 20px;
+          padding-bottom          : 10px;
 
           &>.dao-info-summary {
             font-family          : "Roboto";
@@ -201,11 +201,11 @@
         }
 
         &>.dao-staking-councillor {
-          display              : grid;
-          grid-template-columns: 1.5fr 1fr;
-          gap                  : 20px;
-          padding              : 0 200px;
-          max-height           : 450px;
+          display                 : grid;
+          grid-template-columns   : 1.5fr 1fr;
+          gap                     : 20px;
+          padding                 : 10px 10%;
+          // max-height           : 450px;
 
           // justify-content: center;
           // height: max-content;
@@ -284,16 +284,17 @@
       }
 
       &>.stream-content-center {
-        display              : grid;
-        grid-template-rows   : max-content 1fr;
+        // display              : grid;
+        // grid-template-rows   : max-content 1fr;
         // width             : 70vw;
-        padding              : 0 15%;
-        gap                  : 20px;
+        padding: 0 15%;
+        gap    : 20px;
 
         &>.dashboard-status-summary {
           display                 : grid;
           // grid-template-columns: 3fr 1fr;
           gap                     : 20px;
+          padding-bottom          : 10px;
 
           &>.stream-info-summary {
             font-family          : "Roboto";
@@ -358,54 +359,6 @@
               }
             }
           }
-
-          // &>.dashboard-status-nft {
-          //   background-color: $bg-color-layer2;
-          //   border-radius   : 5px;
-          //   display:grid;
-          //   // grid-template-rows: 1fr 2fr;
-
-          //   &>.nft-title {
-          //     display      : grid;
-          //     width        : max-content;
-          //     align-items  : center;
-          //     justify-items: left;
-          //     font-size    : 22px;
-          //     padding-left : 10px;
-          //     padding-top  : 10px;
-          //   }
-
-          //   &>.nft-staked {
-          //     display              : grid;
-          //     grid-template-columns: 1fr max-content;
-
-          //     &>.nft-staked-title {
-          //       display        : grid;
-          //       justify-content: left;
-          //       padding-left   : 10px;
-          //       align-items    : center;
-          //       font-size      : 20px;
-          //     }
-
-          //     &>.nft-staked-cnt {
-          //       display        : grid;
-          //       font-size      : 20px;
-          //       justify-content: left;
-          //       align-items    : center;
-          //       padding-right  : 30px;
-          //     }
-          //   }
-
-          //   &>.nft-unstaked-cnt {
-          //     display        : grid;
-          //     font-size      : 20px;
-          //     justify-content: left;
-          //     align-items    : center;
-          //     padding        : 10px;
-          //     padding-left   : 30px;
-          //     padding-top    : 0px;
-          //   }
-          // }
         }
 
         &>.card-content {
@@ -536,5 +489,340 @@ span.unit-color {
     }
 
     &>.dashboard-body {}
+  }
+}
+
+@media (max-width: 1744px) {
+  .dashboard-main {
+    height: calc(100vh - $social-footer-height);
+
+    &>.dashboard-header {
+      padding: 0 20px;
+
+      &>.header-items-group {
+        &>.dashboard-dao-group {
+          padding: 0 10px;
+        }
+      }
+    }
+
+    &>.dashboard-body {
+      &>.body-header {
+        font-size   : 35px;
+        padding     : 20px;
+        padding-left: 100px;
+      }
+
+      &>.dashboard-content {
+        &>.dashboard-content-center {
+          &>.dashboard-status-summary {
+            gap: 15px;
+
+            &>.dao-info-summary {
+              &>.dao-summary-title {
+                font-size: 20px;
+              }
+
+              &>.dao-summary-content {
+                padding: 0 10px;
+
+                &>.each-dao-info {
+                  padding: 15px;
+
+                  &>.dao-summary-value {
+                    font-size: 18px;
+                  }
+
+                  &>.dao-summary-percent {
+                    font-size: 16px;
+                  }
+                }
+              }
+            }
+          }
+
+          &>.dao-staking-councillor {
+            gap                  : 10px;
+            padding              : 0;
+            grid-template-columns: unset;
+            grid-template-columns: 1fr 1fr;
+
+            &>.dao-staking {
+              font-size: 30px;
+            }
+
+            &>.dao-councillor {
+              &>.councillor-title {
+                font-size: 18px;
+              }
+
+              &>.councillor-action-proposal {
+                padding: 10px;
+              }
+            }
+          }
+        }
+
+        &>.stream-content-center {
+          &>.dashboard-status-summary {
+            gap: 10px;
+
+            &>.stream-info-summary {
+
+              &>.stream-summary-title {
+                font-size: 18px;
+              }
+
+              &>.stream-summary-content {
+
+                // padding:0 10px;
+                &>.each-dao-info {
+                  padding: 10px;
+
+                  &>.stream-item {
+                    font-size: 18px;
+                  }
+
+                  &>.dao-summary-value {
+                    font-size: 16px;
+                  }
+
+                  &>.dao-summary-percent {
+                    font-size: 15px;
+                  }
+                }
+              }
+
+            }
+          }
+
+          &>.card-content {
+            &>.single-card {
+              padding              : 0 10%;
+              grid-template-columns: unset;
+              grid-template-columns: 1fr;
+              gap                  : 10px;
+            }
+          }
+
+        }
+      }
+
+    }
+  }
+}
+
+@media (max-width: 986px) {
+  .dashboard-main {
+    height: calc(100vh - $social-footer-height);
+
+    &>.dashboard-header {
+      padding: 0 20px;
+
+      &>.header-items-group {
+        &>.dashboard-dao-group {
+          padding: 0 10px;
+        }
+      }
+    }
+
+    &>.dashboard-body {
+      &>.body-header {
+        font-size   : 35px;
+        padding     : 20px;
+        padding-left: 100px;
+      }
+
+      &>.dashboard-content {
+        &>.stream-content-center {
+          // padding: unset;
+          padding: 10px;
+
+          &>.dashboard-status-summary {
+            gap: 10px;
+
+            &>.stream-info-summary {
+
+              &>.stream-summary-title {
+                font-size: 18px;
+              }
+
+              &>.stream-summary-content {
+
+                // padding:0 10px;
+                &>.each-dao-info {
+                  padding: 10px;
+
+                  &>.stream-item {
+                    font-size: 18px;
+                  }
+
+                  &>.dao-summary-value {
+                    font-size: 16px;
+                  }
+
+                  &>.dao-summary-percent {
+                    font-size: 15px;
+                  }
+                }
+              }
+
+            }
+          }
+
+          &>.card-content {
+            &>.single-card {
+              padding              : unset;
+              grid-template-columns: unset;
+              grid-template-columns: 1fr;
+              gap                  : 10px;
+            }
+          }
+
+        }
+      }
+
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    height  : calc(100vh - $social-footer-height);
+    overflow: auto;
+
+    &>.dashboard-header {
+      padding: 0 20px;
+
+      &>.header-items-group {
+        grid-template-columns: unset;
+        grid-template-rows   : 1fr 1fr 1fr;
+
+        &>.top-log {}
+
+        &>.dashboard-dao-group {}
+
+        &>.top-nav-right {
+          // justify-content:unset;
+          justify-content: center;
+
+        }
+      }
+    }
+
+    &>.dashboard-body {
+      // max-height: calc(100vh - $social-footer-height - 300px);
+
+      &>.body-header {
+        font-size     : 24px;
+        padding-left  : 100px;
+        padding-bottom: 10px;
+      }
+
+      &>.dashboard-content {
+        font-size: 18px;
+        overflow : auto;
+
+        &>.dashboard-content-center {
+          padding: unset;
+          padding: 10px;
+
+          &>.dashboard-status-summary {
+            gap: 10px;
+
+            &>.dao-info-summary {
+              &>.dao-summary-title {
+                font-size: 18px;
+              }
+
+              &>.dao-summary-content {
+                &>.each-dao-info {
+                  &>.dao-summary-value {
+                    font-size: 16px;
+                  }
+
+                  &>.dao-summary-percent {
+                    font-size: 15px;
+                  }
+                }
+              }
+            }
+          }
+
+          &>.dao-staking-councillor {
+            padding              : 0;
+            grid-template-columns: unset;
+
+            // grid-template-rows: 50px, max-content;
+            &>.dao-staking {
+              font-size: 30px;
+              height   : 60px;
+            }
+
+            &>.dao-councillor {
+              &>.councillor-title {
+                // padding:5px;
+                font-size: 18px;
+              }
+
+              &>.councillor-action-group {
+                gap      : 5px;
+                padding  : 5px;
+                font-size: 18px;
+
+                &>.councillor-actioni-proposal {
+                  padding: 5px;
+                  width  : max-content;
+                }
+              }
+            }
+          }
+        }
+
+        &>.stream-content-center {
+          padding: unset;
+          padding: 10px;
+
+          &>.dashboard-status-summary {
+            gap: 10px;
+
+            &>.stream-info-summary {
+              &>.stream-summary-title {
+                font-size: 18px;
+              }
+
+              &>.stream-summary-content {
+
+                // grid-auto-flow: unset;
+                // grid-auto-flow    : rows;
+                &>.each-dao-info {
+                  &>.stream-item {
+                    font-size: 18px;
+                  }
+
+                  &>.dao-summary-value {
+                    font-size: 16px;
+                  }
+
+                  &>.dao-summary-percent {
+                    font-size: 15px;
+                  }
+                }
+              }
+
+            }
+          }
+
+          &>.card-content {
+            &>.single-card {
+              grid-template-columns   : unset;
+              // grid-template-columns: 1fr;
+              gap                     : 10px;
+            }
+          }
+
+        }
+      }
+    }
   }
 }

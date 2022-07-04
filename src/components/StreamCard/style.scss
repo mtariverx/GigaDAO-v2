@@ -98,3 +98,11 @@
     color:$btn-bgcolor-common-hover;
   }
 }
+@media (max-width: 768px) {
+.streamcard-main{
+  &>.stream-body {
+    font-size:16px;
+  }
+}  
+
+}
