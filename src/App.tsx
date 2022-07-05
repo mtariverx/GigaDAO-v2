@@ -13,7 +13,7 @@ import ReactGA from "react-ga4";
 import TokenStreamV2 from "components/TokenStreamV2";
 import SocialFooter from "components/SocialFooter";
 import NavHeader from "components/NavHeader";
-
+import { CreatedDAOs } from "pages/CreatedDAOs";
 const PROD_GA_MID = "G-7ZX9B5QVXZ";
 const TEST_GA_MID = "G-RGDZ6GH4CH";
 let GA_MEASUREMENT_ID = window.location.host.includes("gigadao.io")
@@ -58,6 +58,14 @@ function App() {
             <ConnectWalletBannerButton />
             <SearchBar />
             <VerifiedDAOs />
+          </Route>
+          <Route exact path={"/CreatedDAOs"}>
+            <Navbar />
+            <MessageBanner />
+            <ClusterStatusBanner />
+            <ConnectWalletBannerButton />
+            <SearchBar />
+            <CreatedDAOs />
           </Route>
           <Route
             exact

@@ -70,6 +70,7 @@ const DAODashboardV2: React.FC = (props) => {
             newOwner,
             wallet
           );
+          console.log("*************",member_daos_promise);
           let mdis: Array<string> = [];
           let m_daos: Array<pic.Dao> = [];
           m_daos = member_daos_promise;

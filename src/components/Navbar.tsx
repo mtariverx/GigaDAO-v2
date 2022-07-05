@@ -72,15 +72,15 @@ export function Navbar() {
                 GigaDAO
               </NavLink>
             </li>
-            {/* <li className="nav-item">
+            <li className="nav-item">
               <NavLink
                 className="nav-link"
-                to={clusterPath("/Dashboard")}
+                to={clusterPath("/CreatedDAOs")}
                 exact
               >
-                Dashboard
+                CreatedDAOs
               </NavLink>
-            </li> */}
+            </li>
           </ul>
         </div>
 
