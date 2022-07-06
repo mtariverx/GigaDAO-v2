@@ -124,7 +124,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         setStreams([currentDao.streams[0]]);
       }
     })();
-    if (eligibleNfts.length > 10) {
+    if (eligibleNfts.length >= 10) {
       setNumCards(10);
     } else {
       setNumCards(eligibleNfts.length);

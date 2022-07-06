@@ -13,7 +13,7 @@ import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
 
 export function CreatedDAOs() {
     // ReactGA.send({hitType: "pageview", page: window.location.pathname + window.location.search});
-    const [numCards, setNumCards] = useState(10);
+    const [numCards, setNumCards] = useState(0);
     const [verifiedDaos, setVerifiedDaos] = useState<Array<Dao> | undefined>([]);
     const [orderedVerifiedDaos, setOrderedVerifiedDaos] = useState<Array<Dao> | undefined>([]);
     const [daoArray, setDaoArray] = useState<Array<Dao> | undefined>([]);
@@ -36,6 +36,12 @@ export function CreatedDAOs() {
                     setVerifiedDaos(daos);
                     // setOrderedVerifiedDaos(sortByMembership(daos)); //doesn't contain is_member
                     setMAX_CARDS(daos.length);
+                    if(daos.length>=10){
+                        setNumCards(10);
+                    } else {
+                        setNumCards(daos.length);
+                    }
+
                 }
             }
         })()
@@ -46,12 +52,15 @@ export function CreatedDAOs() {
     }, [verifiedDaos])
     useEffect(() => {
         console.log("orderedVerifiedDaos=", orderedVerifiedDaos);
-        // let idxs = [...Array(numCards).keys()]
-        // let tmp_daos = idxs.map((idx, _) => orderedVerifiedDaos[idx]);
-        // setDaoArray(tmp_daos)
-        setDaoArray(orderedVerifiedDaos)
-    }, [orderedVerifiedDaos])
+        let idxs = [...Array(numCards).keys()]
+        let tmp_daos = idxs.map((idx, _) => orderedVerifiedDaos[idx]);
+        setDaoArray(tmp_daos)
+        // setDaoArray(orderedVerifiedDaos)
+    }, [numCards])
+    // }, [orderedVerifiedDaos])
+    useEffect(()=>{
 
+    })
 
     const SCROLL_LOAD_AMOUNT = 10;
     // infinite scroll
@@ -60,7 +69,7 @@ export function CreatedDAOs() {
         let viewHeight = window.innerHeight;
         let contentHeight = window.document.body.offsetHeight;
         let scrollHeight = document.documentElement.scrollTop;
-        let newDaosToRefresh = [];
+        // let newDaosToRefresh = [];
         if (viewHeight + scrollHeight > (contentHeight - (viewHeight / 3))) {
             if (numCards < MAX_CARDS) {
                 let newNumCards = numCards + SCROLL_LOAD_AMOUNT;
@@ -172,7 +181,6 @@ const DaoCardComponent: React.FC<{ data: Dao }> = (props) => {
 const StreamSectionComponent: React.FC<{ data: Dao }> = (props) => {
 
     let streamState = getStreamState(props.data.streams);
-    console.log("-----------",props.data.streams)
     let content;
     switch (streamState) {
 
