@@ -10,7 +10,7 @@ import { useOwnerData } from "providers/owner";
 import { pic } from "../pic/connect";
 import * as pic_pic from "../pic/pic";
 import { useAnchorWallet, useWallet } from "providers/adapters/core/react";
-
+import * as mirror from "pic/live_utils/mirror_helpers"
 export function CreatedDAOs() {
     // ReactGA.send({hitType: "pageview", page: window.location.pathname + window.location.search});
     const [numCards, setNumCards] = useState(0);
@@ -26,32 +26,64 @@ export function CreatedDAOs() {
     const newOwner: pic_pic.Owner = { address: publicKey };
     useEffect(() => {
         (async () => {
-            console.log("++++++++***********+++++++++")
-            if (owner != undefined) {
-                let tmp_daos = await pic.getMemberDaos(newOwner, wallet);
+                let result = await mirror.getAllDaos();
+                let tmp_daos=[];
+                if(result.success && result.data!= undefined){
+                    tmp_daos=result.data;
+                }
                 let daos = await pic.getDaos(tmp_daos);
-                console.log(daos);
 
                 if (daos?.length > 0) {
-                    setVerifiedDaos(daos);
+                    let daos_active_stream=[];
+                    for(const dao of daos){
+                        if(dao.streams?.length>0){
+                            for(const stream of dao.streams){
+                                if(stream.is_active){
+                                    daos_active_stream.push(dao);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    setVerifiedDaos(daos_active_stream);
                     // setOrderedVerifiedDaos(sortByMembership(daos)); //doesn't contain is_member
-                    setMAX_CARDS(daos.length);
-                    if(daos.length>=10){
+                    setMAX_CARDS(daos_active_stream.length);
+                    if(daos_active_stream.length>=10){
                         setNumCards(10);
                     } else {
-                        setNumCards(daos.length);
+                        setNumCards(daos_active_stream.length);
                     }
 
                 }
-            }
         })()
-    }, [owner])
+    }, [])
+    // useEffect(() => {
+    //     (async () => {
+    //         console.log("++++++++***********+++++++++")
+    //         if (owner != undefined) {
+    //             let tmp_daos = await pic.getMemberDaos(newOwner, wallet);
+    //             let daos = tmp_daos;
+    //             // let daos = await pic.getDaos(tmp_daos);
+    //             console.log(tmp_daos);
+
+    //             if (daos?.length > 0) {
+    //                 setVerifiedDaos(daos);
+    //                 // setOrderedVerifiedDaos(sortByMembership(daos)); //doesn't contain is_member
+    //                 setMAX_CARDS(daos.length);
+    //                 if(daos.length>=10){
+    //                     setNumCards(10);
+    //                 } else {
+    //                     setNumCards(daos.length);
+    //                 }
+
+    //             }
+    //         }
+    //     })()
+    // }, [owner])
     useEffect(() => {
-        console.log("verifiedDaos=", verifiedDaos)
         setOrderedVerifiedDaos(verifiedDaos);
     }, [verifiedDaos])
     useEffect(() => {
-        console.log("orderedVerifiedDaos=", orderedVerifiedDaos);
         let idxs = [...Array(numCards).keys()]
         let tmp_daos = idxs.map((idx, _) => orderedVerifiedDaos[idx]);
         setDaoArray(tmp_daos)

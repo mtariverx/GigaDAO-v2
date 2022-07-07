@@ -103,16 +103,16 @@ const DaoCardComponent: React.FC<{data: Dao}> = (props) => {
                                     <h5>#NFTs</h5>
                                     <h4><em>{props.data.num_nfts}</em></h4>
                                 </div>
-                                <div className="data-unit">
+                                {/* <div className="data-unit">
                                     <h5>#Streams</h5>
                                     <h4><em>{numActiveStreams}</em></h4>
                                 </div>
                                 <div className="data-unit">
                                     <h5>Is Holder</h5>
                                     <h4><em>{props.data.is_member ? "Yes" : "No"}</em></h4>
-                                </div>
+                                </div> */}
                             </div>
-                            <StreamSectionComponent data={props.data}/>
+                            {/* <StreamSectionComponent data={props.data}/> */}
                         </div>
                         <div className="dao-buffer-row"></div>
                     </div>

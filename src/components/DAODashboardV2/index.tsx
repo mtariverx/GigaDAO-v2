@@ -70,7 +70,6 @@ const DAODashboardV2: React.FC = (props) => {
             newOwner,
             wallet
           );
-          console.log("*************",member_daos_promise);
           let mdis: Array<string> = [];
           let m_daos: Array<pic.Dao> = [];
           m_daos = member_daos_promise;
@@ -87,7 +86,6 @@ const DAODashboardV2: React.FC = (props) => {
           onSetDao({ ...dao });
           setSelectedStream(undefined);
           if (streams?.length > 0) {
-            console.log("---useEffect---");
             setSelectedStream(streams[0]);
           }
         } else {
@@ -124,13 +122,17 @@ const DAODashboardV2: React.FC = (props) => {
 
   const getNumOfStakedNFTs = () => {
     let num_staked_nft = 0;
+    let num_nfts = 0;
     try {
-      const num_nfts = owner.nfts.length;
+      if (owner.nfts != undefined) {
 
-      if (owner.nfts) {
-        for (const nft of owner.nfts) {
-          if (nft.stake) {
-            num_staked_nft++;
+        num_nfts = owner.nfts.length;
+
+        if (owner.nfts) {
+          for (const nft of owner.nfts) {
+            if (nft.stake) {
+              num_staked_nft++;
+            }
           }
         }
       }
@@ -148,15 +150,18 @@ const DAODashboardV2: React.FC = (props) => {
   const getPercentOfStakedNft = () => {
     let percent = "0";
     try {
-      const num_nfts = owner.nfts.length;
-      let num_staked_nft = 0;
-      if (owner.nfts) {
-        for (const nft of owner.nfts) {
-          if (nft.stake) {
-            num_staked_nft++;
+      if (owner.nfts != undefined) {
+
+        const num_nfts = owner.nfts.length;
+        let num_staked_nft = 0;
+        if (owner.nfts) {
+          for (const nft of owner.nfts) {
+            if (nft.stake) {
+              num_staked_nft++;
+            }
           }
+          percent = (num_staked_nft / num_nfts).toFixed(2);
         }
-        percent = (num_staked_nft / num_nfts).toFixed(2);
       }
     } catch (e) {
       console.log(e);
@@ -225,7 +230,7 @@ const DAODashboardV2: React.FC = (props) => {
   };
 
   return (
-    
+
     <div className="dashboard-main">
       <div className="dashboard-header">
         <div className="header-items-group">

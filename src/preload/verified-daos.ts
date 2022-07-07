@@ -3,14 +3,14 @@ import {Dao} from "../pic/pic";
 import {PublicKey} from "@solana/web3.js";
 
 let verifiedDaos: Array<Dao> = [
-    {
-        display_name: "GigaDAO",
-        dao_id: "gigadao",
-        num_nfts: 1313,
-        image_url: gigadao_logo,
-        is_member: false,
-        address: new PublicKey("4s4kQAiVYMR4iLNsUMDty5cmBgMo226ifR8eCrKS6j8d"),
-    },
+    // {
+    //     display_name: "GigaDAO",
+    //     dao_id: "gigadao",
+    //     num_nfts: 1313,
+    //     image_url: gigadao_logo,
+    //     is_member: false,
+    //     address: new PublicKey("4s4kQAiVYMR4iLNsUMDty5cmBgMo226ifR8eCrKS6j8d"),
+    // },
 
     {
         display_name: "OCTOS",

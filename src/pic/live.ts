@@ -359,7 +359,7 @@ let updateStreamAndConnection: pic.UpdateStreamAndConnection = async (
   try {
     stream = await chain.getStream(nft.wallet, nft.network, stream);
     finalResult.stream = stream;
-
+    
     let stakeResult = await chain.getStake(nft.wallet, nft.network, nft.stake);
     nft.stake = stakeResult.stake;
 
@@ -660,6 +660,9 @@ let unstakeNft: pic.UnstakeNft = async (nft: pic.Nft) => {
 let getMemberDaos: pic.GetMemberDaos = async (owner: pic.Owner, wallet) => {
   //getting member daos from database if the owner address is a councillor of
   try {
+    // console.log("created daos-------")
+    // const rr = await mirror.getAllDaos();//.then(result=>console.log(result));
+    // console.log("rr=",rr);
     // owner = {
     //   address: new PublicKey("GrGUgPNUHKPQ8obxmmbKKJUEru1D6uWu9fYnUuWjbXyi"),
     // };

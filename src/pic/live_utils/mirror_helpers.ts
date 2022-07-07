@@ -41,6 +41,12 @@ export async function getMembers(owner_address: string) {
   const data = await response.json();
   return data;
 }
+export async function getAllDaos() {
+  const URL = BASE_URL + "get_all_daos";
+  const response = await fetch(URL, { mode: "cors" });
+  const data = await response.json();
+  return data;
+}
 
 export async function getDaoById(dao_address: string) {
   const URL = BASE_URL + "get_dao_by_address?dao_address=" + dao_address;
