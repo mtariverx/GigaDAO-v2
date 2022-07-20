@@ -15,6 +15,7 @@ import * as mirror from "pic/live_utils/mirror_helpers";
 import { nextTick } from "process";
 import * as livePic from "pic/live";
 import { Keypair, PublicKey } from "@solana/web3.js";
+import { generateKey } from "crypto";
 
 export type DaoProps = {
   dao_id: string;
@@ -49,6 +50,7 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
           if (dao.streams?.length > 0) {
             for (const stream of dao.streams) {
               if (stream.is_active) {
+                dao.address = new PublicKey(dao.address);
                 daos_active_stream.push(dao);
                 break;
               }
@@ -266,17 +268,19 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
         );
       })}
       <div className="row staking-card">
-        {nftsArray.map(function (val, idx) {
-          return (
-            <NftCardComponent
-              nft={val}
-              setSelectedNft={setSelectedNft}
-              key={val.address.toString()}
-              isBusy={isBusy}
-              setIsBusy={setIsBusy}
-            />
-          );
-        })}
+        {nftsArray ? nftsArray.map(function (val, idx) {
+          if (val) {
+            return (
+              <NftCardComponent
+                nft={val}
+                setSelectedNft={setSelectedNft}
+                key={val.address.toString()}
+                isBusy={isBusy}
+                setIsBusy={setIsBusy}
+              />
+            );
+          }
+        }) : ''}
       </div>
     </div>
   );
