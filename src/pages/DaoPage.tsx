@@ -19,7 +19,7 @@ import { Keypair, PublicKey } from "@solana/web3.js";
 export type DaoProps = {
   dao_id: string;
 };
-
+let alldaos: Array<Dao> | undefined;
 export function DaoPage({ dao_id: dao_id }: DaoProps) {
   // ReactGA.send({hitType: "pageview", page: window.location.pathname + window.location.search});
   const [isBusy, setIsBusy] = useState(false);
@@ -28,10 +28,38 @@ export function DaoPage({ dao_id: dao_id }: DaoProps) {
   const [numCards, setNumCards] = useState(0);
   const [streams, setStreams] = useState([]);
   const [nft_filterd, setNftFiltered] = useState([]);
+  const [allDAOs, setAllDAOs] = useState<Array<Dao> | undefined>([]);
   const { owner } = useOwnerData();
   const wallet = useAnchorWallet();
+
   const currentDao: Dao = getDaoById(verifiedDaos, dao_id);
 
+  useEffect(() => {
+    (async () => {
+      let result = await mirror.getAllDaos();
+      let tmp_daos = [];
+      if (result.success && result.data != undefined) {
+        tmp_daos = result.data;
+      }
+      let daos = await pic.getDaos(tmp_daos);
+
+      if (daos?.length > 0) {
+        let daos_active_stream = [];
+        for (const dao of daos) {
+          if (dao.streams?.length > 0) {
+            for (const stream of dao.streams) {
+              if (stream.is_active) {
+                daos_active_stream.push(dao);
+                break;
+              }
+            }
+          }
+        }
+        alldaos = daos_active_stream;
+        setAllDAOs(daos_active_stream);
+      }
+    })()
+  }, [])
   // request a refresh
   useEffect(() => {
     if (currentDao.streams === undefined) {
@@ -762,9 +790,8 @@ const StreamCardComponent: React.FC<{
       </div>
       <div className="stream-section-2 desktop-only">
         <div className="stream-info-box">
-          <h4>{`${currentStream.name} : ${
-            currentStream.is_active ? "Active" : "Inactive"
-          }`}</h4>
+          <h4>{`${currentStream.name} : ${currentStream.is_active ? "Active" : "Inactive"
+            }`}</h4>
           <h4>
             {currentStream.current_pool_amount.toFixed(4)}{" "}
             {currentStream.token_ticker} in pool
@@ -1028,15 +1055,33 @@ const NftCardComponent: React.FC<{
 function getDaoById(verifiedDaos, dao_id) {
   const daoMatch = verifiedDaos.filter((dao) => dao.dao_id === dao_id);
   let currentDao;
+  let exist_in_preloaded = false;
   if (daoMatch.length === 0) {
-    alert("DAO id not found: " + dao_id);
+    // alert("DAO id not found: " + dao_id);
     currentDao = verifiedDaos[0];
   } else if (daoMatch.length > 1) {
     alert("Warning, multiple DAOs found with same ID, please contact support.");
     currentDao = daoMatch[0];
   } else {
+    exist_in_preloaded = true;
     currentDao = daoMatch[0];
   }
+  if (!exist_in_preloaded) {
+    console.log("alldaos=", alldaos);
+    if (alldaos) {
+      if (alldaos.length > 0) {
+
+        for (const dao of alldaos) {
+          if (dao.dao_id === dao_id) {
+            currentDao = dao;
+            break;
+          }
+        }
+      }
+    }
+
+  }
+  console.log("currentDao=", currentDao);
   return currentDao;
 }
 
