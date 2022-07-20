@@ -18,7 +18,7 @@ const SocialFooter: React.FC=(props)=>{
     return;
   };
   const onLaunchGithub = () => {
-    alert("Coming soon");
+    window.open("https://gigadao.gitbook.io/enterprise-raid-game");
     return;
   };
   const onLaunchME = () => {

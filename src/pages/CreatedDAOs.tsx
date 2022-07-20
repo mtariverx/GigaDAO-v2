@@ -26,35 +26,35 @@ export function CreatedDAOs() {
     const newOwner: pic_pic.Owner = { address: publicKey };
     useEffect(() => {
         (async () => {
-                let result = await mirror.getAllDaos();
-                let tmp_daos=[];
-                if(result.success && result.data!= undefined){
-                    tmp_daos=result.data;
-                }
-                let daos = await pic.getDaos(tmp_daos);
+            let result = await mirror.getAllDaos();
+            let tmp_daos = [];
+            if (result.success && result.data != undefined) {
+                tmp_daos = result.data;
+            }
+            let daos = await pic.getDaos(tmp_daos);
 
-                if (daos?.length > 0) {
-                    let daos_active_stream=[];
-                    for(const dao of daos){
-                        if(dao.streams?.length>0){
-                            for(const stream of dao.streams){
-                                if(stream.is_active){
-                                    daos_active_stream.push(dao);
-                                    break;
-                                }
+            if (daos?.length > 0) {
+                let daos_active_stream = [];
+                for (const dao of daos) {
+                    if (dao.streams?.length > 0) {
+                        for (const stream of dao.streams) {
+                            if (stream.is_active) {
+                                daos_active_stream.push(dao);
+                                break;
                             }
                         }
                     }
-                    setVerifiedDaos(daos_active_stream);
-                    // setOrderedVerifiedDaos(sortByMembership(daos)); //doesn't contain is_member
-                    setMAX_CARDS(daos_active_stream.length);
-                    if(daos_active_stream.length>=10){
-                        setNumCards(10);
-                    } else {
-                        setNumCards(daos_active_stream.length);
-                    }
-
                 }
+                setVerifiedDaos(daos_active_stream);
+                // setOrderedVerifiedDaos(sortByMembership(daos)); //doesn't contain is_member
+                setMAX_CARDS(daos_active_stream.length);
+                if (daos_active_stream.length >= 10) {
+                    setNumCards(10);
+                } else {
+                    setNumCards(daos_active_stream.length);
+                }
+
+            }
         })()
     }, [])
     // useEffect(() => {
@@ -90,7 +90,7 @@ export function CreatedDAOs() {
         // setDaoArray(orderedVerifiedDaos)
     }, [numCards])
     // }, [orderedVerifiedDaos])
-    useEffect(()=>{
+    useEffect(() => {
 
     })
 

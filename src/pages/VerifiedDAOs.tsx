@@ -1,16 +1,16 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useHistory} from 'react-router-dom';
-import {useDaoData} from "../providers/daos";
+import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
+import { useDaoData } from "../providers/daos";
 import _debounce from 'lodash/debounce';
-import {Grid} from 'react-loader-spinner';
-import {Dao, Stream} from 'pic/pic';
+import { Grid } from 'react-loader-spinner';
+import { Dao, Stream } from 'pic/pic';
 import imageNotFound from "img/dao-images/image_not_found.png";
 import ReactGA from 'react-ga4';
 
 export function VerifiedDAOs() {
     // ReactGA.send({hitType: "pageview", page: window.location.pathname + window.location.search});
     const [numCards, setNumCards] = useState(10);
-    const {verifiedDaos, dispatch, refreshStreams} = useDaoData();
+    const { verifiedDaos, dispatch, refreshStreams } = useDaoData();
 
     const orderedVerifiedDaos = sortByMembership(verifiedDaos);
 
@@ -24,18 +24,18 @@ export function VerifiedDAOs() {
         let contentHeight = window.document.body.offsetHeight;
         let scrollHeight = document.documentElement.scrollTop;
         let newDaosToRefresh = [];
-        if (viewHeight + scrollHeight > (contentHeight - (viewHeight / 3))){
+        if (viewHeight + scrollHeight > (contentHeight - (viewHeight / 3))) {
             if (numCards < MAX_CARDS) {
                 let newNumCards = numCards + SCROLL_LOAD_AMOUNT;
                 newNumCards = (newNumCards < MAX_CARDS) ? newNumCards : MAX_CARDS;
-                for (let i = numCards; i < newNumCards; i++){
+                for (let i = numCards; i < newNumCards; i++) {
                     newDaosToRefresh.push(orderedVerifiedDaos[i]);
                 }
                 setNumCards(newNumCards);
             } else {
                 console.log("no more daos");
             }
-            if (newDaosToRefresh.length > 0){
+            if (newDaosToRefresh.length > 0) {
                 refreshStreams(dispatch, newDaosToRefresh);
             }
         }
@@ -52,28 +52,28 @@ export function VerifiedDAOs() {
 
     useEffect(() => {
         refreshStreams(dispatch, daoArray);
-    },[]);
+    }, []);
 
     return (
         <div className="container mt-4">
             <div className="row staking-card">
-                {daoArray.map(function(data, idx) {
-                    return <DaoCardComponent data={data} key={idx}/>
+                {daoArray.map(function (data, idx) {
+                    return <DaoCardComponent data={data} key={idx} />
                 })}
             </div>
         </div>
     );
 }
 
-const DaoCardComponent: React.FC<{data: Dao}> = (props) => {
+const DaoCardComponent: React.FC<{ data: Dao }> = (props) => {
     const history = useHistory();
     const path = '/dao/' + props.data.dao_id;
 
     let numActiveStreams = getNumActiveStreams(props.data.streams);
     const navigateToDao = useCallback(() => history.push(path), [history]);
 
-    function handleOnClick(){
-        if (numActiveStreams === 0){
+    function handleOnClick() {
+        if (numActiveStreams === 0) {
             alert("The holders of this collection has not initialized a DAO yet...")
             ReactGA.event({
                 category: 'navigation',
@@ -121,7 +121,7 @@ const DaoCardComponent: React.FC<{data: Dao}> = (props) => {
                         <img
                             className="card-img dao-img"
                             src={props.data.image_url}
-                            onError={({currentTarget}) => {
+                            onError={({ currentTarget }) => {
                                 currentTarget.onerror = null;
                                 currentTarget.src = imageNotFound;
                             }}
@@ -134,17 +134,17 @@ const DaoCardComponent: React.FC<{data: Dao}> = (props) => {
     );
 }
 
-const StreamSectionComponent: React.FC<{data: Dao}> = (props) => {
+const StreamSectionComponent: React.FC<{ data: Dao }> = (props) => {
 
     let streamState = getStreamState(props.data.streams);
 
     let content;
-    switch (streamState){
+    switch (streamState) {
 
         case StreamState.NONE: {
             content = (
                 <div className="none-row">
-                    <h4><em>No Active<br/>Streams</em></h4>
+                    <h4><em>No Active<br />Streams</em></h4>
                 </div>
             )
             break;
@@ -152,17 +152,17 @@ const StreamSectionComponent: React.FC<{data: Dao}> = (props) => {
         case StreamState.ONE: {
             content = (
                 <div className="multiple-row">
-                    <MultiStreamRowComponent stream={props.data.streams[0]}/>
+                    <MultiStreamRowComponent stream={props.data.streams[0]} />
                 </div>
             )
             break;
         }
 
-        case StreamState.TWO : {
+        case StreamState.TWO: {
             content = (
                 <div className="multiple-row">
-                    <MultiStreamRowComponent stream={props.data.streams[0]}/>
-                    <MultiStreamRowComponent stream={props.data.streams[1]}/>
+                    <MultiStreamRowComponent stream={props.data.streams[0]} />
+                    <MultiStreamRowComponent stream={props.data.streams[1]} />
                 </div>
             )
             break;
@@ -171,8 +171,8 @@ const StreamSectionComponent: React.FC<{data: Dao}> = (props) => {
         case StreamState.MULTIPLE: {
             content = (
                 <div className="multiple-row">
-                    <MultiStreamRowComponent stream={props.data.streams[0]}/>
-                    <MultiStreamRowComponent stream={props.data.streams[1]}/>
+                    <MultiStreamRowComponent stream={props.data.streams[0]} />
+                    <MultiStreamRowComponent stream={props.data.streams[1]} />
                 </div>
             )
             break;
@@ -181,7 +181,7 @@ const StreamSectionComponent: React.FC<{data: Dao}> = (props) => {
         default: {
             content = (
                 <div className="loading-row">
-                    <Grid width="100%"/>
+                    <Grid width="100%" />
                 </div>
             );
             break;
@@ -196,12 +196,12 @@ const StreamSectionComponent: React.FC<{data: Dao}> = (props) => {
     );
 }
 
-const MultiStreamRowComponent: React.FC<{stream: Stream}> = (props) => {
+const MultiStreamRowComponent: React.FC<{ stream: Stream }> = (props) => {
 
     return (
         <div className="multi-stream-row">
             <div className="token-logo-row">
-                <img src={props.stream.token_image_url}/>
+                <img src={props.stream.token_image_url} />
             </div>
             <div className="token-amount-row">
                 <em>{props.stream.total_earned.toFixed(4)}</em>
@@ -218,21 +218,21 @@ enum StreamState {
     MULTIPLE,
 };
 
-function getStreamState(streams){
+function getStreamState(streams) {
 
     console.log("called getStreamState");
 
     let streamState;
-    if (streams === undefined){
+    if (streams === undefined) {
         streamState = StreamState.LOADING;
     }
-    else if (streams.length === 0){
+    else if (streams.length === 0) {
         streamState = StreamState.NONE;
     }
-    else if (streams.length === 1){
+    else if (streams.length === 1) {
         streamState = StreamState.ONE;
     }
-    else if (streams.length === 2){
+    else if (streams.length === 2) {
         streamState = StreamState.TWO;
     }
     else {
@@ -242,19 +242,22 @@ function getStreamState(streams){
     return streamState;
 }
 
-function getNumActiveStreams(streams){
-    if (streams == undefined){
+function getNumActiveStreams(streams) {
+    if (streams == undefined) {
         return "?";
     } else {
         return streams.length;
     }
 }
 
-function sortByMembership(verifiedDaos){
+function sortByMembership(verifiedDaos) {
     let is_member_arr = [];
     let not_member_arr = [];
-    for (const dao of verifiedDaos){
-        if (dao.is_member){
+    for (const dao of verifiedDaos) {
+        if (dao.dao_id === 'gigadao') {
+            continue;
+        }
+        if (dao.is_member) {
             is_member_arr.push(dao);
         } else {
             not_member_arr.push(dao);
