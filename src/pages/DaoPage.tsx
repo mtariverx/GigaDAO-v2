@@ -1071,7 +1071,6 @@ function getDaoById(verifiedDaos, dao_id) {
     currentDao = daoMatch[0];
   }
   if (!exist_in_preloaded) {
-    console.log("alldaos=", alldaos);
     if (alldaos) {
       if (alldaos.length > 0) {
 
@@ -1085,7 +1084,6 @@ function getDaoById(verifiedDaos, dao_id) {
     }
 
   }
-  console.log("currentDao=", currentDao);
   return currentDao;
 }
 

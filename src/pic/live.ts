@@ -105,6 +105,7 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
     }
 
     let result = await mirror.getDaoStreams(initializedDaos);
+    
     if (result.success) {
       const streamMap: { string: Array<any> } = result.data; //{"ab":["c","d"]}
       for (const [daoAddress, streams] of Object.entries(streamMap)) {
@@ -133,6 +134,7 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
             // );
 
             let totalStreamed;
+            
             if (stream.is_active) {
               const lastUpdateTimestamp = stream.last_update_timestamp;
               const elapsedSeconds = Date.now() / 1000 - lastUpdateTimestamp;
@@ -142,6 +144,7 @@ let getDaos: pic.GetDaos = async (daos: Array<pic.Dao>) => {
               totalStreamed = stream.total_earned + recentlyEarned; //NOTE: might want to add in check here for would-be-inactive stream...
             } else {
               totalStreamed = stream.total_earned;
+              
             }
 
             let newStream: pic.Stream = {
@@ -924,6 +927,7 @@ export async function getConfirmedStream(daos) {
     }
 
     let result = await mirror.getDaoStreams(initializedDaos);
+    
     if (result.success) {
       const streamMap: { string: Array<any> } = result.data; //{"ab":["c","d"]}
       for (const [daoAddress, streams] of Object.entries(streamMap)) {

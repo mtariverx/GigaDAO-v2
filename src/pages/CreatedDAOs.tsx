@@ -32,12 +32,20 @@ export function CreatedDAOs() {
                 tmp_daos = result.data;
             }
             let daos = await pic.getDaos(tmp_daos);
-
             if (daos?.length > 0) {
                 let daos_active_stream = [];
                 for (const dao of daos) {
+                    // if(dao.is_member){
+                    // }
+                    // if(dao.dao_id==='gigadao'){
+                    //     for(const stream of dao.streams){
+                    //         console.log("stream==",stream);
+                    //     }
+                    // }
                     if (dao.streams?.length > 0) {
                         for (const stream of dao.streams) {
+                            // console.log("dao length=",daos);
+
                             if (stream.is_active) {
                                 daos_active_stream.push(dao);
                                 break;
@@ -236,7 +244,7 @@ const StreamSectionComponent: React.FC<{ data: Dao }> = (props) => {
         case StreamState.TWO: {
             content = (
                 <div className="multiple-row">
-                    <MultiStreamRowComponent stream={props.data.streams[0]} />
+                   <MultiStreamRowComponent stream={props.data.streams[0]} />
                     <MultiStreamRowComponent stream={props.data.streams[1]} />
                 </div>
             )
@@ -244,10 +252,26 @@ const StreamSectionComponent: React.FC<{ data: Dao }> = (props) => {
         }
 
         case StreamState.MULTIPLE: {
+            let stream0=props.data.streams[0];
+            let stream1=props.data.streams[1];
+            let flag0=false;
+            let flag1=false;
+            for (const stream of props.data.streams) {
+                if (flag0 && !flag1 && stream.total_earned > 0) {
+                    stream1 = stream;
+                    flag1=true;
+                    console.log("++++++++++",stream.address.toString())
+                }
+                if (!flag0 && !flag0 && stream.total_earned > 0) {
+                    stream0 = stream;
+                    flag0=true;
+                    console.log("++++++++++",stream.address.toString())
+                }
+            }
             content = (
                 <div className="multiple-row">
-                    <MultiStreamRowComponent stream={props.data.streams[0]} />
-                    <MultiStreamRowComponent stream={props.data.streams[1]} />
+                    <MultiStreamRowComponent stream={stream0} />
+                    <MultiStreamRowComponent stream={stream1} />
                 </div>
             )
             break;
