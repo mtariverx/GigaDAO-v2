@@ -6,6 +6,7 @@
   background-color           : $bg-color-layer1;
   // display              : grid;
   // min-height              : calc(100vh - $social-footer-height - $nav-header-height);
+  // height              : calc(100vh - $social-footer-height);
   font-family                : "Roboto";
   // grid-template-rows: min-content 1fr;
 
@@ -511,7 +512,7 @@ span.unit-color {
     &>.dashboard-body {
       &>.body-header {
         font-size   : 35px;
-        padding     : 20px;
+        padding     : 10px;
         padding-left: 100px;
       }
 
@@ -558,9 +559,15 @@ span.unit-color {
                 font-size: 18px;
               }
 
-              &>.councillor-action-proposal {
-                padding: 10px;
+              &>.councillor-action-group {
+                gap    : 5px;
+                padding: 5px;
+
+                &>.councillor-action-proposal {
+                  padding: 5px;
+                }
               }
+
             }
           }
         }
